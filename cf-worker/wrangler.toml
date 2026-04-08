@@ -6,4 +6,4 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "ai-factory-db"
-database_id = "REPLACE_WITH_YOUR_DB_ID"
+database_id = "369d7f92-a78f-4748-95d7-8d36f71ec568"
