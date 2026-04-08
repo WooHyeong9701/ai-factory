@@ -25,13 +25,13 @@ function MiniChart({ data }) {
     </div>
   )
 
-  // Fill 30 days so chart always has consistent width
-  const today = new Date()
+  // Fill 30 days using UTC to match the Worker's day_bucket calculation
+  const nowUTC = Date.now()
+  const todayBucket = Math.floor(nowUTC / 86400000)
   const filled = []
   for (let i = 29; i >= 0; i--) {
-    const d = new Date(today)
-    d.setDate(d.getDate() - i)
-    const key = d.toISOString().slice(0, 10)
+    const bucket = todayBucket - i
+    const key = new Date(bucket * 86400000).toISOString().slice(0, 10)
     const found = data.find(r => r.date === key)
     filled.push(found || { date: key, visitors: 0, page_views: 0 })
   }
