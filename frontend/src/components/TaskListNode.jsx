@@ -31,7 +31,7 @@ function TaskListNode({ id, data, selected }) {
   return (
     <div className={`task-list-node ${selected ? 'selected' : ''} tl-status-${status}`}>
       {/* Only input handle — task list is a sink node */}
-      <Handle type="target" position={Position.Top} className="tl-handle tl-handle-top" />
+      <Handle type="target" position={Position.Left} className="tl-handle tl-handle-left" />
 
       <div className="tl-inner">
         <div className="tl-header">

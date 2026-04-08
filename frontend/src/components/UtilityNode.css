@@ -50,19 +50,19 @@
 
 /* ── Handles ── */
 .ut-handle {
-  width: 10px !important;
-  height: 10px !important;
+  width: 14px !important;
+  height: 14px !important;
   background: var(--ut-accent, #5b8df8) !important;
   border: 2px solid #0a0a14 !important;
   border-radius: 50% !important;
   transition: transform 0.15s, box-shadow 0.15s;
 }
 .ut-handle:hover {
-  transform: scale(1.4);
-  box-shadow: 0 0 8px var(--ut-accent);
+  transform: scale(1.3);
+  box-shadow: 0 0 10px var(--ut-accent);
 }
-.ut-handle-top    { top:    -5px !important; }
-.ut-handle-bottom { bottom: -5px !important; }
+.ut-handle-left  { left:  -7px !important; }
+.ut-handle-right { right: -7px !important; }
 
 /* ── Header ── */
 .ut-header {

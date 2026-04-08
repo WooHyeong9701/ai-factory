@@ -15,8 +15,8 @@ function AgentNode({ data, selected }) {
 
   return (
     <div className={`agent-node status-${status} ${selected ? 'selected' : ''}`}>
-      <Handle type="target" position={Position.Top} className="node-handle top" />
-      <Handle type="source" position={Position.Bottom} className="node-handle bottom" />
+      <Handle type="target" position={Position.Left} className="node-handle left" />
+      <Handle type="source" position={Position.Right} className="node-handle right" />
 
       <div className="node-inner">
         <div className="node-glow" />

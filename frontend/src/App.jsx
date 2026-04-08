@@ -87,11 +87,11 @@ const defaultData = {
 const EDGE_DEFAULTS = {
   type: 'customEdge',
   animated: true,
-  style: { stroke: '#5b8df8', strokeWidth: 2 },
+  style: { stroke: '#5b8df8', strokeWidth: 3 },
   markerEnd: {
     type: MarkerType.ArrowClosed,
-    width: 18,
-    height: 18,
+    width: 20,
+    height: 20,
     color: '#5b8df8',
   },
 }

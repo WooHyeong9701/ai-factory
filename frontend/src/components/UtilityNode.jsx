@@ -90,8 +90,8 @@ function UtilityNode({ data, selected }) {
       className={`utility-node ${selected ? 'selected' : ''} ut-status-${status}`}
       style={{ '--ut-accent': kd.accent }}
     >
-      <Handle type="target" position={Position.Top}    className="ut-handle ut-handle-top" />
-      <Handle type="source" position={Position.Bottom} className="ut-handle ut-handle-bottom" />
+      <Handle type="target" position={Position.Left}  className="ut-handle ut-handle-left" />
+      <Handle type="source" position={Position.Right} className="ut-handle ut-handle-right" />
 
       <div className="ut-inner">
         <div className="ut-glow" />
