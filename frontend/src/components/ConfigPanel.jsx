@@ -2,16 +2,10 @@ import { useState } from 'react'
 import './ConfigPanel.css'
 import RoleEditor from './RoleEditor'
 import { UTILITY_KINDS } from './UtilityNode'
-
-const RETURN_TYPES = [
-  { value: 'text', label: 'Text — 자유 텍스트' },
-  { value: 'json', label: 'JSON — 구조화 데이터' },
-  { value: 'bullet', label: 'Bullet — 불릿 포인트' },
-  { value: 'korean', label: '한국어 — 한국어 강제' },
-  { value: 'tasklist', label: '☑ 작업리스트 — 체크리스트 변환' },
-]
+import { useI18n } from '../i18n/index'
 
 function ModelRamInfo({ model, ramEstimates, systemStats }) {
+  const { t } = useI18n()
   if (!model) return null
   const needed = ramEstimates?.[model]
   const available = systemStats?.ram_available_gb
@@ -27,26 +21,19 @@ function ModelRamInfo({ model, ramEstimates, systemStats }) {
         {unsafe ? '🔴' : tight ? '🟡' : '🟢'}
       </span>
       <div className="ram-info-text">
-        <span className="ram-needed">약 {needed.toFixed(1)}GB 필요</span>
+        <span className="ram-needed">{t('ramNeeded', { n: needed.toFixed(1) })}</span>
         {available != null && (
-          <span className="ram-available">· 현재 {available.toFixed(1)}GB 가용</span>
+          <span className="ram-available">· {t('ramAvailable', { n: available.toFixed(1) })}</span>
         )}
-        {unsafe && (
-          <div className="ram-warning-msg">
-            RAM 부족 — 실행 시 스왑이 발생하거나 컴퓨터가 멈출 수 있습니다.
-          </div>
-        )}
-        {tight && (
-          <div className="ram-tight-msg">
-            가용 RAM이 빠듯합니다. 다른 앱을 종료하면 안전합니다.
-          </div>
-        )}
+        {unsafe && <div className="ram-warning-msg">{t('ramWarningMsg')}</div>}
+        {tight && <div className="ram-tight-msg">{t('ramTightMsg')}</div>}
       </div>
     </div>
   )
 }
 
 function SafeModels({ models, ramEstimates, available }) {
+  const { t } = useI18n()
   if (!available || !models.length) return null
   const safe = models.filter(
     (m) => ramEstimates[m] != null && ramEstimates[m] <= available * 0.8
@@ -55,7 +42,7 @@ function SafeModels({ models, ramEstimates, available }) {
 
   return (
     <div className="safe-models">
-      <span className="safe-models-label">✅ 현재 RAM에서 안전한 모델</span>
+      <span className="safe-models-label">{t('safeModelsLabel')}</span>
       <div className="safe-models-list">
         {safe.map((m) => (
           <span key={m} className="safe-model-tag">
@@ -68,38 +55,47 @@ function SafeModels({ models, ramEstimates, available }) {
 }
 
 export default function ConfigPanel({ node, models, ramEstimates = {}, systemStats, onChange, onClose, onDelete }) {
+  const { t } = useI18n()
   const [showRoleEditor, setShowRoleEditor] = useState(false)
 
-  // ── Task List Node — simplified config ──────────────────────────────────────
+  const RETURN_TYPES = [
+    { value: 'text',     label: t('rtText') },
+    { value: 'json',     label: t('rtJson') },
+    { value: 'bullet',   label: t('rtBullet') },
+    { value: 'korean',   label: t('rtKorean') },
+    { value: 'tasklist', label: t('rtTasklist') },
+  ]
+
+  // ── Task List Node ───────────────────────────────────────────────────────────
   if (node.type === 'taskListNode') {
     const tasks = node.data.tasks || []
     const doneCount = tasks.filter(t => t.done).length
     return (
       <aside className="config-panel">
         <div className="config-header">
-          <span className="config-title tl-config-title">☑ 작업 목록 노드</span>
-          <button className="close-btn" onClick={onClose} title="설정 닫기">✕</button>
+          <span className="config-title tl-config-title">{t('taskListNodeTitle')}</span>
+          <button className="close-btn" onClick={onClose} title={t('closeSettings')}>✕</button>
         </div>
         <div className="config-scroll">
           <div className="config-section">
-            <label className="field-label">이름</label>
+            <label className="field-label">{t('name')}</label>
             <input
               className="field-input"
               type="text"
               value={node.data.name || ''}
               onChange={(e) => onChange({ name: e.target.value })}
-              placeholder="작업 목록 이름"
+              placeholder={t('taskListNamePlaceholder')}
             />
           </div>
           <div className="config-section">
             <label className="field-label">
-              작업 현황
+              {t('taskStatus')}
               {tasks.length > 0 && (
                 <button
                   className="tl-config-clear-btn"
                   onClick={() => onChange({ tasks: [], status: 'idle' })}
                 >
-                  초기화
+                  {t('reset')}
                 </button>
               )}
             </label>
@@ -107,8 +103,8 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
               <span className="tl-config-icon">☑</span>
               <span className="tl-config-stat">
                 {tasks.length === 0
-                  ? '아직 작업이 없습니다'
-                  : `${doneCount} / ${tasks.length}개 완료`}
+                  ? t('noTasksYet')
+                  : `${doneCount} / ${tasks.length} ${t('completedLabel')}`}
               </span>
             </div>
             {tasks.length > 0 && (
@@ -126,18 +122,18 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
           </div>
           <div className="config-section">
             <div className="tl-config-hint">
-              <p>연결 방법:</p>
+              <p>{t('connectionGuide')}</p>
               <ol>
-                <li>AI 에이전트 노드를 이 노드에 연결하세요</li>
-                <li>해당 노드의 반환 형식을 <strong>☑ 작업리스트</strong>로 설정하세요</li>
-                <li>실행하면 AI 출력이 체크리스트로 자동 변환됩니다</li>
+                <li>{t('tlHint1')}</li>
+                <li>{t('tlHint2')}</li>
+                <li>{t('tlHint3')}</li>
               </ol>
             </div>
           </div>
         </div>
         <div className="config-footer">
           <div className="node-id-display">ID: {node.id}</div>
-          <button className="config-delete-btn" onClick={onDelete}>노드 삭제</button>
+          <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
         </div>
       </aside>
     )
@@ -157,12 +153,11 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
           <span className="config-title ut-config-title" style={{ '--ut-accent': kd.accent }}>
             {kd.icon} {kd.label}
           </span>
-          <button className="close-btn" onClick={onClose} title="설정 닫기">✕</button>
+          <button className="close-btn" onClick={onClose} title={t('closeSettings')}>✕</button>
         </div>
         <div className="config-scroll">
-          {/* Node name */}
           <div className="config-section">
-            <label className="field-label">이름</label>
+            <label className="field-label">{t('name')}</label>
             <input
               className="field-input"
               type="text"
@@ -172,7 +167,6 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
             />
           </div>
 
-          {/* Kind-specific config fields */}
           {kd.configFields.map((field) => (
             <div className="config-section" key={field.key}>
               <label className="field-label">{field.label}</label>
@@ -215,13 +209,12 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
             </div>
           ))}
 
-          {/* Last output */}
           {node.data.output && (
             <div className="config-section">
               <label className="field-label">
-                마지막 출력
+                {t('lastOutput')}
                 <span className={`output-status-badge status-${node.data.status}`}>
-                  {node.data.status === 'done' ? '완료' : node.data.status === 'error' ? '오류' : ''}
+                  {node.data.status === 'done' ? t('completedLabel') : node.data.status === 'error' ? t('error') : ''}
                 </span>
               </label>
               <div className="output-preview">
@@ -232,7 +225,7 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
         </div>
         <div className="config-footer">
           <div className="node-id-display">ID: {node.id}</div>
-          <button className="config-delete-btn" onClick={onDelete}>노드 삭제</button>
+          <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
         </div>
       </aside>
     )
@@ -247,34 +240,34 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
   return (
     <aside className="config-panel">
       <div className="config-header">
-        <span className="config-title">노드 설정</span>
-        <button className="close-btn" onClick={onClose} title="설정 닫기">✕</button>
+        <span className="config-title">{t('configTitle')}</span>
+        <button className="close-btn" onClick={onClose} title={t('closeSettings')}>✕</button>
       </div>
 
       <div className="config-scroll">
         <div className="config-section">
-          <label className="field-label">이름</label>
+          <label className="field-label">{t('name')}</label>
           <input
             className="field-input"
             type="text"
             value={name}
             onChange={(e) => onChange({ name: e.target.value })}
-            placeholder="Agent 이름"
+            placeholder={t('agentNamePlaceholder')}
           />
         </div>
 
         <div className="config-section">
           <label className="field-label">
-            역할 (시스템 프롬프트)
-            <button className="role-expand-btn" onClick={() => setShowRoleEditor(true)} title="크게 편집">
-              ⤢ 크게 편집
+            {t('roleLabel')}
+            <button className="role-expand-btn" onClick={() => setShowRoleEditor(true)} title={t('expandEdit')}>
+              {t('expandEdit')}
             </button>
           </label>
           <textarea
             className="field-textarea"
             value={role}
             onChange={(e) => onChange({ role: e.target.value })}
-            placeholder="이 에이전트의 역할과 행동 방식을 설명하세요..."
+            placeholder={t('rolePlaceholder')}
             rows={5}
           />
         </div>
@@ -290,9 +283,9 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
 
         <div className="config-section">
           <label className="field-label">
-            모델
+            {t('model')}
             {currentModelUnsafe && (
-              <span className="field-label-badge unsafe">RAM 부족</span>
+              <span className="field-label-badge unsafe">{t('ramInsufficient')}</span>
             )}
           </label>
           {models.length > 0 ? (
@@ -301,7 +294,7 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
               value={model}
               onChange={(e) => onChange({ model: e.target.value })}
             >
-              <option value="">모델 선택...</option>
+              <option value="">{t('selectModel')}</option>
               {models.map((m) => {
                 const ram = ramEstimates[m]
                 const isUnsafe = ram != null && available != null && available < ram
@@ -320,7 +313,7 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
               type="text"
               value={model}
               onChange={(e) => onChange({ model: e.target.value })}
-              placeholder="예: llama3.2, gemma3:4b"
+              placeholder={t('modelPlaceholder')}
             />
           )}
 
@@ -332,7 +325,7 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
         </div>
 
         <div className="config-section">
-          <label className="field-label">반환 형식</label>
+          <label className="field-label">{t('returnFormat')}</label>
           <div className="return-type-list">
             {RETURN_TYPES.map((rt) => (
               <label key={rt.value} className={`return-type-option ${return_type === rt.value ? 'active' : ''}`}>
@@ -352,9 +345,9 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
         {output && (
           <div className="config-section">
             <label className="field-label">
-              마지막 출력
+              {t('lastOutput')}
               <span className={`output-status-badge status-${status}`}>
-                {status === 'running' ? '생성 중' : status === 'done' ? '완료' : status === 'error' ? '오류' : ''}
+                {status === 'running' ? t('generating2') : status === 'done' ? t('completedLabel') : status === 'error' ? t('error') : ''}
               </span>
             </label>
             <div className="output-preview">
@@ -366,7 +359,7 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
 
       <div className="config-footer">
         <div className="node-id-display">ID: {node.id}</div>
-        <button className="config-delete-btn" onClick={onDelete}>노드 삭제</button>
+        <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
       </div>
     </aside>
   )
