@@ -545,3 +545,135 @@
   opacity: 0.35;
   cursor: not-allowed;
 }
+
+.btn-troubleshoot {
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid #252540;
+  border-radius: 9px;
+  color: #6060a0;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-right: auto;
+}
+
+.btn-troubleshoot:hover {
+  border-color: #f59e0b;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.06);
+}
+
+/* ── Troubleshoot panel ──────────────────────────────────────────────────── */
+
+.ts-panel {
+  width: 620px;
+}
+
+.ts-body {
+  gap: 12px !important;
+}
+
+.ts-issue {
+  border: 1px solid #1e1e38;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0a0a1c;
+}
+
+.ts-issue-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(245, 158, 11, 0.04);
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: left;
+  font-family: inherit;
+}
+
+.ts-issue-header:hover {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.ts-open .ts-issue-header {
+  border-bottom: 1px solid #1e1e38;
+}
+
+.ts-chevron {
+  margin-left: auto;
+  color: #6060a0;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.ts-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1.5px solid rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ts-issue-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e0e0f0;
+}
+
+.ts-issue-body {
+  padding: 14px 16px;
+}
+
+.ts-cause {
+  font-size: 12px;
+  color: #8080a8;
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+.ts-note {
+  font-size: 11px;
+  color: #6060a0;
+  margin: 10px 0 0;
+  line-height: 1.5;
+  padding: 8px 12px;
+  background: rgba(91, 141, 248, 0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(91, 141, 248, 0.1);
+}
+
+.ts-note strong {
+  color: #a0b8f8;
+}
+
+.ts-note code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #1a1a30;
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #a0d8ef;
+  font-size: 10px;
+}
+
+.ts-sub-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6060a0;
+  margin: 10px 0 2px;
+}
+
+.ts-sub-label:first-of-type {
+  margin-top: 0;
+}
