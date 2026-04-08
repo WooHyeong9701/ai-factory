@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "AI Factory Frontend",
+      "runtimeExecutable": "/Users/iuhyeong/.nvm/versions/node/v18.16.0/bin/node",
+      "runtimeArgs": ["node_modules/.bin/vite"],
+      "cwd": "/Users/iuhyeong/Desktop/MY/Project/Factory/frontend",
+      "port": 3000
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+.sys-monitor {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 4px;
+}
+
+.sys-monitor--loading {
+  opacity: 0.5;
+}
+
+.sys-block {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sys-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.sys-value {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* RAM bar */
+.ram-bar-track {
+  width: 60px;
+  height: 4px;
+  background: var(--border2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ram-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s ease, background 0.3s;
+}
+
+.ram-bar-track.ok .ram-bar-fill    { background: var(--done); }
+.ram-bar-track.warn .ram-bar-fill  { background: var(--running); }
+.ram-bar-track.critical .ram-bar-fill {
+  background: var(--error);
+  animation: bar-pulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes bar-pulse {
+  from { opacity: 1; }
+  to   { opacity: 0.5; }
+}
+
+/* Value color states */
+.sys-ok       { color: var(--done) !important; }
+.sys-warn     { color: var(--running) !important; }
+.sys-critical { color: var(--error) !important; }
+
+.ram-ok       { color: var(--done); }
+.ram-warn     { color: var(--running); }
+.ram-critical { color: var(--error); animation: text-blink 1s ease-in-out infinite; }
+
+@keyframes text-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* Swap block states */
+.sys-block--swap-warn {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(251, 146, 60, 0.08);
+  border: 1px solid rgba(251, 146, 60, 0.2);
+}
+
+.sys-block--swap-critical {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  animation: swap-border-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes swap-border-pulse {
+  0%, 100% { border-color: rgba(244, 63, 94, 0.3); }
+  50%       { border-color: rgba(244, 63, 94, 0.8); }
+}
+
+.swap-alert {
+  font-size: 10px;
+  margin-left: 2px;
+}
+
+/* Critical badge (when RAM > 90%) */
+.sys-critical-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--error);
+  background: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  border-radius: 5px;
+  padding: 2px 7px;
+  animation: badge-flash 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes badge-flash {
+  from { opacity: 1; background: rgba(244, 63, 94, 0.12); }
+  to   { opacity: 0.7; background: rgba(244, 63, 94, 0.25); }
+}

@@ -1,0 +1,42 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #080810;
+  --panel: #0f0f1a;
+  --panel2: #141422;
+  --node-bg: #1a1a2e;
+  --node-sel: #1e1e40;
+  --accent: #5b8df8;
+  --accent2: #8b5cf6;
+  --accent3: #06d6a0;
+  --text: #e2e2f0;
+  --text2: #9090b0;
+  --text3: #5a5a80;
+  --border: #252535;
+  --border2: #303048;
+  --running: #fb923c;
+  --done: #06d6a0;
+  --error: #f43f5e;
+  --handle: #5b8df8;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+input, textarea, select, button {
+  font-family: inherit;
+  font-size: inherit;
+}

@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.env
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+.cache/
+
+# Frontend env (has secrets / local paths)
+frontend/.env
+
+# Large local tools (have their own git repos)
+backend/ComfyUI/
+backend/stable-diffusion-webui/
+
+# Output files
+output/
+*.mp3
+*.aiff
+*.mp4
+
+# Credentials
+credentials.json
+*.json.secret
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

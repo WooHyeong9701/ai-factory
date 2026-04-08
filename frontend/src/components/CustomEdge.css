@@ -1,0 +1,36 @@
+.edge-delete-wrapper {
+  position: absolute;
+  pointer-events: all;
+  /* hidden by default, shown on hover */
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+/* show when the parent .react-flow__edge is hovered or selected */
+.react-flow__edge:hover .edge-delete-wrapper,
+.react-flow__edge.selected .edge-delete-wrapper {
+  opacity: 1;
+}
+
+.edge-delete-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #1a1a2e;
+  border: 1px solid #f43f5e;
+  color: #f43f5e;
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+  padding: 0;
+}
+
+.edge-delete-btn:hover {
+  background: #f43f5e;
+  color: #fff;
+  transform: scale(1.2);
+}
