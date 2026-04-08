@@ -734,6 +734,7 @@ export default function App() {
             ramEstimates={ramEstimates}
             systemStats={systemStats}
             onChange={(updates) => updateNode(selectedNodeId, updates)}
+            onClose={() => setSelectedNodeId(null)}
             onDelete={() => deleteNode(selectedNodeId)}
           />
         )}

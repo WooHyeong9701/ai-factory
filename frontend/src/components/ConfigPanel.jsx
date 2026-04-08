@@ -67,7 +67,7 @@ function SafeModels({ models, ramEstimates, available }) {
   )
 }
 
-export default function ConfigPanel({ node, models, ramEstimates = {}, systemStats, onChange, onDelete }) {
+export default function ConfigPanel({ node, models, ramEstimates = {}, systemStats, onChange, onClose, onDelete }) {
   const [showRoleEditor, setShowRoleEditor] = useState(false)
 
   // ── Task List Node — simplified config ──────────────────────────────────────
@@ -78,7 +78,7 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
       <aside className="config-panel">
         <div className="config-header">
           <span className="config-title tl-config-title">☑ 작업 목록 노드</span>
-          <button className="delete-btn" onClick={onDelete} title="노드 삭제">✕</button>
+          <button className="close-btn" onClick={onClose} title="설정 닫기">✕</button>
         </div>
         <div className="config-scroll">
           <div className="config-section">
@@ -137,6 +137,7 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
         </div>
         <div className="config-footer">
           <div className="node-id-display">ID: {node.id}</div>
+          <button className="config-delete-btn" onClick={onDelete}>노드 삭제</button>
         </div>
       </aside>
     )
@@ -156,7 +157,7 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
           <span className="config-title ut-config-title" style={{ '--ut-accent': kd.accent }}>
             {kd.icon} {kd.label}
           </span>
-          <button className="delete-btn" onClick={onDelete} title="노드 삭제">✕</button>
+          <button className="close-btn" onClick={onClose} title="설정 닫기">✕</button>
         </div>
         <div className="config-scroll">
           {/* Node name */}
@@ -231,6 +232,7 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
         </div>
         <div className="config-footer">
           <div className="node-id-display">ID: {node.id}</div>
+          <button className="config-delete-btn" onClick={onDelete}>노드 삭제</button>
         </div>
       </aside>
     )
@@ -246,7 +248,7 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
     <aside className="config-panel">
       <div className="config-header">
         <span className="config-title">노드 설정</span>
-        <button className="delete-btn" onClick={onDelete} title="노드 삭제">✕</button>
+        <button className="close-btn" onClick={onClose} title="설정 닫기">✕</button>
       </div>
 
       <div className="config-scroll">
@@ -364,6 +366,7 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
 
       <div className="config-footer">
         <div className="node-id-display">ID: {node.id}</div>
+        <button className="config-delete-btn" onClick={onDelete}>노드 삭제</button>
       </div>
     </aside>
   )

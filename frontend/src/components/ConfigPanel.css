@@ -407,13 +407,53 @@
 
 /* ── Footer ── */
 .config-footer {
-  padding: 8px 14px;
+  padding: 10px 14px;
   border-top: 1px solid var(--border);
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .node-id-display {
   font-size: 10px;
   font-family: 'JetBrains Mono', monospace;
   color: var(--text3);
+}
+
+.config-delete-btn {
+  background: none;
+  border: 1px solid #3a1520;
+  color: #f87171;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.config-delete-btn:hover {
+  background: #3a1520;
+  border-color: #f43f5e;
+}
+
+.close-btn {
+  background: none;
+  border: 1px solid var(--border, #252540);
+  color: var(--text3, #888);
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.close-btn:hover {
+  background: var(--bg2, #1a1a2e);
+  color: #e4e4f0;
+  border-color: #454560;
 }
