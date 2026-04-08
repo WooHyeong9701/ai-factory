@@ -1,8 +1,6 @@
 import { useState, useCallback } from 'react'
-import { API_BASE } from '../config'
+import { testConnection, fetchModels } from '../ollamaClient'
 import './OllamaSetup.css'
-
-const STEPS = ['method', 'guide', 'connect', 'done']
 
 function CopyButton({ text }) {
   const [copied, setCopied] = useState(false)
@@ -28,36 +26,29 @@ function CodeBlock({ code }) {
 }
 
 export default function OllamaSetup({ onComplete }) {
-  const [step, setStep] = useState('method')   // method | guide | connect | done
+  const [step, setStep] = useState('method')   // method | guide | connect
   const [method, setMethod] = useState(null)   // 'local' | 'tunnel'
   const [url, setUrl] = useState('http://localhost:11434')
   const [testing, setTesting] = useState(false)
-  const [testResult, setTestResult] = useState(null) // null | 'ok' | 'fail'
+  const [testResult, setTestResult] = useState(null) // null | 'ok' | 'fail' | 'cors'
   const [models, setModels] = useState([])
 
-  const testConnection = useCallback(async (testUrl) => {
+  const doTest = useCallback(async (testUrl) => {
     setTesting(true)
     setTestResult(null)
     try {
-      const res = await fetch(
-        `${API_BASE}/api/health?ollama_url=${encodeURIComponent(testUrl)}`,
-        { signal: AbortSignal.timeout(8000) }
-      )
-      const data = await res.json()
-      if (data.ollama) {
-        // Also fetch models
-        const mr = await fetch(
-          `${API_BASE}/api/models?ollama_url=${encodeURIComponent(testUrl)}`,
-          { signal: AbortSignal.timeout(8000) }
-        )
-        const md = await mr.json()
-        setModels(md.models || [])
-        setTestResult('ok')
+      await testConnection(testUrl)
+      const { models: m } = await fetchModels(testUrl)
+      setModels(m)
+      setTestResult('ok')
+    } catch (err) {
+      // Distinguish CORS / mixed-content errors (TypeError: Failed to fetch)
+      // from genuine connection errors
+      if (err instanceof TypeError) {
+        setTestResult('cors')
       } else {
         setTestResult('fail')
       }
-    } catch {
-      setTestResult('fail')
     } finally {
       setTesting(false)
     }
@@ -103,7 +94,10 @@ export default function OllamaSetup({ onComplete }) {
           {method === 'local' && (
             <div className="method-hint">
               <p>Ollama가 설치되어 있지 않다면:</p>
-              <CodeBlock code="brew install ollama && ollama serve" />
+              <CodeBlock code="brew install ollama" />
+              <p>CORS 허용 설정으로 Ollama 시작 <span className="hint-required">(필수)</span>:</p>
+              <CodeBlock code={'OLLAMA_ORIGINS="*" ollama serve'} />
+              <p className="hint-why">브라우저에서 Ollama에 직접 연결하려면 CORS 허용이 필요합니다.</p>
             </div>
           )}
 
@@ -215,7 +209,7 @@ export default function OllamaSetup({ onComplete }) {
             />
             <button
               className="btn-test"
-              onClick={() => testConnection(url)}
+              onClick={() => doTest(url)}
               disabled={testing || !url.trim()}
             >
               {testing ? <span className="test-spinner" /> : '테스트'}
@@ -228,13 +222,24 @@ export default function OllamaSetup({ onComplete }) {
             </p>
           )}
 
-          {/* Test result */}
           {testResult === 'ok' && (
             <div className="test-result ok">
               <span className="result-icon">✓</span>
               <div>
                 <strong>연결 성공!</strong>
-                <p>{models.length}개 모델 확인됨: {models.slice(0, 3).join(', ')}{models.length > 3 ? ` 외 ${models.length - 3}개` : ''}</p>
+                <p>{models.length}개 모델 확인됨{models.length > 0 ? `: ${models.slice(0, 3).join(', ')}${models.length > 3 ? ` 외 ${models.length - 3}개` : ''}` : ''}</p>
+              </div>
+            </div>
+          )}
+
+          {testResult === 'cors' && (
+            <div className="test-result fail">
+              <span className="result-icon">✕</span>
+              <div>
+                <strong>CORS 오류 — Ollama 재시작 필요</strong>
+                <p>아래 명령어로 Ollama를 다시 시작하세요:</p>
+                <CodeBlock code={'OLLAMA_ORIGINS="*" ollama serve'} />
+                {method === 'tunnel' && <p>tunnel URL이 HTTPS인지도 확인하세요.</p>}
               </div>
             </div>
           )}
@@ -245,6 +250,9 @@ export default function OllamaSetup({ onComplete }) {
               <div>
                 <strong>연결 실패</strong>
                 <p>Ollama가 실행 중인지 확인하고, URL이 올바른지 확인하세요.</p>
+                {method === 'local' && (
+                  <p>터미널에서 <code>OLLAMA_ORIGINS="*" ollama serve</code>로 실행하세요.</p>
+                )}
                 {method === 'tunnel' && <p>cloudflared가 실행 중인지 확인하세요.</p>}
               </div>
             </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { API_BASE, WS_BASE } from '../config'
+import { fetchModelDetails, streamPull, deleteModel as ollamaDeleteModel } from '../ollamaClient'
 import './ModelManager.css'
 
 // Curated model catalog
@@ -62,91 +62,77 @@ function RamDot({ ram, available }) {
   )
 }
 
-export default function ModelManager({ onClose, onModelsChange, systemStats }) {
+export default function ModelManager({ onClose, onModelsChange }) {
+  const ollamaUrl = localStorage.getItem('ollama_url') || 'http://localhost:11434'
   const [installed, setInstalled] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [pulling, setPulling] = useState({}) // { modelName: { percent, status } }
   const [customModel, setCustomModel] = useState('')
   const [deleteConfirm, setDeleteConfirm] = useState(null)
-  const wsRefs = useRef({})
-  const available = systemStats?.ram_available_gb
+  const pullAbortRefs = useRef({})
 
-  // Keep onClose in a ref so the keydown effect never needs to re-run when the
-  // parent re-renders (which happens every 3 s due to RAM polling).
   const onCloseRef = useRef(onClose)
   useEffect(() => { onCloseRef.current = onClose }, [onClose])
 
   const fetchInstalled = useCallback(() => {
     setLoading(true)
-    fetch(`${API_BASE}/api/models/detail`)
-      .then((r) => r.json())
-      .then((d) => { setInstalled(d.models || []); setLoading(false) })
+    fetchModelDetails(ollamaUrl)
+      .then((models) => { setInstalled(models); setLoading(false) })
       .catch(() => setLoading(false))
-  }, [])
+  }, [ollamaUrl])
 
-  // Fetch installed models only on mount.
   useEffect(() => {
     fetchInstalled()
   }, [fetchInstalled])
 
-  // Register Esc listener only once; use ref so it's always current.
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onCloseRef.current() }
     window.addEventListener('keydown', onKey)
     return () => {
       window.removeEventListener('keydown', onKey)
-      Object.values(wsRefs.current).forEach((ws) => ws?.close())
+      Object.values(pullAbortRefs.current).forEach((ctrl) => ctrl?.abort())
     }
-  }, []) // empty deps — intentional
+  }, [])
 
   const pullModel = useCallback((modelName) => {
     if (pulling[modelName]) return
     setPulling((p) => ({ ...p, [modelName]: { percent: 0, status: '연결 중...' } }))
 
-    const ws = new WebSocket(`${WS_BASE}/ws/pull`)
-    wsRefs.current[modelName] = ws
+    const ctrl = new AbortController()
+    pullAbortRefs.current[modelName] = ctrl
 
-    ws.onopen = () => ws.send(JSON.stringify({ model: modelName }))
-
-    ws.onmessage = (evt) => {
-      const msg = JSON.parse(evt.data)
-      if (msg.type === 'progress') {
-        setPulling((p) => ({
-          ...p,
-          [modelName]: { percent: msg.percent, status: msg.status },
-        }))
-      } else if (msg.type === 'done') {
-        setPulling((p) => {
-          const next = { ...p }
-          delete next[modelName]
-          return next
-        })
+    ;(async () => {
+      try {
+        for await (const progress of streamPull(ollamaUrl, modelName, ctrl.signal)) {
+          setPulling((p) => ({
+            ...p,
+            [modelName]: { percent: progress.percent, status: progress.status },
+          }))
+          if (progress.status === 'success') break
+        }
+        setPulling((p) => { const n = { ...p }; delete n[modelName]; return n })
+        delete pullAbortRefs.current[modelName]
         fetchInstalled()
         onModelsChange?.()
-      } else if (msg.type === 'error') {
-        setPulling((p) => {
-          const next = { ...p }
-          delete next[modelName]
-          return next
-        })
-        alert(`다운로드 실패: ${msg.message}`)
+      } catch (err) {
+        if (err.name === 'AbortError') return
+        setPulling((p) => { const n = { ...p }; delete n[modelName]; return n })
+        alert(`다운로드 실패: ${err.message}`)
       }
-    }
-
-    ws.onerror = () => {
-      setPulling((p) => { const n = { ...p }; delete n[modelName]; return n })
-    }
-  }, [pulling, fetchInstalled, onModelsChange])
+    })()
+  }, [pulling, fetchInstalled, onModelsChange, ollamaUrl])
 
   const deleteModel = useCallback(async (modelName) => {
-    await fetch(`${API_BASE}/api/models/${encodeURIComponent(modelName)}`, {
-      method: 'DELETE',
-    })
+    try {
+      await ollamaDeleteModel(ollamaUrl, modelName)
+    } catch {
+      // ignore
+    }
     setDeleteConfirm(null)
     fetchInstalled()
     onModelsChange?.()
-  }, [fetchInstalled, onModelsChange])
+  }, [fetchInstalled, onModelsChange, ollamaUrl])
 
   const installedNames = new Set(installed.map((m) => m.name))
 
@@ -164,7 +150,6 @@ export default function ModelManager({ onClose, onModelsChange, systemStats }) {
   return (
     <div className="mm-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="mm-panel">
-        {/* Header */}
         <div className="mm-header">
           <div className="mm-title">
             <span className="mm-title-icon">◈</span>
@@ -174,7 +159,6 @@ export default function ModelManager({ onClose, onModelsChange, systemStats }) {
         </div>
 
         <div className="mm-body">
-          {/* Installed models */}
           <section className="mm-section">
             <h3 className="mm-section-title">설치된 모델 ({installed.length})</h3>
             {loading ? (
@@ -205,7 +189,6 @@ export default function ModelManager({ onClose, onModelsChange, systemStats }) {
             )}
           </section>
 
-          {/* Search + custom pull */}
           <section className="mm-section">
             <h3 className="mm-section-title">모델 추가</h3>
             <div className="mm-search-row">
@@ -239,7 +222,6 @@ export default function ModelManager({ onClose, onModelsChange, systemStats }) {
             </div>
           </section>
 
-          {/* Catalog */}
           <section className="mm-section mm-section--catalog">
             {filteredCatalog.map((group) => (
               <div key={group.group} className="catalog-group">
@@ -253,7 +235,7 @@ export default function ModelManager({ onClose, onModelsChange, systemStats }) {
                     return (
                       <div key={m.name} className={`catalog-card ${isInstalled ? 'installed' : ''}`}>
                         <div className="catalog-card-top">
-                          <RamDot ram={m.ram} available={available} />
+                          <RamDot ram={m.ram} available={null} />
                           <span className="catalog-name">{m.name}</span>
                           {isInstalled && <span className="catalog-badge-installed">설치됨</span>}
                           {m.tags.map((t) => (

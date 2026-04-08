@@ -6,7 +6,9 @@ const noopAuth = { isSignedIn: false, getToken: async () => null }
 const noopUser = { user: null }
 function useAuth() { return HAS_CLERK ? _useAuth() : noopAuth }
 function useUser() { return HAS_CLERK ? _useUser() : noopUser }
-import { API_BASE, WS_BASE } from './config'
+
+import { testConnection, fetchModels } from './ollamaClient'
+import { runWorkflow as executeWorkflow } from './workflowRunner'
 import {
   ReactFlow,
   addEdge,
@@ -28,7 +30,6 @@ import CustomEdge from './components/CustomEdge'
 import Sidebar from './components/Sidebar'
 import ConfigPanel from './components/ConfigPanel'
 import RunPanel from './components/RunPanel'
-import SystemMonitor from './components/SystemMonitor'
 import ModelManager from './components/ModelManager'
 import OllamaSetup from './components/OllamaSetup'
 import WorkflowManager from './components/WorkflowManager'
@@ -109,9 +110,6 @@ export default function App() {
   const [ollamaOk, setOllamaOk] = useState(null)
   const [isRunning, setIsRunning] = useState(false)
   const [finalOutput, setFinalOutput] = useState('')
-  const [systemStats, setSystemStats] = useState(null)
-  const [memoryAlert, setMemoryAlert] = useState(null)
-  const [swapAlert, setSwapAlert] = useState(null)
   const [showModelManager, setShowModelManager] = useState(false)
   const [showSetup, setShowSetup] = useState(false)
   const [ollamaUrl, setOllamaUrl] = useState(() => localStorage.getItem('ollama_url') || 'http://localhost:11434')
@@ -121,8 +119,7 @@ export default function App() {
   const [currentWorkflowName, setCurrentWorkflowName] = useState('새 워크플로우')
   const [saveStatus, setSaveStatus] = useState(null) // null | 'saving' | 'saved' | 'error'
   const [showAdmin, setShowAdmin] = useState(false)
-  const wsRef = useRef(null)
-  const pollRef = useRef(null)
+  const abortRef = useRef(null)
 
   // ── Visit tracking (anonymous) ──────────────────────────────────────────────
   useEffect(() => {
@@ -143,52 +140,27 @@ export default function App() {
     }).catch(() => {})
   }, [user])
 
-  // ── Fetch system stats ──────────────────────────────────────────────────────
-  const fetchStats = useCallback(() => {
-    fetch(`${API_BASE}/api/system`)
-      .then((r) => r.json())
-      .then(setSystemStats)
-      .catch(() => {})
-  }, [])
-
-  // ── On mount: fetch models + health + start polling ─────────────────────────
+  // ── On mount: test Ollama + fetch models ────────────────────────────────────
   useEffect(() => {
-    // Show setup if no URL was ever saved
     if (!localStorage.getItem('ollama_url')) {
       setShowSetup(true)
       return
     }
-
     const url = localStorage.getItem('ollama_url') || ollamaUrl
-    fetch(`${API_BASE}/api/health?ollama_url=${encodeURIComponent(url)}`)
-      .then((r) => r.json())
-      .then((d) => {
-        setOllamaOk(d.ollama)
-        if (!d.ollama) setShowSetup(true)
+    testConnection(url)
+      .then(() => {
+        setOllamaOk(true)
+        return fetchModels(url)
       })
-      .catch(() => { setOllamaOk(false); setShowSetup(true) })
-
-    fetch(`${API_BASE}/api/models?ollama_url=${encodeURIComponent(url)}`)
-      .then((r) => r.json())
-      .then((d) => {
-        setModels(d.models || [])
-        setRamEstimates(d.ram_estimates || {})
+      .then(({ models: m, ramEstimates: r }) => {
+        setModels(m)
+        setRamEstimates(r)
       })
-      .catch(() => {})
-
-    fetchStats()
-    // Poll every 3s at rest
-    pollRef.current = setInterval(fetchStats, 3000)
-    return () => clearInterval(pollRef.current)
-  }, [fetchStats]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // During run, poll faster (every 1s); pause when modal is open
-  useEffect(() => {
-    clearInterval(pollRef.current)
-    if (showAdmin || showModelManager) return
-    pollRef.current = setInterval(fetchStats, isRunning ? 1000 : 3000)
-    return () => clearInterval(pollRef.current)
-  }, [isRunning, fetchStats, showAdmin, showModelManager])
+      .catch(() => {
+        setOllamaOk(false)
+        setShowSetup(true)
+      })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge({ ...params, ...EDGE_DEFAULTS }, eds)),
@@ -323,6 +295,7 @@ export default function App() {
 
   const selectedNode = nodes.find((n) => n.id === selectedNodeId) || null
 
+  // ── Run workflow ─────────────────────────────────────────────────────────────
   const runWorkflow = useCallback(
     (initialInput) => {
       if (isRunning || !nodes.length) return
@@ -334,62 +307,13 @@ export default function App() {
             : { ...n, data: { ...n.data, status: 'idle', output: '' } }
         )
       )
-
       setFinalOutput('')
-      setMemoryAlert(null)
-      setSwapAlert(null)
       setIsRunning(true)
 
-      // Separate nodes by type
-      const agentNodes   = nodes.filter((n) => n.type === 'agentNode')
-      const utilityNodes = nodes.filter((n) => n.type === 'utilityNode')
-      const execNodeIds  = new Set([...agentNodes, ...utilityNodes].map((n) => n.id))
+      const url = localStorage.getItem('ollama_url') || ollamaUrl
+      abortRef.current = new AbortController()
 
-      const payload = {
-        nodes: agentNodes.map((n) => ({
-          id: n.id,
-          name: n.data.name,
-          node_type: 'agent',
-          role: n.data.role,
-          model: n.data.model,
-          return_type: n.data.return_type,
-        })),
-        utility_nodes: utilityNodes.map((n) => ({
-          id: n.id,
-          name: n.data.name,
-          node_type: 'utility',
-          kind: n.data.kind,
-          config: n.data.config || {},
-        })),
-        edges: edges
-          .filter((e) => execNodeIds.has(e.source) && execNodeIds.has(e.target))
-          .map((e) => ({ source: e.source, target: e.target })),
-        initial_input: initialInput,
-        ollama_url: localStorage.getItem('ollama_url') || ollamaUrl,
-      }
-
-      const ws = new WebSocket(`${WS_BASE}/ws/run`)
-      wsRef.current = ws
-
-      ws.onopen = () => ws.send(JSON.stringify(payload))
-
-      ws.onmessage = (evt) => {
-        const msg = JSON.parse(evt.data)
-
-        // Update system stats from any message that includes them
-        if (msg.ram_total_gb !== undefined) {
-          setSystemStats({
-            ram_total_gb: msg.ram_total_gb,
-            ram_used_gb: msg.ram_used_gb,
-            ram_available_gb: msg.ram_available_gb,
-            ram_percent: msg.ram_percent,
-            cpu_percent: msg.cpu_percent,
-            swap_total_gb: msg.swap_total_gb,
-            swap_used_gb: msg.swap_used_gb,
-            swap_percent: msg.swap_percent,
-          })
-        }
-
+      const onEvent = (msg) => {
         if (msg.type === 'node_start') {
           setNodes((nds) =>
             nds.map((n) =>
@@ -407,28 +331,22 @@ export default function App() {
             )
           )
         } else if (msg.type === 'node_done') {
-          setNodes((nds) => {
-            const markedDone = nds.map((n) =>
+          setNodes((nds) =>
+            nds.map((n) =>
               n.id === msg.node_id ? { ...n, data: { ...n.data, status: 'done' } } : n
             )
-
-            // If this node has tasklist return type, parse and push to connected task list nodes
-            const doneNode = markedDone.find((n) => n.id === msg.node_id)
-            if (doneNode?.data.return_type === 'tasklist' && msg.output) {
-              const parsedTasks = parseTasksFromText(msg.output)
-              if (parsedTasks.length > 0) {
-                const taskListTargetIds = edges
-                  .filter((e) => e.source === msg.node_id)
-                  .map((e) => e.target)
-                return markedDone.map((n) =>
-                  taskListTargetIds.includes(n.id) && n.type === 'taskListNode'
-                    ? { ...n, data: { ...n.data, tasks: parsedTasks, status: 'updated' } }
-                    : n
-                )
-              }
-            }
-            return markedDone
-          })
+          )
+        } else if (msg.type === 'tasklist_update') {
+          const tasks = parseTasksFromText(msg.output)
+          if (tasks.length > 0) {
+            setNodes((nds) =>
+              nds.map((n) =>
+                n.id === msg.node_id && n.type === 'taskListNode'
+                  ? { ...n, data: { ...n.data, tasks, status: 'updated' } }
+                  : n
+              )
+            )
+          }
         } else if (msg.type === 'node_error') {
           setNodes((nds) =>
             nds.map((n) =>
@@ -438,19 +356,6 @@ export default function App() {
             )
           )
           setIsRunning(false)
-        } else if (msg.type === 'memory_abort') {
-          // Catastrophic: not enough RAM — mark node as error, show alert
-          setNodes((nds) =>
-            nds.map((n) =>
-              n.id === msg.node_id
-                ? { ...n, data: { ...n.data, status: 'error', output: '메모리 부족으로 중단됨' } }
-                : n
-            )
-          )
-          setMemoryAlert(msg)
-          setIsRunning(false)
-        } else if (msg.type === 'swap_warning') {
-          setSwapAlert(msg)
         } else if (msg.type === 'done') {
           setFinalOutput(msg.final)
           setIsRunning(false)
@@ -459,14 +364,20 @@ export default function App() {
         }
       }
 
-      ws.onerror = () => setIsRunning(false)
-      ws.onclose = () => setIsRunning(false)
+      executeWorkflow({
+        nodes,
+        edges,
+        initialInput,
+        ollamaUrl: url,
+        onEvent,
+        signal: abortRef.current.signal,
+      }).catch(() => setIsRunning(false))
     },
-    [nodes, edges, isRunning, setNodes]
+    [nodes, edges, isRunning, ollamaUrl, setNodes]
   )
 
   const stopWorkflow = useCallback(() => {
-    wsRef.current?.close()
+    abortRef.current?.abort()
     setIsRunning(false)
   }, [])
 
@@ -542,18 +453,15 @@ export default function App() {
     setModels(newModels)
     setOllamaOk(true)
     setShowSetup(false)
-    // Re-fetch with new URL
-    fetch(`${API_BASE}/api/models?ollama_url=${encodeURIComponent(url)}`)
-      .then((r) => r.json())
-      .then((d) => { setModels(d.models || []); setRamEstimates(d.ram_estimates || {}) })
+    fetchModels(url)
+      .then(({ models: m, ramEstimates: r }) => { setModels(m); setRamEstimates(r) })
       .catch(() => {})
   }, [])
 
   const refreshModels = useCallback(() => {
     const url = localStorage.getItem('ollama_url') || ollamaUrl
-    fetch(`${API_BASE}/api/models?ollama_url=${encodeURIComponent(url)}`)
-      .then((r) => r.json())
-      .then((d) => { setModels(d.models || []); setRamEstimates(d.ram_estimates || {}) })
+    fetchModels(url)
+      .then(({ models: m, ramEstimates: r }) => { setModels(m); setRamEstimates(r) })
       .catch(() => {})
   }, [ollamaUrl])
 
@@ -567,38 +475,6 @@ export default function App() {
           </div>
           <div className="header-divider" />
           <span className="header-tagline">{t('tagline')}</span>
-        </div>
-
-        <div className="header-center">
-          <SystemMonitor stats={systemStats} compact />
-        </div>
-
-        <div className="header-workflow">
-          <span className="workflow-name">{currentWorkflowName}</span>
-          <div className="workflow-actions">
-            <button className="wf-btn" onClick={handleNewWorkflow} title={t('newWorkflow')}>
-              {t('create')}
-            </button>
-            <button
-              className="wf-btn"
-              onClick={() => setShowWorkflowManager(true)}
-              title={t('savedWorkflows')}
-            >
-              {t('load')}
-            </button>
-            <button
-              className={`wf-btn wf-btn-save ${saveStatus === 'saved' ? 'saved' : saveStatus === 'error' ? 'error' : ''}`}
-              onClick={() => {
-                if (!isSignedIn) return alert(t('saveRequiresLogin'))
-                if (!isConfigured()) return alert(t('workerNotConfigured'))
-                setShowSaveDialog(true)
-              }}
-              disabled={saveStatus === 'saving'}
-              title={t('save')}
-            >
-              {saveStatus === 'saving' ? t('saving') : saveStatus === 'saved' ? t('saved') : saveStatus === 'error' ? t('saveFailed') : t('save')}
-            </button>
-          </div>
         </div>
 
         <div className="header-right">
@@ -617,6 +493,35 @@ export default function App() {
             </span>
             <span style={{ fontSize: 10, marginLeft: 4, opacity: 0.6 }}>⚙</span>
           </button>
+
+          <div className="header-workflow">
+            <span className="workflow-name">{currentWorkflowName}</span>
+            <div className="workflow-actions">
+              <button className="wf-btn" onClick={handleNewWorkflow} title={t('newWorkflow')}>
+                {t('create')}
+              </button>
+              <button
+                className="wf-btn"
+                onClick={() => setShowWorkflowManager(true)}
+                title={t('savedWorkflows')}
+              >
+                {t('load')}
+              </button>
+              <button
+                className={`wf-btn wf-btn-save ${saveStatus === 'saved' ? 'saved' : saveStatus === 'error' ? 'error' : ''}`}
+                onClick={() => {
+                  if (!isSignedIn) return alert(t('saveRequiresLogin'))
+                  if (!isConfigured()) return alert(t('workerNotConfigured'))
+                  setShowSaveDialog(true)
+                }}
+                disabled={saveStatus === 'saving'}
+                title={t('save')}
+              >
+                {saveStatus === 'saving' ? t('saving') : saveStatus === 'saved' ? t('saved') : saveStatus === 'error' ? t('saveFailed') : t('save')}
+              </button>
+            </div>
+          </div>
+
           <select
             className="lang-switcher"
             value={lang}
@@ -653,32 +558,6 @@ export default function App() {
           </div>
         </div>
       </header>
-
-      {/* Memory abort alert banner */}
-      {memoryAlert && (
-        <div className="memory-alert-banner">
-          <span className="alert-icon">🛑</span>
-          <div className="alert-body">
-            <strong>메모리 부족 — 워크플로우 자동 중단</strong>
-            <ul>
-              {memoryAlert.issues.map((msg, i) => <li key={i}>{msg}</li>)}
-            </ul>
-            <span className="alert-hint">
-              더 작은 모델 사용을 권장합니다. 현재 가용 RAM: <b>{memoryAlert.available_gb?.toFixed(1)}GB</b>
-            </span>
-          </div>
-          <button className="alert-close" onClick={() => setMemoryAlert(null)}>✕</button>
-        </div>
-      )}
-
-      {/* Swap warning banner (non-fatal) */}
-      {swapAlert && !memoryAlert && (
-        <div className="swap-alert-banner">
-          <span className="alert-icon">⚠️</span>
-          <span>스왑 {swapAlert.swap_used_gb?.toFixed(1)}GB 사용 중 — 성능 저하 가능. 가용 RAM: {swapAlert.available_gb?.toFixed(1)}GB</span>
-          <button className="alert-close" onClick={() => setSwapAlert(null)}>✕</button>
-        </div>
-      )}
 
       <div className="workspace">
         <Sidebar onOpenModelManager={() => setShowModelManager(true)} />
@@ -732,19 +611,17 @@ export default function App() {
             node={selectedNode}
             models={models}
             ramEstimates={ramEstimates}
-            systemStats={systemStats}
+            systemStats={null}
             onChange={(updates) => updateNode(selectedNodeId, updates)}
             onClose={() => setSelectedNodeId(null)}
             onDelete={() => deleteNode(selectedNodeId)}
           />
         )}
-
       </div>
 
       {showModelManager && (
         <ModelManager
           onClose={closeModelManager}
-          systemStats={systemStats}
           onModelsChange={refreshModels}
         />
       )}
