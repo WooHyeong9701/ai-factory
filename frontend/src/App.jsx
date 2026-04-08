@@ -697,6 +697,8 @@ export default function App() {
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             fitView
+            snapToGrid
+            snapGrid={[24, 24]}
             proOptions={{ hideAttribution: true }}
             defaultEdgeOptions={EDGE_DEFAULTS}
           >
