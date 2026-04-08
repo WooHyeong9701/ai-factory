@@ -1,6 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth as _useAuth } from '@clerk/clerk-react'
 import './AdminDashboard.css'
+
+const HAS_CLERK = !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+const noopAuth = { getToken: async () => null }
+function useAuth() { return HAS_CLERK ? _useAuth() : noopAuth }
 
 const CF_URL = (import.meta.env.VITE_CF_WORKER_URL || '').replace(/\/$/, '')
 
