@@ -19,22 +19,29 @@ function StatCard({ label, value, sub, accent }) {
 }
 
 function MiniChart({ data }) {
-  if (!data.length) return <div className="chart-empty">데이터 없음</div>
-  const maxVal = Math.max(...data.map(d => d.visitors), 1)
+  if (!data.length) return (
+    <div className="mini-chart">
+      <div className="chart-empty">아직 방문 데이터가 없습니다</div>
+    </div>
+  )
+  const maxPV = Math.max(...data.map(d => d.page_views), 1)
 
   return (
     <div className="mini-chart">
       <div className="chart-bars">
         {data.map((d, i) => (
           <div key={i} className="chart-col" title={`${d.date}: ${d.visitors}명 / ${d.page_views}PV`}>
-            <div
-              className="chart-bar"
-              style={{ height: `${(d.visitors / maxVal) * 100}%` }}
-            />
-            <div
-              className="chart-bar-pv"
-              style={{ height: `${(d.page_views / maxVal) * 100}%` }}
-            />
+            <div className="chart-bar-stack">
+              <div
+                className="chart-bar-pv"
+                style={{ height: `${(d.page_views / maxPV) * 100}%` }}
+              />
+              <div
+                className="chart-bar"
+                style={{ height: `${(d.visitors / maxPV) * 100}%` }}
+              />
+            </div>
+            <div className="chart-date">{d.date.slice(5)}</div>
           </div>
         ))}
       </div>

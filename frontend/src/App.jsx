@@ -182,12 +182,13 @@ export default function App() {
     return () => clearInterval(pollRef.current)
   }, [fetchStats]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // During run, poll faster (every 1s)
+  // During run, poll faster (every 1s); pause when modal is open
   useEffect(() => {
     clearInterval(pollRef.current)
+    if (showAdmin || showModelManager) return
     pollRef.current = setInterval(fetchStats, isRunning ? 1000 : 3000)
     return () => clearInterval(pollRef.current)
-  }, [isRunning, fetchStats])
+  }, [isRunning, fetchStats, showAdmin, showModelManager])
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge({ ...params, ...EDGE_DEFAULTS }, eds)),
