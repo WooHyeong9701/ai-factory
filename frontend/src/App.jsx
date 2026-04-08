@@ -33,8 +33,11 @@ import ModelManager from './components/ModelManager'
 import OllamaSetup from './components/OllamaSetup'
 import WorkflowManager from './components/WorkflowManager'
 import SaveDialog from './components/SaveDialog'
+import AdminDashboard from './components/AdminDashboard'
 import { saveWorkflow, getWorkflow, isConfigured } from './workflowApi'
 import { useI18n, LANGUAGES } from './i18n/index'
+
+const CF_URL = (import.meta.env.VITE_CF_WORKER_URL || '').replace(/\/$/, '')
 
 const nodeTypes = { agentNode: AgentNode, taskListNode: TaskListNode, utilityNode: UtilityNode }
 const edgeTypes = { customEdge: CustomEdge }
@@ -117,8 +120,28 @@ export default function App() {
   const [currentWorkflowId, setCurrentWorkflowId] = useState(null)
   const [currentWorkflowName, setCurrentWorkflowName] = useState('새 워크플로우')
   const [saveStatus, setSaveStatus] = useState(null) // null | 'saving' | 'saved' | 'error'
+  const [showAdmin, setShowAdmin] = useState(false)
   const wsRef = useRef(null)
   const pollRef = useRef(null)
+
+  // ── Visit tracking (anonymous) ──────────────────────────────────────────────
+  useEffect(() => {
+    if (!CF_URL) return
+    let vid = localStorage.getItem('visitor_id')
+    if (!vid) {
+      vid = crypto.randomUUID()
+      localStorage.setItem('visitor_id', vid)
+    }
+    fetch(`${CF_URL}/api/track`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        visitor_id: vid,
+        user_id: user?.id || '',
+        path: window.location.pathname,
+      }),
+    }).catch(() => {})
+  }, [user])
 
   // ── Fetch system stats ──────────────────────────────────────────────────────
   const fetchStats = useCallback(() => {
@@ -602,19 +625,30 @@ export default function App() {
               <option key={l.code} value={l.code}>{l.flag} {l.label}</option>
             ))}
           </select>
+          {isSignedIn && (
+            <button
+              className="admin-btn"
+              onClick={() => setShowAdmin(true)}
+              title="Admin Dashboard"
+            >
+              ◆
+            </button>
+          )}
           <div className="auth-area">
-            {isSignedIn ? (
-              <UserButton
-                afterSignOutUrl={window.location.href}
-                appearance={{
-                  elements: { avatarBox: { width: 30, height: 30 } }
-                }}
-              />
-            ) : (
-              <SignInButton mode="modal">
-                <button className="sign-in-btn">{t('signIn')}</button>
-              </SignInButton>
-            )}
+            {HAS_CLERK ? (
+              isSignedIn ? (
+                <UserButton
+                  afterSignOutUrl={window.location.href}
+                  appearance={{
+                    elements: { avatarBox: { width: 30, height: 30 } }
+                  }}
+                />
+              ) : (
+                <SignInButton mode="modal">
+                  <button className="sign-in-btn">{t('signIn')}</button>
+                </SignInButton>
+              )
+            ) : null}
           </div>
         </div>
       </header>
@@ -728,6 +762,10 @@ export default function App() {
           onSave={handleSave}
           onClose={() => setShowSaveDialog(false)}
         />
+      )}
+
+      {showAdmin && (
+        <AdminDashboard onClose={() => setShowAdmin(false)} />
       )}
 
       <RunPanel

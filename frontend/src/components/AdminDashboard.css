@@ -1,0 +1,346 @@
+/* ── Admin Dashboard ─────────────────────────────────────────────────────── */
+
+.admin-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: adminFadeIn 0.2s ease;
+}
+
+@keyframes adminFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.admin-panel {
+  width: 720px;
+  max-width: 94vw;
+  max-height: 88vh;
+  background: #13131f;
+  border: 1px solid #252535;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  animation: adminSlideUp 0.25s ease;
+}
+
+@keyframes adminSlideUp {
+  from { transform: translateY(16px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* ── Header ── */
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid #1e1e30;
+}
+
+.admin-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #e4e4f0;
+  letter-spacing: -0.02em;
+}
+
+.admin-header-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.admin-refresh,
+.admin-close {
+  background: none;
+  border: 1px solid #252535;
+  color: #888;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.admin-refresh:hover,
+.admin-close:hover {
+  background: #1e1e30;
+  color: #e4e4f0;
+  border-color: #353545;
+}
+
+/* ── Body ── */
+.admin-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 22px 22px;
+}
+
+.admin-body::-webkit-scrollbar { width: 5px; }
+.admin-body::-webkit-scrollbar-thumb {
+  background: #252535;
+  border-radius: 3px;
+}
+
+/* ── Loading / Error ── */
+.admin-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 0;
+  color: #888;
+  font-size: 13px;
+}
+
+.admin-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #252535;
+  border-top-color: #5b8df8;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.admin-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 36px 0;
+  color: #f87171;
+  font-size: 13px;
+}
+
+.admin-error button {
+  background: #1e1e30;
+  border: 1px solid #252535;
+  color: #ccc;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.admin-error button:hover {
+  background: #252535;
+}
+
+/* ── Stat Cards ── */
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.admin-stat {
+  background: #1a1a2a;
+  border: 1px solid #252535;
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+
+.admin-stat:hover {
+  border-color: var(--stat-accent, #5b8df8);
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--stat-accent, #5b8df8);
+  line-height: 1.1;
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stat-sub {
+  font-size: 10px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* ── Sections ── */
+.admin-section {
+  margin-bottom: 18px;
+}
+
+.admin-section-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #b0b0c0;
+}
+
+/* ── Mini Chart ── */
+.mini-chart {
+  background: #1a1a2a;
+  border: 1px solid #252535;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 100px;
+}
+
+.chart-col {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 1px;
+  height: 100%;
+  cursor: default;
+  position: relative;
+}
+
+.chart-bar {
+  flex: 1;
+  background: #5b8df8;
+  border-radius: 2px 2px 0 0;
+  min-height: 2px;
+  transition: height 0.3s ease;
+  opacity: 0.85;
+}
+
+.chart-bar-pv {
+  flex: 1;
+  background: #a855f7;
+  border-radius: 2px 2px 0 0;
+  min-height: 2px;
+  transition: height 0.3s ease;
+  opacity: 0.5;
+}
+
+.chart-col:hover .chart-bar { opacity: 1; }
+.chart-col:hover .chart-bar-pv { opacity: 0.8; }
+
+.chart-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: #888;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.legend-dot.accent { background: #5b8df8; }
+.legend-dot.pv { background: #a855f7; opacity: 0.6; }
+
+.chart-empty {
+  text-align: center;
+  padding: 32px;
+  color: #555;
+  font-size: 12px;
+}
+
+/* ── Table ── */
+.admin-table-wrap {
+  background: #1a1a2a;
+  border: 1px solid #252535;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.admin-table thead {
+  background: #151525;
+}
+
+.admin-table th {
+  padding: 9px 14px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #252535;
+}
+
+.admin-table td {
+  padding: 8px 14px;
+  color: #b0b0c0;
+  border-bottom: 1px solid #1e1e30;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover td {
+  background: #1e1e2e;
+}
+
+.admin-table .mono {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  color: #888;
+}
+
+.admin-table .time-cell {
+  color: #666;
+  white-space: nowrap;
+}
+
+.empty-row {
+  text-align: center !important;
+  color: #555 !important;
+  padding: 24px 14px !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .admin-panel {
+    width: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+}

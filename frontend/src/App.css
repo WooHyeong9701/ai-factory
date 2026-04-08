@@ -192,6 +192,27 @@
   color: #e0e0f4;
 }
 
+.admin-btn {
+  background: none;
+  border: 1px solid #252540;
+  color: #888;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.admin-btn:hover {
+  background: #1e1e30;
+  color: #5b8df8;
+  border-color: #5b8df8;
+}
+
 /* ── Alert banners ── */
 .memory-alert-banner,
 .swap-alert-banner {
