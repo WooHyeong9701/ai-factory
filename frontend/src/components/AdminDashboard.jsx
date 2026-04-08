@@ -43,14 +43,18 @@ function MiniChart({ data }) {
         {filled.map((d, i) => (
           <div key={i} className="chart-col" title={`${d.date}: ${d.visitors}명 / ${d.page_views}PV`}>
             <div className="chart-bar-stack">
-              <div
-                className="chart-bar-pv"
-                style={{ height: `${(d.page_views / maxPV) * 100}%` }}
-              />
-              <div
-                className="chart-bar"
-                style={{ height: `${(d.visitors / maxPV) * 100}%` }}
-              />
+              {d.page_views > 0 && (
+                <div
+                  className="chart-bar-pv"
+                  style={{ height: `${(d.page_views / maxPV) * 100}%` }}
+                />
+              )}
+              {d.visitors > 0 && (
+                <div
+                  className="chart-bar"
+                  style={{ height: `${(d.visitors / maxPV) * 100}%` }}
+                />
+              )}
             </div>
             <div className="chart-date">{d.date.slice(5)}</div>
           </div>
