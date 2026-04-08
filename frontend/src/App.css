@@ -144,6 +144,31 @@
   cursor: not-allowed;
 }
 
+/* ── Auth area ── */
+.auth-area {
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.sign-in-btn {
+  padding: 6px 14px;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.sign-in-btn:hover {
+  background: #7aa3fa;
+  box-shadow: 0 3px 12px rgba(91, 141, 248, 0.35);
+}
+
 /* ── Alert banners ── */
 .memory-alert-banner,
 .swap-alert-banner {

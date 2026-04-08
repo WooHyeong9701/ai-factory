@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useAuth } from '@clerk/clerk-react'
 import { listWorkflows, deleteWorkflow, isConfigured } from '../workflowApi'
 import './WorkflowManager.css'
 
@@ -13,6 +14,7 @@ function timeAgo(ts) {
 }
 
 export default function WorkflowManager({ onLoad, onClose }) {
+  const { getToken } = useAuth()
   const [workflows, setWorkflows] = useState([])
   const [loading, setLoading]     = useState(true)
   const [deleting, setDeleting]   = useState(null)
@@ -25,13 +27,14 @@ export default function WorkflowManager({ onLoad, onClose }) {
     setLoading(true)
     setError(null)
     try {
-      setWorkflows(await listWorkflows())
+      const token = await getToken()
+      setWorkflows(await listWorkflows(token))
     } catch (e) {
       setError(e.message)
     } finally {
       setLoading(false)
     }
-  }, [configured])
+  }, [configured, getToken])
 
   useEffect(() => {
     fetchList()
@@ -44,7 +47,8 @@ export default function WorkflowManager({ onLoad, onClose }) {
     if (!window.confirm(`"${name}" 워크플로우를 삭제할까요?`)) return
     setDeleting(id)
     try {
-      await deleteWorkflow(id)
+      const token = await getToken()
+      await deleteWorkflow(id, token)
       setWorkflows((wfs) => wfs.filter((w) => w.id !== id))
     } catch {
       alert('삭제 실패')
@@ -57,7 +61,7 @@ export default function WorkflowManager({ onLoad, onClose }) {
     <div className="wm-backdrop" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="wm-panel">
         <div className="wm-header">
-          <h2 className="wm-title">💾 저장된 워크플로우</h2>
+          <h2 className="wm-title">저장된 워크플로우</h2>
           <button className="wm-close" onClick={onClose}>✕</button>
         </div>
 

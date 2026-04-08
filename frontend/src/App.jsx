@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
+import { useAuth, useUser, SignInButton, UserButton } from '@clerk/clerk-react'
 import { API_BASE, WS_BASE } from './config'
 import {
   ReactFlow,
@@ -87,6 +88,8 @@ const EDGE_DEFAULTS = {
 
 export default function App() {
   const { screenToFlowPosition } = useReactFlow()
+  const { isSignedIn, getToken } = useAuth()
+  const { user } = useUser()
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
   const [selectedNodeId, setSelectedNodeId] = useState(null)
@@ -459,12 +462,13 @@ export default function App() {
   const handleSave = useCallback(async (name) => {
     setSaveStatus('saving')
     try {
+      const token = await getToken()
       const result = await saveWorkflow({
         id:    currentWorkflowId,
         name,
         nodes: nodes.map((n) => ({ ...n })),
         edges: edges.map((e) => ({ ...e })),
-      })
+      }, token)
       setCurrentWorkflowId(result.id)
       setCurrentWorkflowName(name)
       setSaveStatus('saved')
@@ -474,11 +478,12 @@ export default function App() {
       setSaveStatus('error')
       setTimeout(() => setSaveStatus(null), 3000)
     }
-  }, [currentWorkflowId, nodes, edges])
+  }, [currentWorkflowId, nodes, edges, getToken])
 
   const handleLoad = useCallback(async (id) => {
     try {
-      const wf = await getWorkflow(id)
+      const token = await getToken()
+      const wf = await getWorkflow(id, token)
       setNodes(wf.nodes || [])
       setEdges(wf.edges || [])
       setCurrentWorkflowId(wf.id)
@@ -489,7 +494,7 @@ export default function App() {
     } catch {
       alert('워크플로우를 불러오지 못했습니다')
     }
-  }, [setNodes, setEdges])
+  }, [setNodes, setEdges, getToken])
 
   const handleNewWorkflow = useCallback(() => {
     setNodes([])
@@ -551,7 +556,11 @@ export default function App() {
             </button>
             <button
               className={`wf-btn wf-btn-save ${saveStatus === 'saved' ? 'saved' : saveStatus === 'error' ? 'error' : ''}`}
-              onClick={() => isConfigured() ? setShowSaveDialog(true) : alert('Cloudflare Worker URL이 설정되지 않았습니다.\nVITE_CF_WORKER_URL 환경변수를 확인하세요.')}
+              onClick={() => {
+                if (!isSignedIn) return alert('워크플로우를 저장하려면 로그인이 필요합니다.')
+                if (!isConfigured()) return alert('Cloudflare Worker URL이 설정되지 않았습니다.')
+                setShowSaveDialog(true)
+              }}
               disabled={saveStatus === 'saving'}
               title="워크플로우 저장"
             >
@@ -576,6 +585,20 @@ export default function App() {
             </span>
             <span style={{ fontSize: 10, marginLeft: 4, opacity: 0.6 }}>⚙</span>
           </button>
+          <div className="auth-area">
+            {isSignedIn ? (
+              <UserButton
+                afterSignOutUrl={window.location.href}
+                appearance={{
+                  elements: { avatarBox: { width: 30, height: 30 } }
+                }}
+              />
+            ) : (
+              <SignInButton mode="modal">
+                <button className="sign-in-btn">로그인</button>
+              </SignInButton>
+            )}
+          </div>
         </div>
       </header>
 
