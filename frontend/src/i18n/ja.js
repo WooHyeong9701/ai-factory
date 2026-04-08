@@ -59,6 +59,21 @@ export default {
   tlHint2: 'そのノードの戻り値タイプを ☑ タスクリスト に設定してください',
   tlHint3: '実行するとAI出力が自動的にチェックリストに変換されます',
   deleteNode: 'ノードを削除',
+  roleEditorTitle: '役割を編集',
+  roleEditorShortcut: '⌘+Enter 保存 · Esc 閉じる',
+  roleEditorPlaceholder: `このエージェントの役割と動作方法を詳しく記述してください。
+
+例：
+あなたはシニアソフトウェアアーキテクトです。
+受け取った仕様書を分析して開発タスクリストを作成します。
+
+出力形式：
+## 第1フェーズ：[フェーズ名]
+- [ ] サブタスク（推定時間）
+...
+
+優先度の高い順に並べ、各タスクの依存関係を明記してください。`,
+  charCount: '{n}文字',
   ramNeeded: '約 {n}GB 必要',
   ramAvailable: '現在 {n}GB 利用可能',
   ramWarningMsg: 'RAM 不足 — スワップが発生したりシステムが止まる可能性があります。',

@@ -66,6 +66,21 @@ export default {
   tlHint2: '해당 노드의 반환 형식을 ☑ 작업리스트로 설정하세요',
   tlHint3: '실행하면 AI 출력이 체크리스트로 자동 변환됩니다',
   deleteNode: '노드 삭제',
+  roleEditorTitle: '역할 편집',
+  roleEditorShortcut: '⌘+Enter 저장 · Esc 닫기',
+  roleEditorPlaceholder: `이 에이전트의 역할과 행동 방식을 자세히 작성하세요.
+
+예시:
+당신은 시니어 소프트웨어 아키텍트입니다.
+전달받은 기획서를 분석하여 개발 태스크 목록을 작성합니다.
+
+출력 형식:
+## 1단계: [단계명]
+- [ ] 세부작업 (예상 소요시간)
+...
+
+우선순위 높은 순서대로 정렬하고, 각 작업의 의존관계를 명시하세요.`,
+  charCount: '{n}자',
   ramNeeded: '약 {n}GB 필요',
   ramAvailable: '현재 {n}GB 가용',
   ramWarningMsg: 'RAM 부족 — 실행 시 스왑이 발생하거나 컴퓨터가 멈출 수 있습니다.',

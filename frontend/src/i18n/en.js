@@ -59,6 +59,21 @@ export default {
   tlHint2: 'Set that node\'s return type to ☑ Task List',
   tlHint3: 'AI output will be automatically converted to a checklist',
   deleteNode: 'Delete Node',
+  roleEditorTitle: 'Edit Role',
+  roleEditorShortcut: '⌘+Enter save · Esc close',
+  roleEditorPlaceholder: `Describe this agent's role and behavior in detail.
+
+Example:
+You are a senior software architect.
+Analyze the received spec and write a development task list.
+
+Output format:
+## Phase 1: [phase name]
+- [ ] subtask (estimated time)
+...
+
+Sort by priority and specify dependencies for each task.`,
+  charCount: '{n} chars',
   ramNeeded: '~{n}GB required',
   ramAvailable: '{n}GB available',
   ramWarningMsg: 'Insufficient RAM — may cause swap or system freeze.',

@@ -59,6 +59,21 @@ export default {
   tlHint2: '将该节点的返回类型设置为 ☑ 任务列表',
   tlHint3: '运行后 AI 输出将自动转换为清单',
   deleteNode: '删除节点',
+  roleEditorTitle: '编辑角色',
+  roleEditorShortcut: '⌘+Enter 保存 · Esc 关闭',
+  roleEditorPlaceholder: `详细描述此代理的角色和行为方式。
+
+示例：
+您是一位高级软件架构师。
+分析收到的需求文档并编写开发任务列表。
+
+输出格式：
+## 第1阶段：[阶段名称]
+- [ ] 子任务（预计时间）
+...
+
+按优先级排序，并说明每个任务的依赖关系。`,
+  charCount: '{n} 字',
   ramNeeded: '约需 {n}GB',
   ramAvailable: '当前可用 {n}GB',
   ramWarningMsg: 'RAM 不足 — 运行时可能发生交换或系统卡死。',
