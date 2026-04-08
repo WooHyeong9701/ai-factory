@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
+import { useI18n } from '../i18n/index'
 import './SystemMonitor.css'
 
 function RamBar({ percent }) {
@@ -12,11 +13,12 @@ function RamBar({ percent }) {
 
 export default function SystemMonitor({ stats, compact = false }) {
   const prevSwap = useRef(0)
+  const { t } = useI18n()
 
   if (!stats) {
     return (
       <div className="sys-monitor sys-monitor--loading">
-        <span className="sys-label">시스템 로딩...</span>
+        <span className="sys-label">{t('systemLoading')}</span>
       </div>
     )
   }
@@ -43,7 +45,7 @@ export default function SystemMonitor({ stats, compact = false }) {
         <span className="sys-label">RAM</span>
         <RamBar percent={ram_percent} />
         <span className={`sys-value ram-${ramLevel}`}>
-          {ramFree}GB 남음
+          {ramFree}GB {t('ramRemaining')}
         </span>
       </div>
 
@@ -66,8 +68,8 @@ export default function SystemMonitor({ stats, compact = false }) {
 
       {/* Critical overlay badge */}
       {ram_percent >= 90 && (
-        <div className="sys-critical-badge" title="RAM이 심각하게 부족합니다">
-          🔴 RAM 위험
+        <div className="sys-critical-badge" title={t('ramDanger')}>
+          🔴 {t('ramDanger')}
         </div>
       )}
     </div>

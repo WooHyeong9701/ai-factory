@@ -87,6 +87,39 @@ export default {
   next: '다음',
   complete: '완료',
 
+  // System monitor
+  systemLoading: '시스템 로딩...',
+  ramRemaining: '남음',
+  ramDanger: 'RAM 위험',
+
+  // Sidebar
+  nodePalette: '노드 팔레트',
+  dragToCanvas: '드래그하여 캔버스에 배치',
+  aiAgent: 'AI 에이전트',
+  utilityNodes: '유틸리티 노드',
+  modelManagerBtn: '모델 관리 / 추가',
+  handleDragTip: '노드 핸들에서 드래그하여 연결하세요',
+
+  // Run panel
+  requestInput: '요청사항 입력',
+  enterToRun: 'Enter 실행',
+  inputPlaceholder: '처리할 내용을 입력하세요...',
+  execute: '실행',
+  abort: '중단',
+  runningStatus: '실행 중...',
+  completed: '완료',
+  finalOutputTab: '최종 출력',
+  nodeOutputTab: '노드별 출력',
+  finalOutputPlaceholder: '실행 결과가 여기에 표시됩니다',
+  nodeOutputPlaceholder: '실행 후 각 노드의 출력을 여기서 확인하세요',
+  runningWorkflow: '워크플로우 실행 중...',
+  taskListEmpty: '작업 목록이 비어 있습니다',
+  generating: '생성 중...',
+  selectNode: '노드를 선택하세요',
+  viewFullList: '전체 목록 보기',
+  viewLarger: '크게 보기',
+  error: '오류',
+
   // Common
   justNow: '방금 전',
   minutesAgo: '{n}분 전',

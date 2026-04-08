@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
+import { useI18n } from '../i18n/index'
 import './RunPanel.css'
 import OutputViewer from './OutputViewer'
 import TaskListViewer from './TaskListViewer'
 
 export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onStop, nodes, onTaskToggle }) {
+  const { t } = useI18n()
   const [input, setInput] = useState('')
   const [activeTab, setActiveTab] = useState('output')
   const [activeNodeTab, setActiveNodeTab] = useState(null)
@@ -64,8 +66,8 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
       {/* ── Input area ── */}
       <div className="run-input-area">
         <div className="run-input-header">
-          <span className="run-input-label">요청사항 입력</span>
-          <span className="run-shortcut">⌘ + Enter 실행</span>
+          <span className="run-input-label">{t('requestInput')}</span>
+          <span className="run-shortcut">⌘ + {t('enterToRun')}</span>
         </div>
         <div className="run-input-row">
           <textarea
@@ -73,7 +75,7 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="처리할 내용을 입력하세요..."
+            placeholder={t('inputPlaceholder')}
             rows={3}
             disabled={isRunning}
           />
@@ -81,7 +83,7 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
             {isRunning ? (
               <button className="btn-stop" onClick={onStop}>
                 <span className="btn-icon">⏹</span>
-                중단
+                {t('abort')}
               </button>
             ) : (
               <button
@@ -90,7 +92,7 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
                 disabled={!input.trim() || nodeCount === 0}
               >
                 <span className="btn-icon">▶</span>
-                실행
+                {t('execute')}
               </button>
             )}
           </div>
@@ -105,33 +107,33 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
               />
             </div>
             <span className="progress-text">
-              {runningNode ? `⚙ ${runningNode.data.name} 실행 중...` : `${doneNodes} / ${nodeCount} 완료`}
+              {runningNode ? `⚙ ${runningNode.data.name} ${t('runningStatus')}` : `${doneNodes} / ${nodeCount} ${t('completed')}`}
             </span>
           </div>
         )}
 
         {errorNode && (
           <div className="run-error-banner">
-            ✕ {errorNode.data.name} 오류: {errorNode.data.output}
+            ✕ {errorNode.data.name} {t('error')}: {errorNode.data.output}
           </div>
         )}
       </div>
 
       {/* ── Output area ── */}
       <div className="run-output-area">
-        {/* Top-level tabs: 최종출력 / 노드별 출력 */}
+        {/* Top-level tabs */}
         <div className="output-tabs">
           <button
             className={`output-tab ${activeTab === 'output' ? 'active' : ''}`}
             onClick={() => setActiveTab('output')}
           >
-            최종 출력
+            {t('finalOutputTab')}
           </button>
           <button
             className={`output-tab ${activeTab === 'nodes' ? 'active' : ''}`}
             onClick={() => setActiveTab('nodes')}
           >
-            노드별 출력 {activeNodes.length > 0 && `(${activeNodes.length})`}
+            {t('nodeOutputTab')} {activeNodes.length > 0 && `(${activeNodes.length})`}
           </button>
         </div>
 
@@ -144,8 +146,8 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
               ) : (
                 <div className="output-placeholder">
                   {isRunning
-                    ? <span className="placeholder-running">워크플로우 실행 중...</span>
-                    : <span>실행 결과가 여기에 표시됩니다</span>}
+                    ? <span className="placeholder-running">{t('runningWorkflow')}</span>
+                    : <span>{t('finalOutputPlaceholder')}</span>}
                 </div>
               )}
             </div>
@@ -158,7 +160,7 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
             {activeNodes.length === 0 ? (
               <div className="output-content">
                 <div className="output-placeholder">
-                  <span>실행 후 각 노드의 출력을 여기서 확인하세요</span>
+                  <span>{t('nodeOutputPlaceholder')}</span>
                 </div>
               </div>
             ) : (
@@ -172,8 +174,6 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
                     >
                       {n.type === 'taskListNode' ? (
                         <span className="node-tab-tl-icon">☑</span>
-                      ) : n.type === 'utilityNode' ? (
-                        <span className={`node-tab-dot status-${n.data.status}`} />
                       ) : (
                         <span className={`node-tab-dot status-${n.data.status}`} />
                       )}
@@ -187,12 +187,12 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
                   {isTaskListTab
                     ? (currentNodeData?.tasks?.length > 0) && (
                         <button className="btn-expand-output btn-expand-tasklist" onClick={() => setViewerNodeId(activeNodeTab)}>
-                          ⤢ 전체 목록 보기
+                          ⤢ {t('viewFullList')}
                         </button>
                       )
                     : currentNodeData?.output && (
                         <button className="btn-expand-output" onClick={() => setViewerNodeId(activeNodeTab)}>
-                          ⤢ 크게 보기
+                          ⤢ {t('viewLarger')}
                         </button>
                       )
                   }
@@ -201,7 +201,6 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
                 <div className="output-content" ref={outputRef}>
                   {currentNodeData ? (
                     isTaskListTab ? (
-                      /* Task list node tab content */
                       <div className="run-tasklist-view">
                         {currentNodeData.tasks?.length > 0 ? (
                           <>
@@ -210,12 +209,12 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
                                 <div
                                   className="run-tl-bar-fill"
                                   style={{
-                                    width: `${Math.round((currentNodeData.tasks.filter(t => t.done).length / currentNodeData.tasks.length) * 100)}%`
+                                    width: `${Math.round((currentNodeData.tasks.filter(t2 => t2.done).length / currentNodeData.tasks.length) * 100)}%`
                                   }}
                                 />
                               </div>
                               <span className="run-tl-stat">
-                                {currentNodeData.tasks.filter(t => t.done).length}/{currentNodeData.tasks.length} 완료
+                                {currentNodeData.tasks.filter(t2 => t2.done).length}/{currentNodeData.tasks.length} {t('completed')}
                               </span>
                             </div>
                             <div className="run-tl-tasks">
@@ -235,22 +234,21 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
                           </>
                         ) : (
                           <div className="output-placeholder">
-                            <span>작업 목록이 비어 있습니다</span>
+                            <span>{t('taskListEmpty')}</span>
                           </div>
                         )}
                       </div>
                     ) : (
-                      /* AI node tab content */
                       currentNodeData.output ? (
                         <pre className="final-text">{currentNodeData.output}</pre>
                       ) : (
                         <div className="output-placeholder">
-                          <span className="placeholder-running">생성 중...</span>
+                          <span className="placeholder-running">{t('generating')}</span>
                         </div>
                       )
                     )
                   ) : (
-                    <div className="output-placeholder"><span>노드를 선택하세요</span></div>
+                    <div className="output-placeholder"><span>{t('selectNode')}</span></div>
                   )}
                 </div>
               </>
