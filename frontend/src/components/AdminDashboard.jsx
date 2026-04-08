@@ -24,12 +24,23 @@ function MiniChart({ data }) {
       <div className="chart-empty">아직 방문 데이터가 없습니다</div>
     </div>
   )
-  const maxPV = Math.max(...data.map(d => d.page_views), 1)
+
+  // Fill 30 days so chart always has consistent width
+  const today = new Date()
+  const filled = []
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today)
+    d.setDate(d.getDate() - i)
+    const key = d.toISOString().slice(0, 10)
+    const found = data.find(r => r.date === key)
+    filled.push(found || { date: key, visitors: 0, page_views: 0 })
+  }
+  const maxPV = Math.max(...filled.map(d => d.page_views), 1)
 
   return (
     <div className="mini-chart">
       <div className="chart-bars">
-        {data.map((d, i) => (
+        {filled.map((d, i) => (
           <div key={i} className="chart-col" title={`${d.date}: ${d.visitors}명 / ${d.page_views}PV`}>
             <div className="chart-bar-stack">
               <div
