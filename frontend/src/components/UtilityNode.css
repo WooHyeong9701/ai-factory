@@ -64,6 +64,45 @@
 .ut-handle-left  { left:  -7px !important; }
 .ut-handle-right { right: -7px !important; }
 
+.ut-branch-true  { background: #22c55e !important; }
+.ut-branch-false { background: #f43f5e !important; }
+
+/* ── Branch labels ── */
+.ut-branch-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.ut-branch-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #b0b0c0;
+}
+
+.ut-branch-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ut-branch-dot.true  { background: #22c55e; }
+.ut-branch-dot.false { background: #f43f5e; }
+
+.ut-branch-cond {
+  font-size: 10px;
+  color: #666;
+  margin-left: auto;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ── Header ── */
 .ut-header {
   display: flex;

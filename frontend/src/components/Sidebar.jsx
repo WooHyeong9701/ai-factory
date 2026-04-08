@@ -19,6 +19,7 @@ const UTILITY_ITEMS = [
   { labelKey: 'fileSave',      icon: '💾',  nodeType: 'utilityNode',  kind: 'file_save' },
   { labelKey: 'videoCompose',  icon: '🎬',  nodeType: 'utilityNode',  kind: 'video_compose' },
   { labelKey: 'youtubeUpload', icon: '▶',   nodeType: 'utilityNode',  kind: 'youtube_upload' },
+  { labelKey: 'branch',        icon: '⑃',   nodeType: 'utilityNode',  kind: 'branch' },
 ]
 
 function getDefaultConfig(kind) {

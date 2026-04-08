@@ -37,6 +37,7 @@ export default {
   fileSave: 'File Save',
   videoCompose: 'Video Compose',
   youtubeUpload: 'YouTube Upload',
+  branch: 'Branch',
 
   runTitle: 'Run Workflow',
   inputPlaceholder: 'Initial input (topic, prompt, etc.)',

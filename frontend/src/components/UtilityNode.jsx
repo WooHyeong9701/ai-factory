@@ -71,6 +71,17 @@ export const UTILITY_KINDS = {
       { key: 'category',          label: '카테고리 ID',   type: 'text',   default: '22', placeholder: '22 = 블로그' },
     ],
   },
+  branch: {
+    label: '분기 처리',
+    badge: 'IF',
+    icon: '⑃',
+    accent: '#38bdf8',
+    desc: '조건에 따라 흐름 분기',
+    configFields: [
+      { key: 'condition_type', label: '조건 유형', type: 'select', options: ['포함', '미포함', '길이 이상', '길이 이하', '정규식', '항상 참'], default: '포함' },
+      { key: 'condition_value', label: '조건 값', type: 'text', placeholder: '키워드, 숫자, 정규식 등' },
+    ],
+  },
 }
 
 // Preview fields shown on the node card
@@ -90,8 +101,15 @@ function UtilityNode({ data, selected }) {
       className={`utility-node ${selected ? 'selected' : ''} ut-status-${status}`}
       style={{ '--ut-accent': kd.accent }}
     >
-      <Handle type="target" position={Position.Left}  className="ut-handle ut-handle-left" />
-      <Handle type="source" position={Position.Right} className="ut-handle ut-handle-right" />
+      <Handle type="target" position={Position.Left} className="ut-handle ut-handle-left" />
+      {kind === 'branch' ? (
+        <>
+          <Handle type="source" position={Position.Right} id="true" className="ut-handle ut-handle-right ut-branch-true" style={{ top: '35%' }} />
+          <Handle type="source" position={Position.Right} id="false" className="ut-handle ut-handle-right ut-branch-false" style={{ top: '65%' }} />
+        </>
+      ) : (
+        <Handle type="source" position={Position.Right} className="ut-handle ut-handle-right" />
+      )}
 
       <div className="ut-inner">
         <div className="ut-glow" />
@@ -108,17 +126,33 @@ function UtilityNode({ data, selected }) {
 
         <div className="ut-body">
           <p className="ut-desc">{kd.desc}</p>
-          {previewPairs.length > 0 && (
-            <div className="ut-config-preview">
-              {previewPairs.map(({ key, val }) => (
-                <div key={key} className="ut-cfg-row">
-                  <span className="ut-cfg-icon">›</span>
-                  <span className="ut-cfg-val">
-                    {String(val).length > 24 ? '…' + String(val).slice(-22) : String(val)}
-                  </span>
-                </div>
-              ))}
+          {kind === 'branch' ? (
+            <div className="ut-branch-labels">
+              <div className="ut-branch-row true">
+                <span className="ut-branch-dot true" />
+                <span>참 (True)</span>
+                {config.condition_type && (
+                  <span className="ut-branch-cond">{config.condition_type}: {config.condition_value || '…'}</span>
+                )}
+              </div>
+              <div className="ut-branch-row false">
+                <span className="ut-branch-dot false" />
+                <span>거짓 (False)</span>
+              </div>
             </div>
+          ) : (
+            previewPairs.length > 0 && (
+              <div className="ut-config-preview">
+                {previewPairs.map(({ key, val }) => (
+                  <div key={key} className="ut-cfg-row">
+                    <span className="ut-cfg-icon">›</span>
+                    <span className="ut-cfg-val">
+                      {String(val).length > 24 ? '…' + String(val).slice(-22) : String(val)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )
           )}
         </div>
 
