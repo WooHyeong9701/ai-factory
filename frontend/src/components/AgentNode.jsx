@@ -31,25 +31,11 @@ function AgentNode({ data, selected }) {
         </div>
 
         <div className="node-body">
-          <p className="node-role">
-            {role ? (role.length > 80 ? role.slice(0, 80) + '…' : role) : '역할 미설정'}
-          </p>
           <div className="node-model">
             <span className="model-icon">◈</span>
             <span className="model-name">{model || '모델 없음'}</span>
           </div>
         </div>
-
-        {(status === 'running' || status === 'done' || status === 'error') && output && (
-          <div className="node-output">
-            <div className="node-output-label">
-              {status === 'running' ? '생성 중...' : status === 'error' ? '오류' : '출력'}
-            </div>
-            <p className="node-output-text">
-              {output.length > 120 ? output.slice(0, 120) + '…' : output}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   )
