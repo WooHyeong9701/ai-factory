@@ -34,6 +34,7 @@ import OllamaSetup from './components/OllamaSetup'
 import WorkflowManager from './components/WorkflowManager'
 import SaveDialog from './components/SaveDialog'
 import { saveWorkflow, getWorkflow, isConfigured } from './workflowApi'
+import { useI18n, LANGUAGES } from './i18n/index'
 
 const nodeTypes = { agentNode: AgentNode, taskListNode: TaskListNode, utilityNode: UtilityNode }
 const edgeTypes = { customEdge: CustomEdge }
@@ -96,6 +97,7 @@ export default function App() {
   const { screenToFlowPosition } = useReactFlow()
   const { isSignedIn, getToken } = useAuth()
   const { user } = useUser()
+  const { t, lang, switchLang } = useI18n()
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
   const [selectedNodeId, setSelectedNodeId] = useState(null)
@@ -540,7 +542,7 @@ export default function App() {
             <span className="logo-text">AI Factory</span>
           </div>
           <div className="header-divider" />
-          <span className="header-tagline">노드 기반 AI 워크플로우</span>
+          <span className="header-tagline">{t('tagline')}</span>
         </div>
 
         <div className="header-center">
@@ -550,47 +552,56 @@ export default function App() {
         <div className="header-workflow">
           <span className="workflow-name">{currentWorkflowName}</span>
           <div className="workflow-actions">
-            <button className="wf-btn" onClick={handleNewWorkflow} title="새 워크플로우">
-              ＋ 새로만들기
+            <button className="wf-btn" onClick={handleNewWorkflow} title={t('newWorkflow')}>
+              {t('create')}
             </button>
             <button
               className="wf-btn"
               onClick={() => setShowWorkflowManager(true)}
-              title="저장된 워크플로우 불러오기"
+              title={t('savedWorkflows')}
             >
-              📂 불러오기
+              {t('load')}
             </button>
             <button
               className={`wf-btn wf-btn-save ${saveStatus === 'saved' ? 'saved' : saveStatus === 'error' ? 'error' : ''}`}
               onClick={() => {
-                if (!isSignedIn) return alert('워크플로우를 저장하려면 로그인이 필요합니다.')
-                if (!isConfigured()) return alert('Cloudflare Worker URL이 설정되지 않았습니다.')
+                if (!isSignedIn) return alert(t('saveRequiresLogin'))
+                if (!isConfigured()) return alert(t('workerNotConfigured'))
                 setShowSaveDialog(true)
               }}
               disabled={saveStatus === 'saving'}
-              title="워크플로우 저장"
+              title={t('save')}
             >
-              {saveStatus === 'saving' ? '저장 중...' : saveStatus === 'saved' ? '✓ 저장됨' : saveStatus === 'error' ? '✕ 실패' : '💾 저장'}
+              {saveStatus === 'saving' ? t('saving') : saveStatus === 'saved' ? t('saved') : saveStatus === 'error' ? t('saveFailed') : t('save')}
             </button>
           </div>
         </div>
 
         <div className="header-right">
           <div className="node-count-badge">
-            {nodes.length} 노드 · {edges.length} 연결
+            {nodes.length} {t('nodes')} · {edges.length} {t('connections')}
           </div>
           <button
             className={`ollama-status ${ollamaOk === true ? 'ok' : ollamaOk === false ? 'err' : 'pending'}`}
             onClick={() => setShowSetup(true)}
-            title="Ollama 연결 설정"
+            title={t('setupTitle')}
             style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
           >
             <span className="ollama-dot" />
             <span className="ollama-label">
-              {ollamaOk === true ? 'Ollama 연결됨' : ollamaOk === false ? 'Ollama 오프라인' : '...'}
+              {ollamaOk === true ? t('ollamaConnected') : ollamaOk === false ? t('ollamaOffline') : '...'}
             </span>
             <span style={{ fontSize: 10, marginLeft: 4, opacity: 0.6 }}>⚙</span>
           </button>
+          <select
+            className="lang-switcher"
+            value={lang}
+            onChange={(e) => switchLang(e.target.value)}
+          >
+            {LANGUAGES.map((l) => (
+              <option key={l.code} value={l.code}>{l.flag} {l.label}</option>
+            ))}
+          </select>
           <div className="auth-area">
             {isSignedIn ? (
               <UserButton
@@ -601,7 +612,7 @@ export default function App() {
               />
             ) : (
               <SignInButton mode="modal">
-                <button className="sign-in-btn">로그인</button>
+                <button className="sign-in-btn">{t('signIn')}</button>
               </SignInButton>
             )}
           </div>
@@ -672,8 +683,8 @@ export default function App() {
             {nodes.length === 0 && (
               <div className="canvas-empty">
                 <div className="empty-icon">⬡</div>
-                <p className="empty-title">왼쪽 팔레트에서 노드를 드래그하세요</p>
-                <p className="empty-sub">노드를 캔버스에 끌어다 놓고 연결하여 워크플로우를 구성합니다</p>
+                <p className="empty-title">{t('emptyTitle')}</p>
+                <p className="empty-sub">{t('emptySub')}</p>
               </div>
             )}
           </ReactFlow>
