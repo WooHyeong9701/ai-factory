@@ -147,12 +147,6 @@ export default function AdminDashboard({ onClose }) {
                 <StatCard label="총 워크플로우" value={stats.total_workflows} accent="#10b981" />
               </div>
 
-              {/* 30-day chart */}
-              <div className="admin-section">
-                <h3 className="admin-section-title">최근 30일 방문 추이</h3>
-                <MiniChart data={stats.daily_chart || []} />
-              </div>
-
               {/* Recent visits */}
               <div className="admin-section">
                 <h3 className="admin-section-title">최근 방문 기록</h3>
