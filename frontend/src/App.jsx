@@ -24,6 +24,9 @@ import RunPanel from './components/RunPanel'
 import SystemMonitor from './components/SystemMonitor'
 import ModelManager from './components/ModelManager'
 import OllamaSetup from './components/OllamaSetup'
+import WorkflowManager from './components/WorkflowManager'
+import SaveDialog from './components/SaveDialog'
+import { saveWorkflow, getWorkflow, isConfigured } from './workflowApi'
 
 const nodeTypes = { agentNode: AgentNode, taskListNode: TaskListNode, utilityNode: UtilityNode }
 const edgeTypes = { customEdge: CustomEdge }
@@ -98,6 +101,11 @@ export default function App() {
   const [showModelManager, setShowModelManager] = useState(false)
   const [showSetup, setShowSetup] = useState(false)
   const [ollamaUrl, setOllamaUrl] = useState(() => localStorage.getItem('ollama_url') || 'http://localhost:11434')
+  const [showWorkflowManager, setShowWorkflowManager] = useState(false)
+  const [showSaveDialog, setShowSaveDialog] = useState(false)
+  const [currentWorkflowId, setCurrentWorkflowId] = useState(null)
+  const [currentWorkflowName, setCurrentWorkflowName] = useState('새 워크플로우')
+  const [saveStatus, setSaveStatus] = useState(null) // null | 'saving' | 'saved' | 'error'
   const wsRef = useRef(null)
   const pollRef = useRef(null)
 
@@ -447,6 +455,51 @@ export default function App() {
 
   const closeModelManager = useCallback(() => setShowModelManager(false), [])
 
+  // ── Workflow save / load ──────────────────────────────────────────────────
+  const handleSave = useCallback(async (name) => {
+    setSaveStatus('saving')
+    try {
+      const result = await saveWorkflow({
+        id:    currentWorkflowId,
+        name,
+        nodes: nodes.map((n) => ({ ...n })),
+        edges: edges.map((e) => ({ ...e })),
+      })
+      setCurrentWorkflowId(result.id)
+      setCurrentWorkflowName(name)
+      setSaveStatus('saved')
+      setShowSaveDialog(false)
+      setTimeout(() => setSaveStatus(null), 2000)
+    } catch {
+      setSaveStatus('error')
+      setTimeout(() => setSaveStatus(null), 3000)
+    }
+  }, [currentWorkflowId, nodes, edges])
+
+  const handleLoad = useCallback(async (id) => {
+    try {
+      const wf = await getWorkflow(id)
+      setNodes(wf.nodes || [])
+      setEdges(wf.edges || [])
+      setCurrentWorkflowId(wf.id)
+      setCurrentWorkflowName(wf.name)
+      setSelectedNodeId(null)
+      setFinalOutput('')
+      setShowWorkflowManager(false)
+    } catch {
+      alert('워크플로우를 불러오지 못했습니다')
+    }
+  }, [setNodes, setEdges])
+
+  const handleNewWorkflow = useCallback(() => {
+    setNodes([])
+    setEdges([])
+    setCurrentWorkflowId(null)
+    setCurrentWorkflowName('새 워크플로우')
+    setSelectedNodeId(null)
+    setFinalOutput('')
+  }, [setNodes, setEdges])
+
   const handleSetupComplete = useCallback((url, newModels) => {
     setOllamaUrl(url)
     setModels(newModels)
@@ -481,6 +534,30 @@ export default function App() {
 
         <div className="header-center">
           <SystemMonitor stats={systemStats} compact />
+        </div>
+
+        <div className="header-workflow">
+          <span className="workflow-name">{currentWorkflowName}</span>
+          <div className="workflow-actions">
+            <button className="wf-btn" onClick={handleNewWorkflow} title="새 워크플로우">
+              ＋ 새로만들기
+            </button>
+            <button
+              className="wf-btn"
+              onClick={() => setShowWorkflowManager(true)}
+              title="저장된 워크플로우 불러오기"
+            >
+              📂 불러오기
+            </button>
+            <button
+              className={`wf-btn wf-btn-save ${saveStatus === 'saved' ? 'saved' : saveStatus === 'error' ? 'error' : ''}`}
+              onClick={() => isConfigured() ? setShowSaveDialog(true) : alert('Cloudflare Worker URL이 설정되지 않았습니다.\nVITE_CF_WORKER_URL 환경변수를 확인하세요.')}
+              disabled={saveStatus === 'saving'}
+              title="워크플로우 저장"
+            >
+              {saveStatus === 'saving' ? '저장 중...' : saveStatus === 'saved' ? '✓ 저장됨' : saveStatus === 'error' ? '✕ 실패' : '💾 저장'}
+            </button>
+          </div>
         </div>
 
         <div className="header-right">
@@ -596,6 +673,21 @@ export default function App() {
 
       {showSetup && (
         <OllamaSetup onComplete={handleSetupComplete} />
+      )}
+
+      {showWorkflowManager && (
+        <WorkflowManager
+          onLoad={handleLoad}
+          onClose={() => setShowWorkflowManager(false)}
+        />
+      )}
+
+      {showSaveDialog && (
+        <SaveDialog
+          currentName={currentWorkflowName}
+          onSave={handleSave}
+          onClose={() => setShowSaveDialog(false)}
+        />
       )}
 
       <RunPanel
