@@ -1,5 +1,11 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { useAuth, useUser, SignInButton, UserButton } from '@clerk/clerk-react'
+import { useAuth as _useAuth, useUser as _useUser, SignInButton, UserButton } from '@clerk/clerk-react'
+
+const HAS_CLERK = !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+const noopAuth = { isSignedIn: false, getToken: async () => null }
+const noopUser = { user: null }
+function useAuth() { return HAS_CLERK ? _useAuth() : noopAuth }
+function useUser() { return HAS_CLERK ? _useUser() : noopUser }
 import { API_BASE, WS_BASE } from './config'
 import {
   ReactFlow,
