@@ -15,6 +15,9 @@ dist/
 # Frontend env (has secrets / local paths)
 frontend/.env
 
+# Wrangler cache
+cf-worker/.wrangler/
+
 # Large local tools (have their own git repos)
 backend/ComfyUI/
 backend/stable-diffusion-webui/
