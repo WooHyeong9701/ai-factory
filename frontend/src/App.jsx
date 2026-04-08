@@ -625,7 +625,7 @@ export default function App() {
               <option key={l.code} value={l.code}>{l.flag} {l.label}</option>
             ))}
           </select>
-          {isSignedIn && (
+          {isSignedIn && user?.id === import.meta.env.VITE_ADMIN_USER_ID && (
             <button
               className="admin-btn"
               onClick={() => setShowAdmin(true)}
