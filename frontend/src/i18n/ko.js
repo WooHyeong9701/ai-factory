@@ -168,6 +168,20 @@ export default {
   viewLarger: '크게 보기',
   error: '오류',
 
+  // OutputViewer
+  ovCopy: '⎘ 복사',
+  ovEscClose: 'Esc 닫기',
+  ovGenerating: '생성 중입니다...',
+  ovNoOutput: '출력이 없습니다.',
+
+  // TaskListViewer
+  tlvDefaultName: '작업 목록',
+  tlvDoneCount: '{done}/{total} 완료',
+  tlvCloseTitle: '닫기 (Esc)',
+  tlvEmpty: '아직 작업 항목이 없습니다.',
+  tlvFooterHint: '항목 클릭으로 완료 토글 · Esc로 닫기',
+  tlvItemCount: '{n}개 항목',
+
   // Common
   justNow: '방금 전',
   minutesAgo: '{n}분 전',

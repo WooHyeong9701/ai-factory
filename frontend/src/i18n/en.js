@@ -155,6 +155,20 @@ Sort by priority and specify dependencies for each task.`,
   viewLarger: 'Expand',
   error: 'Error',
 
+  // OutputViewer
+  ovCopy: '⎘ Copy',
+  ovEscClose: 'Esc close',
+  ovGenerating: 'Generating...',
+  ovNoOutput: 'No output yet.',
+
+  // TaskListViewer
+  tlvDefaultName: 'Task List',
+  tlvDoneCount: '{done}/{total} done',
+  tlvCloseTitle: 'Close (Esc)',
+  tlvEmpty: 'No tasks yet.',
+  tlvFooterHint: 'Click to toggle · Esc to close',
+  tlvItemCount: '{n} items',
+
   justNow: 'just now',
   minutesAgo: '{n}m ago',
   hoursAgo: '{n}h ago',

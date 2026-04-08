@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
+import { useI18n } from '../i18n/index'
 import './OutputViewer.css'
 
 export default function OutputViewer({ nodeName, status, output, onClose }) {
+  const { t } = useI18n()
   const textareaRef = useRef(null)
 
   useEffect(() => {
@@ -14,7 +16,7 @@ export default function OutputViewer({ nodeName, status, output, onClose }) {
     navigator.clipboard.writeText(output).catch(() => {})
   }
 
-  const statusLabel = status === 'running' ? '생성 중...' : status === 'done' ? '완료' : status === 'error' ? '오류' : ''
+  const statusLabel = status === 'running' ? t('generating') : status === 'done' ? t('completed') : status === 'error' ? t('error') : ''
 
   return (
     <div className="ov-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -26,8 +28,8 @@ export default function OutputViewer({ nodeName, status, output, onClose }) {
             {statusLabel && <span className={`ov-status-label status-${status}`}>{statusLabel}</span>}
           </div>
           <div className="ov-header-right">
-            <button className="ov-btn-copy" onClick={handleCopy}>⎘ 복사</button>
-            <span className="ov-shortcut">Esc 닫기</span>
+            <button className="ov-btn-copy" onClick={handleCopy}>{t('ovCopy')}</button>
+            <span className="ov-shortcut">{t('ovEscClose')}</span>
             <button className="ov-close" onClick={onClose}>✕</button>
           </div>
         </div>
@@ -37,13 +39,13 @@ export default function OutputViewer({ nodeName, status, output, onClose }) {
             <pre className="ov-text">{output}</pre>
           ) : (
             <div className="ov-empty">
-              {status === 'running' ? '생성 중입니다...' : '출력이 없습니다.'}
+              {status === 'running' ? t('ovGenerating') : t('ovNoOutput')}
             </div>
           )}
         </div>
 
         <div className="ov-footer">
-          <span className="ov-char-count">{output ? `${output.length.toLocaleString()}자` : ''}</span>
+          <span className="ov-char-count">{output ? t('charCount', { n: output.length.toLocaleString() }) : ''}</span>
         </div>
       </div>
     </div>

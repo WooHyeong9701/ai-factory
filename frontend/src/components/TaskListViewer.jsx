@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
+import { useI18n } from '../i18n/index'
 import './TaskListViewer.css'
 
 export default function TaskListViewer({ name, tasks, onToggle, onClose }) {
+  const { t } = useI18n()
   const onCloseRef = useRef(onClose)
   useEffect(() => { onCloseRef.current = onClose }, [onClose])
 
@@ -22,17 +24,15 @@ export default function TaskListViewer({ name, tasks, onToggle, onClose }) {
   return (
     <div className="tlv-backdrop" onClick={handleBackdrop}>
       <div className="tlv-panel">
-        {/* Header */}
         <div className="tlv-header">
           <div className="tlv-title-row">
             <span className="tlv-title-icon">☑</span>
-            <h2 className="tlv-title">{name || '작업 목록'}</h2>
-            <span className="tlv-count-badge">{doneCount}/{totalCount} 완료</span>
+            <h2 className="tlv-title">{name || t('tlvDefaultName')}</h2>
+            <span className="tlv-count-badge">{t('tlvDoneCount', { done: doneCount, total: totalCount })}</span>
           </div>
-          <button className="tlv-close-btn" onClick={onClose} title="닫기 (Esc)">✕</button>
+          <button className="tlv-close-btn" onClick={onClose} title={t('tlvCloseTitle')}>✕</button>
         </div>
 
-        {/* Progress bar */}
         <div className="tlv-progress-area">
           <div className="tlv-progress-track">
             <div className="tlv-progress-fill" style={{ width: `${progress}%` }} />
@@ -40,10 +40,9 @@ export default function TaskListViewer({ name, tasks, onToggle, onClose }) {
           <span className="tlv-progress-pct">{progress}%</span>
         </div>
 
-        {/* Task list body */}
         <div className="tlv-body">
           {tasks.length === 0 ? (
-            <div className="tlv-empty">아직 작업 항목이 없습니다.</div>
+            <div className="tlv-empty">{t('tlvEmpty')}</div>
           ) : (
             <div className="tlv-tasks">
               {tasks.map((task, idx) => (
@@ -66,10 +65,9 @@ export default function TaskListViewer({ name, tasks, onToggle, onClose }) {
           )}
         </div>
 
-        {/* Footer */}
         <div className="tlv-footer">
-          <span className="tlv-footer-hint">항목 클릭으로 완료 토글 · Esc로 닫기</span>
-          <span className="tlv-footer-count">{totalCount}개 항목</span>
+          <span className="tlv-footer-hint">{t('tlvFooterHint')}</span>
+          <span className="tlv-footer-count">{t('tlvItemCount', { n: totalCount })}</span>
         </div>
       </div>
     </div>

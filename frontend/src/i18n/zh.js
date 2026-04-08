@@ -155,6 +155,20 @@ export default {
   viewLarger: '放大查看',
   error: '错误',
 
+  // OutputViewer
+  ovCopy: '⎘ 复制',
+  ovEscClose: 'Esc 关闭',
+  ovGenerating: '生成中...',
+  ovNoOutput: '暂无输出。',
+
+  // TaskListViewer
+  tlvDefaultName: '任务列表',
+  tlvDoneCount: '{done}/{total} 完成',
+  tlvCloseTitle: '关闭 (Esc)',
+  tlvEmpty: '暂无任务。',
+  tlvFooterHint: '点击切换完成状态 · Esc 关闭',
+  tlvItemCount: '{n} 个项目',
+
   justNow: '刚刚',
   minutesAgo: '{n}分钟前',
   hoursAgo: '{n}小时前',

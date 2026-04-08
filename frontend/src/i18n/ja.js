@@ -155,6 +155,20 @@ export default {
   viewLarger: '拡大表示',
   error: 'エラー',
 
+  // OutputViewer
+  ovCopy: '⎘ コピー',
+  ovEscClose: 'Esc 閉じる',
+  ovGenerating: '生成中...',
+  ovNoOutput: '出力がありません。',
+
+  // TaskListViewer
+  tlvDefaultName: 'タスクリスト',
+  tlvDoneCount: '{done}/{total} 完了',
+  tlvCloseTitle: '閉じる (Esc)',
+  tlvEmpty: 'まだタスクがありません。',
+  tlvFooterHint: 'クリックで完了切替 · Escで閉じる',
+  tlvItemCount: '{n}件',
+
   justNow: 'たった今',
   minutesAgo: '{n}分前',
   hoursAgo: '{n}時間前',
