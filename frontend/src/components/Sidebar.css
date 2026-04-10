@@ -45,7 +45,7 @@
 
 /* ── Panel wrapper — 4 equal panels ── */
 .sidebar-panel {
-  flex: 1;
+  flex: 3;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -53,6 +53,7 @@
   overflow: hidden;
 }
 .sidebar-panel:first-of-type {
+  flex: 1;
   border-top: none;
 }
 
