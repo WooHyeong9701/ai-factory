@@ -499,7 +499,7 @@ export default function App() {
           </button>
 
           <div className="header-workflow">
-            <span className="workflow-name">{currentWorkflowName}</span>
+            <span className="workflow-name">{currentWorkflowName === '새 워크플로우' ? t('newWorkflow') : currentWorkflowName}</span>
             <div className="workflow-actions">
               <button className="wf-btn" onClick={handleNewWorkflow} title={t('newWorkflow')}>
                 {t('create')}
