@@ -531,3 +531,15 @@
   color: var(--text3);
   opacity: 0.4;
 }
+
+/* ── Q-key selection mode cursor ── */
+.canvas-wrap.select-mode .react-flow__pane {
+  cursor: crosshair !important;
+}
+
+/* Selection box styling */
+.react-flow__selection {
+  background: rgba(91, 141, 248, 0.08) !important;
+  border: 1px solid rgba(91, 141, 248, 0.4) !important;
+  border-radius: 4px;
+}

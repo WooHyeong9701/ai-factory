@@ -20,6 +20,7 @@ import {
   Background,
   BackgroundVariant,
   MarkerType,
+  SelectionMode,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import './App.css'
@@ -130,8 +131,10 @@ export default function App() {
     const stored = localStorage.getItem('show_minimap')
     return stored === null ? true : stored === 'true'
   })
+  const [qKeyHeld, setQKeyHeld] = useState(false)
   const abortRef = useRef(null)
   const searchInputRef = useRef(null)
+  const clipboardRef = useRef({ nodes: [], edges: [] })
 
   // ── Node search ─────────────────────────────────────────────────────────────
   const searchMatches = nodeSearch.trim()
@@ -184,6 +187,99 @@ export default function App() {
   useEffect(() => {
     if (searchMatches.length > 0) focusNode(searchMatches[0])
   }, [nodeSearch]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Q key tracking for drag-select mode ─────────────────────────────────────
+  useEffect(() => {
+    const down = (e) => {
+      if (e.key === 'q' || e.key === 'Q') {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return
+        setQKeyHeld(true)
+      }
+    }
+    const up = (e) => {
+      if (e.key === 'q' || e.key === 'Q') setQKeyHeld(false)
+    }
+    const blur = () => setQKeyHeld(false)
+    window.addEventListener('keydown', down)
+    window.addEventListener('keyup', up)
+    window.addEventListener('blur', blur)
+    return () => {
+      window.removeEventListener('keydown', down)
+      window.removeEventListener('keyup', up)
+      window.removeEventListener('blur', blur)
+    }
+  }, [])
+
+  // ── Copy / Paste nodes ──────────────────────────────────────────────────────
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return
+
+      // Cmd/Ctrl + C — copy selected nodes
+      if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
+        const selectedNodes = nodes.filter((n) => n.selected)
+        if (selectedNodes.length === 0) return
+        const selectedIds = new Set(selectedNodes.map((n) => n.id))
+        const selectedEdges = edges.filter(
+          (ed) => selectedIds.has(ed.source) && selectedIds.has(ed.target)
+        )
+        clipboardRef.current = {
+          nodes: selectedNodes.map((n) => ({ ...n, data: { ...n.data } })),
+          edges: selectedEdges.map((ed) => ({ ...ed })),
+        }
+      }
+
+      // Cmd/Ctrl + V — paste
+      if ((e.metaKey || e.ctrlKey) && e.key === 'v') {
+        const { nodes: copiedNodes, edges: copiedEdges } = clipboardRef.current
+        if (copiedNodes.length === 0) return
+        e.preventDefault()
+
+        const idMap = {}
+        const newNodes = copiedNodes.map((n) => {
+          const newId = genId()
+          idMap[n.id] = newId
+          return {
+            ...n,
+            id: newId,
+            selected: true,
+            position: {
+              x: n.position.x + 50,
+              y: n.position.y + 50,
+            },
+            data: { ...n.data, status: 'idle', output: '' },
+          }
+        })
+
+        const newEdges = copiedEdges.map((ed) => ({
+          ...ed,
+          id: `e-${idMap[ed.source]}-${idMap[ed.target]}`,
+          source: idMap[ed.source],
+          target: idMap[ed.target],
+        }))
+
+        // Deselect old nodes, add new selected ones
+        setNodes((nds) => [
+          ...nds.map((n) => (n.selected ? { ...n, selected: false } : n)),
+          ...newNodes,
+        ])
+        setEdges((eds) => [...eds, ...newEdges])
+
+        // Update clipboard positions for subsequent pastes
+        clipboardRef.current = {
+          nodes: copiedNodes.map((n) => ({
+            ...n,
+            position: { x: n.position.x + 50, y: n.position.y + 50 },
+          })),
+          edges: copiedEdges,
+        }
+
+        if (newNodes.length === 1) setSelectedNodeId(newNodes[0].id)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [nodes, edges, setNodes, setEdges])
 
   // ── Visit tracking (anonymous) ──────────────────────────────────────────────
   useEffect(() => {
@@ -354,8 +450,13 @@ export default function App() {
     [setNodes, setEdges]
   )
 
-  const onNodeClick = useCallback((_, node) => setSelectedNodeId(node.id), [])
-  const onPaneClick = useCallback(() => setSelectedNodeId(null), [])
+  const onNodeClick = useCallback((event, node) => {
+    setSelectedNodeId(node.id)
+  }, [])
+
+  const onPaneClick = useCallback(() => {
+    setSelectedNodeId(null)
+  }, [])
 
   const selectedNode = nodes.find((n) => n.id === selectedNodeId) || null
 
@@ -671,7 +772,7 @@ export default function App() {
       <div className="workspace">
         <Sidebar onOpenModelManager={() => setShowModelManager(true)} />
 
-        <div className="canvas-wrap">
+        <div className={`canvas-wrap${qKeyHeld ? ' select-mode' : ''}`}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -690,6 +791,10 @@ export default function App() {
             snapGrid={[24, 24]}
             proOptions={{ hideAttribution: true }}
             defaultEdgeOptions={EDGE_DEFAULTS}
+            multiSelectionKeyCode="Shift"
+            selectionOnDrag={qKeyHeld}
+            panOnDrag={!qKeyHeld}
+            selectionMode={SelectionMode.Partial}
           >
             <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="#1e1e30" />
             <Controls className="rf-controls" />
