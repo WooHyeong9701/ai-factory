@@ -237,6 +237,10 @@ export default {
   tlvFooterHint: '항목 클릭으로 완료 토글 · Esc로 닫기',
   tlvItemCount: '{n}개 항목',
 
+  // Timing
+  totalElapsed: '총 실행시간',
+  nodeElapsed: '실행시간',
+
   // Node search
   nodeSearchPlaceholder: '노드 검색...',
 

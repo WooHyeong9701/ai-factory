@@ -224,6 +224,10 @@ Sort by priority and specify dependencies for each task.`,
   tlvFooterHint: 'Click to toggle · Esc to close',
   tlvItemCount: '{n} items',
 
+  // Timing
+  totalElapsed: 'Total time',
+  nodeElapsed: 'Elapsed',
+
   // Node search
   nodeSearchPlaceholder: 'Search nodes...',
 

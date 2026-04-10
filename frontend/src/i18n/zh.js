@@ -224,6 +224,10 @@ export default {
   tlvFooterHint: '点击切换完成状态 · Esc 关闭',
   tlvItemCount: '{n} 个项目',
 
+  // Timing
+  totalElapsed: '总耗时',
+  nodeElapsed: '耗时',
+
   // Node search
   nodeSearchPlaceholder: '搜索节点...',
 

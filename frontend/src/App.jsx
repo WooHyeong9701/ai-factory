@@ -110,6 +110,10 @@ export default function App() {
   const [ollamaOk, setOllamaOk] = useState(null)
   const [isRunning, setIsRunning] = useState(false)
   const [finalOutput, setFinalOutput] = useState('')
+  const [nodeTimes, setNodeTimes] = useState({})    // nodeId → { start, elapsed }
+  const [totalTime, setTotalTime] = useState(null)   // ms
+  const workflowStartRef = useRef(null)
+  const nodeStartRef = useRef({})
   const [showModelManager, setShowModelManager] = useState(false)
   const [showSetup, setShowSetup] = useState(false)
   const [ollamaUrl, setOllamaUrl] = useState(() => localStorage.getItem('ollama_url') || 'http://localhost:11434')
@@ -369,12 +373,17 @@ export default function App() {
       )
       setFinalOutput('')
       setIsRunning(true)
+      setNodeTimes({})
+      setTotalTime(null)
+      workflowStartRef.current = performance.now()
+      nodeStartRef.current = {}
 
       const url = localStorage.getItem('ollama_url') || ollamaUrl
       abortRef.current = new AbortController()
 
       const onEvent = (msg) => {
         if (msg.type === 'node_start') {
+          nodeStartRef.current[msg.node_id] = performance.now()
           setNodes((nds) =>
             nds.map((n) =>
               n.id === msg.node_id
@@ -391,6 +400,11 @@ export default function App() {
             )
           )
         } else if (msg.type === 'node_done') {
+          const startT = nodeStartRef.current[msg.node_id]
+          if (startT) {
+            const elapsed = performance.now() - startT
+            setNodeTimes((prev) => ({ ...prev, [msg.node_id]: elapsed }))
+          }
           setNodes((nds) =>
             nds.map((n) =>
               n.id === msg.node_id ? { ...n, data: { ...n.data, status: 'done' } } : n
@@ -417,6 +431,9 @@ export default function App() {
           )
           setIsRunning(false)
         } else if (msg.type === 'done') {
+          if (workflowStartRef.current) {
+            setTotalTime(performance.now() - workflowStartRef.current)
+          }
           setFinalOutput(msg.final)
           setIsRunning(false)
         } else if (msg.type === 'error') {
@@ -760,6 +777,8 @@ export default function App() {
         onStop={stopWorkflow}
         nodes={nodes}
         onTaskToggle={toggleNodeTask}
+        nodeTimes={nodeTimes}
+        totalTime={totalTime}
       />
     </div>
   )

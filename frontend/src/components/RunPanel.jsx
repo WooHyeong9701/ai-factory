@@ -4,7 +4,16 @@ import './RunPanel.css'
 import OutputViewer from './OutputViewer'
 import TaskListViewer from './TaskListViewer'
 
-export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onStop, nodes, onTaskToggle }) {
+function fmtTime(ms) {
+  if (ms == null) return ''
+  if (ms < 1000) return `${Math.round(ms)}ms`
+  if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`
+  const m = Math.floor(ms / 60000)
+  const s = ((ms % 60000) / 1000).toFixed(0)
+  return `${m}m ${s}s`
+}
+
+export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onStop, nodes, onTaskToggle, nodeTimes, totalTime }) {
   const { t } = useI18n()
   const [input, setInput] = useState('')
   const [activeTab, setActiveTab] = useState('output')
@@ -141,6 +150,11 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
         {activeTab === 'output' && (
           <div className="output-content" ref={outputRef}>
             <div className="final-output">
+              {totalTime != null && (
+                <div className="run-total-time">
+                  {t('totalElapsed')}: {fmtTime(totalTime)}
+                </div>
+              )}
               {finalOutput ? (
                 <pre className="final-text">{finalOutput}</pre>
               ) : (
@@ -178,12 +192,18 @@ export default function RunPanel({ isRunning, finalOutput, nodeCount, onRun, onS
                         <span className={`node-tab-dot status-${n.data.status}`} />
                       )}
                       {n.data.name}
+                      {nodeTimes?.[n.id] != null && (
+                        <span className="node-tab-time">{fmtTime(nodeTimes[n.id])}</span>
+                      )}
                       {n.data.status === 'running' && <span className="node-tab-spin" />}
                     </button>
                   ))}
                 </div>
 
                 <div className="node-output-toolbar">
+                  {activeNodeTab && nodeTimes?.[activeNodeTab] != null && (
+                    <span className="node-elapsed">{t('nodeElapsed')}: {fmtTime(nodeTimes[activeNodeTab])}</span>
+                  )}
                   {isTaskListTab
                     ? (currentNodeData?.tasks?.length > 0) && (
                         <button className="btn-expand-output btn-expand-tasklist" onClick={() => setViewerNodeId(activeNodeTab)}>

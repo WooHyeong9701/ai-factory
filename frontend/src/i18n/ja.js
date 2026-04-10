@@ -224,6 +224,10 @@ export default {
   tlvFooterHint: 'クリックで完了切替 · Escで閉じる',
   tlvItemCount: '{n}件',
 
+  // Timing
+  totalElapsed: '合計時間',
+  nodeElapsed: '実行時間',
+
   // Node search
   nodeSearchPlaceholder: 'ノード検索...',
 
