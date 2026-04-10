@@ -24,7 +24,6 @@ export function deleteCustomTemplate(id) {
   return list
 }
 
-// ── 유틸리티 노드 ─────────────────────────────────────────────────────────────
 const UTILITY_ITEMS = [
   { labelKey: 'taskList',      icon: '☑',   nodeType: 'taskListNode', kind: null },
   { labelKey: 'tts',           icon: '🔊',  nodeType: 'utilityNode',  kind: 'tts' },
@@ -73,23 +72,23 @@ export default function Sidebar({ onOpenModelManager }) {
 
   return (
     <aside className={`sidebar ${expanded ? 'expanded' : ''}`}>
-      <div className="sidebar-header">
-        <span className="sidebar-title">{t('nodePalette')}</span>
-        <button
-          className="sidebar-expand-btn"
-          onClick={() => setExpanded(v => !v)}
-          title={expanded ? 'Collapse' : 'Expand'}
-        >
-          {expanded ? '«' : '»'}
-        </button>
-      </div>
-      <div className="sidebar-hint">{t('dragToCanvas')}</div>
+      {/* ── 상단 고정 ── */}
+      <div className="sb-top">
+        <div className="sb-header">
+          <span className="sb-title">{t('nodePalette')}</span>
+          <button
+            className="sb-expand-btn"
+            onClick={() => setExpanded(v => !v)}
+            title={expanded ? 'Collapse' : 'Expand'}
+          >
+            {expanded ? '«' : '»'}
+          </button>
+        </div>
 
-      {/* ── Panel 1: 노드 ── */}
-      <div className="sidebar-panel">
-        <div className="template-list">
+        {/* 노드 박스 — 항상 상단 고정 */}
+        <div className="sb-node-box">
           <div
-            className="template-item node-item"
+            className="sb-node-item"
             draggable
             onDragStart={(e) => onDragStart(e, {
               nodeType: 'agentNode',
@@ -98,98 +97,95 @@ export default function Sidebar({ onOpenModelManager }) {
               return_type: 'text',
             })}
           >
-            <span className="template-icon">⬡</span>
-            <span className="template-label">{t('nodeLabel')}</span>
+            <span className="sb-node-icon">⬡</span>
+            <span className="sb-node-label">{t('nodeLabel')}</span>
           </div>
         </div>
       </div>
 
-      {/* ── Panel 2: 커스텀 노드 ── */}
-      <div className="sidebar-panel">
-        <div className="sidebar-section-divider">
-          <span>{t('customNodes')}</span>
-        </div>
-        <div className="template-list">
-          {customTemplates.length === 0 && (
-            <div className="custom-empty">{t('noCustomNodes')}</div>
-          )}
-          {customTemplates.map((tpl) => (
-            <div
-              key={tpl.id}
-              className="template-item custom-item"
-              draggable
-              onDragStart={(e) => onDragStart(e, {
-                nodeType: 'agentNode',
-                name: tpl.name,
-                role: tpl.role,
-                return_type: tpl.return_type,
-                model: tpl.model,
-                temperature: tpl.temperature,
-                top_p: tpl.top_p,
-                top_k: tpl.top_k,
-                max_tokens: tpl.max_tokens,
-                repeat_penalty: tpl.repeat_penalty,
-                seed: tpl.seed,
-              })}
-            >
-              <span className="template-icon">⚡</span>
-              <span className="template-label">{tpl.name || 'Custom'}</span>
-              {confirmDeleteId === tpl.id ? (
-                <span className="custom-delete-confirm">
-                  <button className="custom-delete-yes" onClick={(e) => { e.stopPropagation(); handleDelete(tpl.id) }}>✓</button>
-                  <button className="custom-delete-no" onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(null) }}>✕</button>
-                </span>
-              ) : (
-                <button
-                  className="custom-delete-btn"
-                  onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(tpl.id) }}
-                  title={t('delete')}
-                >
-                  ×
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Panel 3: 유틸리티 노드 ── */}
-      <div className="sidebar-panel">
-        <div className="sidebar-section-divider">
-          <span>{t('utilityNodes')}</span>
-        </div>
-        <div className="template-list">
-          {UTILITY_ITEMS.map((item) => {
-            const label = t(item.labelKey)
-            return (
+      {/* ── 스크롤 영역 (커스텀 + 유틸리티) ── */}
+      <div className="sb-scroll">
+        {/* 커스텀 노드 */}
+        <section className="sb-section">
+          <div className="sb-section-header">{t('customNodes')}</div>
+          <div className={`sb-items ${expanded ? 'sb-grid' : ''}`}>
+            {customTemplates.length === 0 ? (
+              <div className="sb-empty">{t('noCustomNodes')}</div>
+            ) : customTemplates.map((tpl) => (
               <div
-                key={item.labelKey}
-                className={`template-item ${item.nodeType === 'taskListNode' ? 'task-list-item' : ''} ${item.nodeType === 'utilityNode' ? 'utility-item' : ''}`}
+                key={tpl.id}
+                className="sb-item sb-item--custom"
                 draggable
-                style={item.kind ? { '--ut-item-accent': UTILITY_KINDS[item.kind]?.accent } : {}}
                 onDragStart={(e) => onDragStart(e, {
-                  nodeType: item.nodeType,
-                  name: label,
-                  kind: item.kind,
-                  defaultConfig: getDefaultConfig(item.kind),
+                  nodeType: 'agentNode',
+                  name: tpl.name,
+                  role: tpl.role,
+                  return_type: tpl.return_type,
+                  model: tpl.model,
+                  temperature: tpl.temperature,
+                  top_p: tpl.top_p,
+                  top_k: tpl.top_k,
+                  max_tokens: tpl.max_tokens,
+                  repeat_penalty: tpl.repeat_penalty,
+                  seed: tpl.seed,
                 })}
               >
-                <span className="template-icon">{item.icon}</span>
-                <span className="template-label">{label}</span>
+                <span className="sb-item-icon">⚡</span>
+                <span className="sb-item-label">{tpl.name || 'Custom'}</span>
+                {confirmDeleteId === tpl.id ? (
+                  <span className="sb-del-confirm">
+                    <button className="sb-del-yes" onClick={(e) => { e.stopPropagation(); handleDelete(tpl.id) }}>✓</button>
+                    <button className="sb-del-no" onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(null) }}>✕</button>
+                  </span>
+                ) : (
+                  <button
+                    className="sb-del-btn"
+                    onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(tpl.id) }}
+                    title={t('delete')}
+                  >×</button>
+                )}
               </div>
-            )
-          })}
-        </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 유틸리티 노드 */}
+        <section className="sb-section">
+          <div className="sb-section-header">{t('utilityNodes')}</div>
+          <div className={`sb-items ${expanded ? 'sb-grid' : ''}`}>
+            {UTILITY_ITEMS.map((item) => {
+              const label = t(item.labelKey)
+              const isTask = item.nodeType === 'taskListNode'
+              const isUtil = item.nodeType === 'utilityNode'
+              return (
+                <div
+                  key={item.labelKey}
+                  className={`sb-item ${isTask ? 'sb-item--task' : ''} ${isUtil ? 'sb-item--util' : ''}`}
+                  draggable
+                  style={item.kind ? { '--ut-accent': UTILITY_KINDS[item.kind]?.accent } : {}}
+                  onDragStart={(e) => onDragStart(e, {
+                    nodeType: item.nodeType,
+                    name: label,
+                    kind: item.kind,
+                    defaultConfig: getDefaultConfig(item.kind),
+                  })}
+                >
+                  <span className="sb-item-icon">{item.icon}</span>
+                  <span className="sb-item-label">{label}</span>
+                </div>
+              )
+            })}
+          </div>
+        </section>
       </div>
 
-      {/* ── Panel 4: 하단 (모델관리 + 팁) ── */}
-      <div className="sidebar-panel panel-footer">
-        <button className="model-manager-btn" onClick={onOpenModelManager}>
-          <span>◈</span>
-          {t('modelManagerBtn')}
+      {/* ── 하단 고정 ── */}
+      <div className="sb-bottom">
+        <button className="sb-model-btn" onClick={onOpenModelManager}>
+          <span>◈</span> {t('modelManagerBtn')}
         </button>
-        <div className="sidebar-tip">
-          <span className="tip-icon">💡</span>
+        <div className="sb-tip">
+          <span className="sb-tip-icon">💡</span>
           <span>{t('handleDragTip')}</span>
         </div>
       </div>
