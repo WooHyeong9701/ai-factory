@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './Sidebar.css'
 import { UTILITY_KINDS } from './UtilityNode'
 import { useI18n } from '../i18n/index'
@@ -41,11 +42,19 @@ function onDragStart(event, template) {
 
 export default function Sidebar({ onOpenModelManager }) {
   const { t } = useI18n()
+  const [expanded, setExpanded] = useState(false)
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${expanded ? 'expanded' : ''}`}>
       <div className="sidebar-header">
         <span className="sidebar-title">{t('nodePalette')}</span>
+        <button
+          className="sidebar-expand-btn"
+          onClick={() => setExpanded(v => !v)}
+          title={expanded ? 'Collapse' : 'Expand'}
+        >
+          {expanded ? '«' : '»'}
+        </button>
       </div>
       <div className="sidebar-hint">{t('dragToCanvas')}</div>
 
