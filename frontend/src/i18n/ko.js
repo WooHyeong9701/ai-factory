@@ -237,6 +237,9 @@ export default {
   tlvFooterHint: '항목 클릭으로 완료 토글 · Esc로 닫기',
   tlvItemCount: '{n}개 항목',
 
+  // Node search
+  nodeSearchPlaceholder: '노드 검색...',
+
   // Common
   justNow: '방금 전',
   minutesAgo: '{n}분 전',

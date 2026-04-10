@@ -98,7 +98,7 @@ const EDGE_DEFAULTS = {
 }
 
 export default function App() {
-  const { screenToFlowPosition } = useReactFlow()
+  const { screenToFlowPosition, setCenter } = useReactFlow()
   const { isSignedIn, getToken } = useAuth()
   const { user } = useUser()
   const { t, lang, switchLang } = useI18n()
@@ -119,11 +119,67 @@ export default function App() {
   const [currentWorkflowName, setCurrentWorkflowName] = useState('새 워크플로우')
   const [saveStatus, setSaveStatus] = useState(null) // null | 'saving' | 'saved' | 'error'
   const [showAdmin, setShowAdmin] = useState(false)
+  const [nodeSearch, setNodeSearch] = useState('')
+  const [nodeSearchOpen, setNodeSearchOpen] = useState(false)
+  const [nodeSearchIdx, setNodeSearchIdx] = useState(0)
   const [showMinimap, setShowMinimap] = useState(() => {
     const stored = localStorage.getItem('show_minimap')
     return stored === null ? true : stored === 'true'
   })
   const abortRef = useRef(null)
+  const searchInputRef = useRef(null)
+
+  // ── Node search ─────────────────────────────────────────────────────────────
+  const searchMatches = nodeSearch.trim()
+    ? nodes.filter((n) => (n.data?.name || '').toLowerCase().includes(nodeSearch.trim().toLowerCase()))
+    : []
+
+  const focusNode = useCallback((node) => {
+    if (!node) return
+    const w = node.measured?.width ?? node.width ?? 220
+    const h = node.measured?.height ?? node.height ?? 120
+    setCenter(node.position.x + w / 2, node.position.y + h / 2, { zoom: 1, duration: 300 })
+    setSelectedNodeId(node.id)
+  }, [setCenter, setSelectedNodeId])
+
+  const handleSearchNav = useCallback((delta) => {
+    if (searchMatches.length === 0) return
+    const next = (nodeSearchIdx + delta + searchMatches.length) % searchMatches.length
+    setNodeSearchIdx(next)
+    focusNode(searchMatches[next])
+  }, [searchMatches, nodeSearchIdx, focusNode])
+
+  const handleSearchChange = useCallback((val) => {
+    setNodeSearch(val)
+    setNodeSearchIdx(0)
+  }, [])
+
+  const closeSearch = useCallback(() => {
+    setNodeSearchOpen(false)
+    setNodeSearch('')
+    setNodeSearchIdx(0)
+  }, [])
+
+  // Keyboard shortcut: Ctrl/Cmd + F to open search
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+        e.preventDefault()
+        setNodeSearchOpen(true)
+        setTimeout(() => searchInputRef.current?.focus(), 50)
+      }
+      if (e.key === 'Escape' && nodeSearchOpen) {
+        closeSearch()
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [nodeSearchOpen, closeSearch])
+
+  // Auto-focus first match when search text changes
+  useEffect(() => {
+    if (searchMatches.length > 0) focusNode(searchMatches[0])
+  }, [nodeSearch]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Visit tracking (anonymous) ──────────────────────────────────────────────
   useEffect(() => {
@@ -525,6 +581,38 @@ export default function App() {
               </button>
             </div>
           </div>
+
+          {nodeSearchOpen ? (
+            <div className="node-search">
+              <span className="node-search-icon">⌕</span>
+              <input
+                ref={searchInputRef}
+                className="node-search-input"
+                type="text"
+                value={nodeSearch}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSearchNav(e.shiftKey ? -1 : 1)
+                  if (e.key === 'Escape') closeSearch()
+                }}
+                placeholder={t('nodeSearchPlaceholder') || 'Search nodes...'}
+                autoFocus
+              />
+              {searchMatches.length > 0 && (
+                <span className="node-search-count">{nodeSearchIdx + 1}/{searchMatches.length}</span>
+              )}
+              {searchMatches.length === 0 && nodeSearch.trim() && (
+                <span className="node-search-count node-search-none">0</span>
+              )}
+              <button className="node-search-nav" onClick={() => handleSearchNav(-1)} title="Previous">▲</button>
+              <button className="node-search-nav" onClick={() => handleSearchNav(1)} title="Next">▼</button>
+              <button className="node-search-close" onClick={closeSearch}>✕</button>
+            </div>
+          ) : (
+            <button className="node-search-btn" onClick={() => { setNodeSearchOpen(true); setTimeout(() => searchInputRef.current?.focus(), 50) }} title="Search nodes (⌘F)">
+              ⌕
+            </button>
+          )}
 
           <select
             className="lang-switcher"

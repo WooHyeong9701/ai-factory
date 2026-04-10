@@ -224,6 +224,9 @@ export default {
   tlvFooterHint: '点击切换完成状态 · Esc 关闭',
   tlvItemCount: '{n} 个项目',
 
+  // Node search
+  nodeSearchPlaceholder: '搜索节点...',
+
   justNow: '刚刚',
   minutesAgo: '{n}分钟前',
   hoursAgo: '{n}小时前',

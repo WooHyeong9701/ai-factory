@@ -224,6 +224,9 @@ export default {
   tlvFooterHint: 'クリックで完了切替 · Escで閉じる',
   tlvItemCount: '{n}件',
 
+  // Node search
+  nodeSearchPlaceholder: 'ノード検索...',
+
   justNow: 'たった今',
   minutesAgo: '{n}分前',
   hoursAgo: '{n}時間前',

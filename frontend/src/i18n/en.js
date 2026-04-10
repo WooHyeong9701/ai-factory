@@ -224,6 +224,9 @@ Sort by priority and specify dependencies for each task.`,
   tlvFooterHint: 'Click to toggle · Esc to close',
   tlvItemCount: '{n} items',
 
+  // Node search
+  nodeSearchPlaceholder: 'Search nodes...',
+
   justNow: 'just now',
   minutesAgo: '{n}m ago',
   hoursAgo: '{n}h ago',
