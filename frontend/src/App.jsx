@@ -587,28 +587,29 @@ export default function App() {
           >
             <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="#1e1e30" />
             <Controls className="rf-controls" />
-            <button
-              className="minimap-toggle"
-              onClick={() => setShowMinimap(v => { const next = !v; localStorage.setItem('show_minimap', String(next)); return next })}
-              title={showMinimap ? 'Hide minimap' : 'Show minimap'}
-            >
-              {showMinimap ? '🗺' : '🗺︎'}
-            </button>
-            {showMinimap && (
-              <MiniMap
-                nodeColor={(n) => {
-                  if (n.type === 'taskListNode') return '#1a3d30'
-                  if (n.type === 'utilityNode')  return '#78350f'
-                  const s = n.data?.status
-                  if (s === 'running') return '#fb923c'
-                  if (s === 'done') return '#06d6a0'
-                  if (s === 'error') return '#f43f5e'
-                  return '#5b8df8'
-                }}
-                maskColor="rgba(8,8,16,0.85)"
-                style={{ background: '#0f0f1a', border: '1px solid #252535' }}
-              />
-            )}
+            <div className={`minimap-wrapper ${showMinimap ? 'open' : 'closed'}`}>
+              <button
+                className="minimap-toggle"
+                onClick={() => setShowMinimap(v => { const next = !v; localStorage.setItem('show_minimap', String(next)); return next })}
+              >
+                <span className="minimap-arrow">{showMinimap ? '▼' : '▲'}</span>
+              </button>
+              {showMinimap && (
+                <MiniMap
+                  nodeColor={(n) => {
+                    if (n.type === 'taskListNode') return '#1a3d30'
+                    if (n.type === 'utilityNode')  return '#78350f'
+                    const s = n.data?.status
+                    if (s === 'running') return '#fb923c'
+                    if (s === 'done') return '#06d6a0'
+                    if (s === 'error') return '#f43f5e'
+                    return '#5b8df8'
+                  }}
+                  maskColor="rgba(8,8,16,0.85)"
+                  style={{ background: '#0f0f1a', border: '1px solid #252535', borderTop: 'none' }}
+                />
+              )}
+            </div>
             {nodes.length === 0 && (
               <div className="canvas-empty">
                 <div className="empty-icon">⬡</div>
