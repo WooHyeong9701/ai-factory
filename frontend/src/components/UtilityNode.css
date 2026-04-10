@@ -97,6 +97,39 @@
   font-size: 10px;
   color: #666;
   margin-left: auto;
+}
+
+/* ── Loop labels ── */
+.ut-loop-labels {
+  padding: 2px 0;
+}
+
+.ut-loop-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #b0b0c0;
+}
+
+.ut-loop-icon {
+  font-size: 14px;
+}
+
+.ut-loop-count {
+  font-weight: 700;
+  font-size: 16px;
+  color: #f472b6;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.ut-loop-mode {
+  font-size: 10px;
+  color: #888;
+  background: rgba(244, 114, 182, 0.1);
+  border: 1px solid rgba(244, 114, 182, 0.2);
+  border-radius: 4px;
+  padding: 1px 6px;
   max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;

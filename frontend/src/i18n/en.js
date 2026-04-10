@@ -38,6 +38,7 @@ export default {
   videoCompose: 'Video Compose',
   youtubeUpload: 'YouTube Upload',
   branch: 'Branch',
+  loop: 'Loop',
 
   runTitle: 'Run Workflow',
   inputPlaceholder: 'Initial input (topic, prompt, etc.)',

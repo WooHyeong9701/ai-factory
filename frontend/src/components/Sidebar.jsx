@@ -20,6 +20,7 @@ const UTILITY_ITEMS = [
   { labelKey: 'videoCompose',  icon: '🎬',  nodeType: 'utilityNode',  kind: 'video_compose' },
   { labelKey: 'youtubeUpload', icon: '▶',   nodeType: 'utilityNode',  kind: 'youtube_upload' },
   { labelKey: 'branch',        icon: '⑃',   nodeType: 'utilityNode',  kind: 'branch' },
+  { labelKey: 'loop',          icon: '🔁',  nodeType: 'utilityNode',  kind: 'loop' },
 ]
 
 function getDefaultConfig(kind) {

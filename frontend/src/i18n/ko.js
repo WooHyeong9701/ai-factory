@@ -43,6 +43,7 @@ export default {
   videoCompose: '영상 조합',
   youtubeUpload: 'YouTube 업로드',
   branch: '분기 처리',
+  loop: '반복문',
 
   // Run panel
   runTitle: '워크플로우 실행',

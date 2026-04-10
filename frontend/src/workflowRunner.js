@@ -56,11 +56,25 @@ function returnTypeInstruction(returnType) {
 // ── Branch condition evaluation ───────────────────────────────────────────────
 function evalBranch(input, conditionType, conditionValue) {
   switch (conditionType) {
-    case 'contains': return input.includes(conditionValue)
-    case 'equals':   return input.trim() === conditionValue.trim()
+    case '포함':
+    case 'contains':
+      return input.includes(conditionValue)
+    case '미포함':
+    case 'not_contains':
+      return !input.includes(conditionValue)
+    case '길이 이상':
+    case 'length_gte':
+      return input.length >= parseInt(conditionValue || '0')
+    case '길이 이하':
+    case 'length_lte':
+      return input.length <= parseInt(conditionValue || '0')
+    case '정규식':
     case 'regex': {
       try { return new RegExp(conditionValue).test(input) } catch { return false }
     }
+    case '항상 참':
+    case 'always_true':
+      return true
     default: return false
   }
 }
@@ -86,6 +100,7 @@ export async function runWorkflow({ nodes, edges, initialInput, ollamaUrl, onEve
   const order  = topoSort(execNodes, execEdges)
   const outputs = {}  // nodeId → string
   const skipped = new Set()
+  const loopHandled = new Set()  // nodes already executed by a loop node
 
   for (let i = 0; i < order.length; i++) {
     const nodeId = order[i]
@@ -95,7 +110,7 @@ export async function runWorkflow({ nodes, edges, initialInput, ollamaUrl, onEve
       return
     }
 
-    if (skipped.has(nodeId)) continue
+    if (skipped.has(nodeId) || loopHandled.has(nodeId)) continue
 
     const node = nodeMap[nodeId]
     if (!node) continue
@@ -150,8 +165,8 @@ export async function runWorkflow({ nodes, edges, initialInput, ollamaUrl, onEve
       const kind = node.data.kind
 
       if (kind === 'branch') {
-        const conditionType  = node.data.config?.conditionType  || 'contains'
-        const conditionValue = node.data.config?.conditionValue || ''
+        const conditionType  = node.data.config?.condition_type  || '포함'
+        const conditionValue = node.data.config?.condition_value || ''
         const result = evalBranch(nodeInput, conditionType, conditionValue)
 
         outputs[nodeId] = nodeInput
@@ -165,6 +180,89 @@ export async function runWorkflow({ nodes, edges, initialInput, ollamaUrl, onEve
         for (const tid of inactiveTargets) {
           propagateSkip(tid, skipped, execEdges, allExecIds)
         }
+      } else if (kind === 'loop') {
+        // ── Loop node: re-execute downstream nodes N times ──────────────────
+        const iterations = parseInt(node.data.config?.iterations) || 3
+        const mode = node.data.config?.mode || 'same_input'
+        const separator = (node.data.config?.separator || '\\n---\\n').replace(/\\n/g, '\n')
+
+        // Find direct downstream nodes connected from this loop node
+        const downEdges = execEdges.filter((e) => e.source === nodeId)
+        const downIds = downEdges.map((e) => e.target)
+
+        // Mark the loop node itself as producing its input (pass-through)
+        outputs[nodeId] = nodeInput
+
+        for (const downId of downIds) {
+          const downNode = nodeMap[downId]
+          if (!downNode) continue
+
+          const iterResults = []
+          onEvent({ type: 'node_start', node_id: downId })
+
+          for (let iter = 0; iter < iterations; iter++) {
+            if (signal?.aborted) {
+              onEvent({ type: 'error', message: 'Aborted' })
+              return
+            }
+
+            // same_input → always use the loop's input; chain → feed previous output
+            const curInput = mode === 'chain' && iter > 0
+              ? iterResults[iterResults.length - 1]
+              : nodeInput
+
+            if (downNode.type === 'agentNode') {
+              try {
+                const sys = (downNode.data.role || '') + returnTypeInstruction(downNode.data.return_type)
+                const msgs = []
+                if (sys.trim()) msgs.push({ role: 'system', content: sys })
+                msgs.push({ role: 'user', content: curInput })
+
+                let fullOutput = ''
+                for await (const token of streamChat(ollamaUrl, downNode.data.model, msgs, signal)) {
+                  fullOutput += token
+                  onEvent({ type: 'token', node_id: downId, token })
+                }
+                iterResults.push(fullOutput)
+
+                // Visual separator between iterations (same_input mode)
+                if (iter < iterations - 1 && mode === 'same_input') {
+                  onEvent({ type: 'token', node_id: downId, token: separator })
+                }
+              } catch (err) {
+                if (signal?.aborted || err.name === 'AbortError') {
+                  onEvent({ type: 'error', message: 'Aborted' })
+                  return
+                }
+                onEvent({ type: 'node_error', node_id: downId, error: err.message })
+                return
+              }
+            } else {
+              // Non-agent downstream inside loop — just pass input through
+              iterResults.push(curInput)
+            }
+          }
+
+          const finalOutput = mode === 'chain'
+            ? iterResults[iterResults.length - 1] || ''
+            : iterResults.join(separator)
+
+          outputs[downId] = finalOutput
+          loopHandled.add(downId)
+          onEvent({ type: 'node_done', node_id: downId, output: finalOutput })
+
+          // Notify connected task-list nodes from loop child
+          if (downNode.data?.return_type === 'tasklist' && finalOutput) {
+            for (const e of edges) {
+              if (e.source === downId && nodeMap[e.target]?.type === 'taskListNode') {
+                onEvent({ type: 'tasklist_update', node_id: e.target, output: finalOutput })
+              }
+            }
+          }
+        }
+
+        const loopSummary = `Loop ${iterations}x (${mode}) completed`
+        onEvent({ type: 'node_done', node_id: nodeId, output: loopSummary })
       } else {
         // All other utility nodes: pass input through
         outputs[nodeId] = nodeInput

@@ -38,6 +38,7 @@ export default {
   videoCompose: '视频合成',
   youtubeUpload: 'YouTube 上传',
   branch: '分支处理',
+  loop: '循环',
 
   runTitle: '运行工作流',
   inputPlaceholder: '初始输入（主题、提示词等）',

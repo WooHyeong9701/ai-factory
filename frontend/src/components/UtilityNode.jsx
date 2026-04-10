@@ -82,6 +82,18 @@ export const UTILITY_KINDS = {
       { key: 'condition_value', label: '조건 값', type: 'text', placeholder: '키워드, 숫자, 정규식 등' },
     ],
   },
+  loop: {
+    label: '반복문',
+    badge: 'LOOP',
+    icon: '🔁',
+    accent: '#f472b6',
+    desc: '입력을 N회 반복 실행',
+    configFields: [
+      { key: 'iterations', label: '반복 횟수', type: 'number', default: '3' },
+      { key: 'mode', label: '반복 모드', type: 'select', options: ['same_input', 'chain'], default: 'same_input' },
+      { key: 'separator', label: '결과 구분자', type: 'text', default: '\\n---\\n' },
+    ],
+  },
 }
 
 // Preview fields shown on the node card
@@ -138,6 +150,16 @@ function UtilityNode({ data, selected }) {
               <div className="ut-branch-row false">
                 <span className="ut-branch-dot false" />
                 <span>거짓 (False)</span>
+              </div>
+            </div>
+          ) : kind === 'loop' ? (
+            <div className="ut-loop-labels">
+              <div className="ut-loop-row">
+                <span className="ut-loop-icon">🔁</span>
+                <span className="ut-loop-count">{config.iterations || 3}x</span>
+                <span className="ut-loop-mode">
+                  {config.mode === 'chain' ? 'chain' : 'same'}
+                </span>
               </div>
             </div>
           ) : (

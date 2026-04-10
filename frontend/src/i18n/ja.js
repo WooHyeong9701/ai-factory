@@ -38,6 +38,7 @@ export default {
   videoCompose: '動画合成',
   youtubeUpload: 'YouTube アップロード',
   branch: '分岐処理',
+  loop: 'ループ',
 
   runTitle: 'ワークフロー実行',
   inputPlaceholder: '初期入力（トピック、プロンプトなど）',
