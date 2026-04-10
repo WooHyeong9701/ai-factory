@@ -5,10 +5,6 @@ import { useI18n } from '../i18n/index'
 
 // ── YouTube Shorts 파이프라인 AI 에이전트 ─────────────────────────────────────
 const AI_TEMPLATES = [
-  { labelKey: 'scriptWriter', icon: '✍️', role: 'YouTube Shorts용 스크립트를 작성합니다.\n구조: 훅(3초) → 본론 → CTA\n60초 이내 구어체로 작성하세요.', return_type: 'text' },
-  { labelKey: 'imagePrompt',  icon: '🖼️', role: '스크립트의 각 장면에 어울리는 이미지 생성 프롬프트를 영어로 작성합니다.\n각 프롬프트는 새 줄로 구분하고, 번호를 붙이세요.\n세로형(9:16) 구도에 맞게 작성하세요.', return_type: 'bullet' },
-  { labelKey: 'subtitle',     icon: '💬', role: '스크립트를 SRT 형식 자막으로 변환합니다.\n형식: 번호 → 타임코드 → 텍스트\n예시:\n1\n00:00:00,000 --> 00:00:03,000\n자막 내용', return_type: 'text' },
-  { labelKey: 'metaData',     icon: '🏷️', role: 'YouTube Shorts에 최적화된 메타데이터를 작성합니다.\n반드시 아래 형식을 지키세요:\n제목: (50자 이내, 이모지 포함)\n설명: (2-3줄 요약)\n태그: 태그1, 태그2, 태그3', return_type: 'text' },
   { labelKey: 'custom',       icon: '⚡', role: '', return_type: 'text' },
 ]
 
