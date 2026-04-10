@@ -1,12 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import './Sidebar.css'
 import { UTILITY_KINDS } from './UtilityNode'
 import { useI18n } from '../i18n/index'
 
-// ── YouTube Shorts 파이프라인 AI 에이전트 ─────────────────────────────────────
-const AI_TEMPLATES = [
-  { labelKey: 'custom',       icon: '⚡', role: '', return_type: 'text' },
-]
+const STORAGE_KEY = 'custom_node_templates'
+
+export function loadCustomTemplates() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+  } catch { return [] }
+}
+
+export function saveCustomTemplate(tpl) {
+  const list = loadCustomTemplates()
+  list.push({ ...tpl, id: Date.now().toString() })
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list))
+  return list
+}
+
+export function deleteCustomTemplate(id) {
+  const list = loadCustomTemplates().filter((t) => t.id !== id)
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list))
+  return list
+}
 
 // ── 유틸리티 노드 ─────────────────────────────────────────────────────────────
 const UTILITY_ITEMS = [
@@ -39,6 +55,22 @@ function onDragStart(event, template) {
 export default function Sidebar({ onOpenModelManager }) {
   const { t } = useI18n()
   const [expanded, setExpanded] = useState(false)
+  const [customTemplates, setCustomTemplates] = useState(loadCustomTemplates)
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null)
+
+  // Listen for custom template changes from other components (ConfigPanel)
+  useEffect(() => {
+    const handler = () => setCustomTemplates(loadCustomTemplates())
+    window.addEventListener('custom-templates-changed', handler)
+    return () => window.removeEventListener('custom-templates-changed', handler)
+  }, [])
+
+  const handleDelete = useCallback((id) => {
+    const updated = deleteCustomTemplate(id)
+    setCustomTemplates(updated)
+    setConfirmDeleteId(null)
+    window.dispatchEvent(new Event('custom-templates-changed'))
+  }, [])
 
   return (
     <aside className={`sidebar ${expanded ? 'expanded' : ''}`}>
@@ -54,31 +86,71 @@ export default function Sidebar({ onOpenModelManager }) {
       </div>
       <div className="sidebar-hint">{t('dragToCanvas')}</div>
 
-      {/* AI 에이전트 노드 */}
-      <div className="sidebar-section-label">{t('aiAgent')}</div>
+      {/* ── Panel 1: 노드 (generic agent) ── */}
       <div className="template-list">
-        {AI_TEMPLATES.map((tpl) => {
-          const label = t(tpl.labelKey)
-          return (
-            <div
-              key={tpl.labelKey}
-              className="template-item"
-              draggable
-              onDragStart={(e) => onDragStart(e, {
-                nodeType: 'agentNode',
-                name: label,
-                role: tpl.role,
-                return_type: tpl.return_type,
-              })}
-            >
-              <span className="template-icon">{tpl.icon}</span>
-              <span className="template-label">{label}</span>
-            </div>
-          )
-        })}
+        <div
+          className="template-item node-item"
+          draggable
+          onDragStart={(e) => onDragStart(e, {
+            nodeType: 'agentNode',
+            name: 'Agent',
+            role: '',
+            return_type: 'text',
+          })}
+        >
+          <span className="template-icon">⬡</span>
+          <span className="template-label">{t('nodeLabel')}</span>
+        </div>
       </div>
 
-      {/* 유틸리티 노드 */}
+      {/* ── Panel 2: 커스텀 노드 ── */}
+      <div className="sidebar-section-divider">
+        <span>{t('customNodes')}</span>
+      </div>
+      <div className="template-list custom-template-list">
+        {customTemplates.length === 0 && (
+          <div className="custom-empty">{t('noCustomNodes')}</div>
+        )}
+        {customTemplates.map((tpl) => (
+          <div
+            key={tpl.id}
+            className="template-item custom-item"
+            draggable
+            onDragStart={(e) => onDragStart(e, {
+              nodeType: 'agentNode',
+              name: tpl.name,
+              role: tpl.role,
+              return_type: tpl.return_type,
+              model: tpl.model,
+              temperature: tpl.temperature,
+              top_p: tpl.top_p,
+              top_k: tpl.top_k,
+              max_tokens: tpl.max_tokens,
+              repeat_penalty: tpl.repeat_penalty,
+              seed: tpl.seed,
+            })}
+          >
+            <span className="template-icon">⚡</span>
+            <span className="template-label">{tpl.name || 'Custom'}</span>
+            {confirmDeleteId === tpl.id ? (
+              <span className="custom-delete-confirm">
+                <button className="custom-delete-yes" onClick={(e) => { e.stopPropagation(); handleDelete(tpl.id) }}>✓</button>
+                <button className="custom-delete-no" onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(null) }}>✕</button>
+              </span>
+            ) : (
+              <button
+                className="custom-delete-btn"
+                onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(tpl.id) }}
+                title={t('delete')}
+              >
+                ×
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* ── Panel 3: 유틸리티 노드 ── */}
       <div className="sidebar-section-divider">
         <span>{t('utilityNodes')}</span>
       </div>

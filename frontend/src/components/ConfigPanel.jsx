@@ -3,6 +3,7 @@ import './ConfigPanel.css'
 import RoleEditor from './RoleEditor'
 import { UTILITY_KINDS } from './UtilityNode'
 import { useI18n } from '../i18n/index'
+import { saveCustomTemplate } from './Sidebar'
 
 function ModelRamInfo({ model, ramEstimates, systemStats }) {
   const { t } = useI18n()
@@ -447,6 +448,26 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
       </div>
 
       <div className="config-footer">
+        <button
+          className="config-save-template-btn"
+          onClick={() => {
+            saveCustomTemplate({
+              name: name || 'Custom Agent',
+              role,
+              model,
+              return_type,
+              temperature: node.data.temperature,
+              top_p: node.data.top_p,
+              top_k: node.data.top_k,
+              max_tokens: node.data.max_tokens,
+              repeat_penalty: node.data.repeat_penalty,
+              seed: node.data.seed,
+            })
+            window.dispatchEvent(new Event('custom-templates-changed'))
+          }}
+        >
+          ＋ {t('saveAsCustom')}
+        </button>
         <div className="node-id-display">ID: {node.id}</div>
         <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
       </div>

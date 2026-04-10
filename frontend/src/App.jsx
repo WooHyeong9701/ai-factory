@@ -417,7 +417,13 @@ export default function App() {
             name: template.name,
             role: template.role,
             return_type: template.return_type,
-            model: models[0] || '',
+            model: template.model || models[0] || '',
+            ...(template.temperature != null && { temperature: template.temperature }),
+            ...(template.top_p != null && { top_p: template.top_p }),
+            ...(template.top_k != null && { top_k: template.top_k }),
+            ...(template.max_tokens != null && { max_tokens: template.max_tokens }),
+            ...(template.repeat_penalty != null && { repeat_penalty: template.repeat_penalty }),
+            ...(template.seed != null && { seed: template.seed }),
           },
         }
       }
