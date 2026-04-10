@@ -60,7 +60,7 @@
 }
 
 .node-handle:hover {
-  transform: scale(1.3);
+  transform: translate(-50%, -50%) scale(1.3);
   box-shadow: 0 0 10px var(--handle);
 }
 
