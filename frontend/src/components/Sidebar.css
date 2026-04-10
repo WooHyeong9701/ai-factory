@@ -53,8 +53,11 @@
   overflow: hidden;
 }
 .sidebar-panel:first-of-type {
-  flex: 1;
+  flex: none;
   border-top: none;
+}
+.sidebar-panel.panel-footer {
+  flex: none;
 }
 
 .sidebar-panel .template-list {
