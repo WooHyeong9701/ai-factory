@@ -57,6 +57,7 @@ function SafeModels({ models, ramEstimates, available }) {
 export default function ConfigPanel({ node, models, ramEstimates = {}, systemStats, onChange, onClose, onDelete }) {
   const { t } = useI18n()
   const [showRoleEditor, setShowRoleEditor] = useState(false)
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
   const RETURN_TYPES = [
     { value: 'text',     label: t('rtText') },
@@ -340,6 +341,94 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
               </label>
             ))}
           </div>
+        </div>
+
+        {/* ── LLM Parameters ── */}
+        <div className="config-section">
+          <button
+            className="advanced-toggle"
+            onClick={() => setShowAdvanced(v => !v)}
+          >
+            <span className="advanced-chevron">{showAdvanced ? '▾' : '▸'}</span>
+            {t('llmParams')}
+          </button>
+
+          {showAdvanced && (
+            <div className="advanced-fields">
+              <div className="param-row">
+                <label className="param-label">Temperature</label>
+                <input
+                  className="param-input"
+                  type="number"
+                  min="0" max="2" step="0.1"
+                  value={node.data.temperature ?? ''}
+                  onChange={(e) => onChange({ temperature: e.target.value })}
+                  placeholder="0.7"
+                />
+                <span className="param-hint">{t('llmTempHint')}</span>
+              </div>
+              <div className="param-row">
+                <label className="param-label">Top P</label>
+                <input
+                  className="param-input"
+                  type="number"
+                  min="0" max="1" step="0.05"
+                  value={node.data.top_p ?? ''}
+                  onChange={(e) => onChange({ top_p: e.target.value })}
+                  placeholder="0.9"
+                />
+                <span className="param-hint">{t('llmTopPHint')}</span>
+              </div>
+              <div className="param-row">
+                <label className="param-label">Top K</label>
+                <input
+                  className="param-input"
+                  type="number"
+                  min="1" max="200" step="1"
+                  value={node.data.top_k ?? ''}
+                  onChange={(e) => onChange({ top_k: e.target.value })}
+                  placeholder="40"
+                />
+                <span className="param-hint">{t('llmTopKHint')}</span>
+              </div>
+              <div className="param-row">
+                <label className="param-label">Max Tokens</label>
+                <input
+                  className="param-input"
+                  type="number"
+                  min="1" max="32768" step="256"
+                  value={node.data.max_tokens ?? ''}
+                  onChange={(e) => onChange({ max_tokens: e.target.value })}
+                  placeholder="2048"
+                />
+                <span className="param-hint">{t('llmMaxTokensHint')}</span>
+              </div>
+              <div className="param-row">
+                <label className="param-label">Repeat Penalty</label>
+                <input
+                  className="param-input"
+                  type="number"
+                  min="0.5" max="2" step="0.05"
+                  value={node.data.repeat_penalty ?? ''}
+                  onChange={(e) => onChange({ repeat_penalty: e.target.value })}
+                  placeholder="1.1"
+                />
+                <span className="param-hint">{t('llmRepeatHint')}</span>
+              </div>
+              <div className="param-row">
+                <label className="param-label">Seed</label>
+                <input
+                  className="param-input"
+                  type="number"
+                  min="0" step="1"
+                  value={node.data.seed ?? ''}
+                  onChange={(e) => onChange({ seed: e.target.value })}
+                  placeholder={t('llmSeedPlaceholder')}
+                />
+                <span className="param-hint">{t('llmSeedHint')}</span>
+              </div>
+            </div>
+          )}
         </div>
 
         {output && (

@@ -237,6 +237,16 @@ export default {
   tlvFooterHint: '항목 클릭으로 완료 토글 · Esc로 닫기',
   tlvItemCount: '{n}개 항목',
 
+  // LLM params
+  llmParams: 'LLM 파라미터',
+  llmTempHint: '0=정확, 2=창의적 (기본 0.7)',
+  llmTopPHint: '누적확률 샘플링 (기본 0.9)',
+  llmTopKHint: '후보 토큰 수 (기본 40)',
+  llmMaxTokensHint: '최대 출력 길이 (기본 2048)',
+  llmRepeatHint: '반복 억제 강도 (기본 1.1)',
+  llmSeedHint: '고정 시드로 동일 결과 재현',
+  llmSeedPlaceholder: '랜덤',
+
   // Timing
   totalElapsed: '총 실행시간',
   nodeElapsed: '실행시간',

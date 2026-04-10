@@ -79,6 +79,22 @@ function evalBranch(input, conditionType, conditionValue) {
   }
 }
 
+// ── Build Ollama options from node data ───────────────────────────────────────
+function buildOptions(data) {
+  const opts = {}
+  if (data.temperature != null && data.temperature !== '') opts.temperature = parseFloat(data.temperature)
+  if (data.top_p != null && data.top_p !== '')             opts.top_p = parseFloat(data.top_p)
+  if (data.top_k != null && data.top_k !== '')             opts.top_k = parseInt(data.top_k)
+  if (data.max_tokens != null && data.max_tokens !== '')   opts.num_predict = parseInt(data.max_tokens)
+  if (data.repeat_penalty != null && data.repeat_penalty !== '') opts.repeat_penalty = parseFloat(data.repeat_penalty)
+  if (data.seed != null && data.seed !== '')               opts.seed = parseInt(data.seed)
+  // Remove NaN values
+  for (const k of Object.keys(opts)) {
+    if (Number.isNaN(opts[k])) delete opts[k]
+  }
+  return Object.keys(opts).length > 0 ? opts : undefined
+}
+
 // ── Main runner ────────────────────────────────────────────────────────────────
 // onEvent(msg) — same event shape as the old WebSocket messages so App.jsx
 // event handling stays identical:
@@ -132,9 +148,10 @@ export async function runWorkflow({ nodes, edges, initialInput, ollamaUrl, onEve
         const messages = []
         if (systemContent.trim()) messages.push({ role: 'system', content: systemContent })
         messages.push({ role: 'user', content: nodeInput })
+        const opts = buildOptions(node.data)
 
         let fullOutput = ''
-        for await (const token of streamChat(ollamaUrl, node.data.model, messages, signal)) {
+        for await (const token of streamChat(ollamaUrl, node.data.model, messages, signal, opts)) {
           fullOutput += token
           onEvent({ type: 'token', node_id: nodeId, token })
         }
@@ -217,9 +234,10 @@ export async function runWorkflow({ nodes, edges, initialInput, ollamaUrl, onEve
                 const msgs = []
                 if (sys.trim()) msgs.push({ role: 'system', content: sys })
                 msgs.push({ role: 'user', content: curInput })
+                const downOpts = buildOptions(downNode.data)
 
                 let fullOutput = ''
-                for await (const token of streamChat(ollamaUrl, downNode.data.model, msgs, signal)) {
+                for await (const token of streamChat(ollamaUrl, downNode.data.model, msgs, signal, downOpts)) {
                   fullOutput += token
                   onEvent({ type: 'token', node_id: downId, token })
                 }

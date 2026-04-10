@@ -224,6 +224,16 @@ export default {
   tlvFooterHint: 'クリックで完了切替 · Escで閉じる',
   tlvItemCount: '{n}件',
 
+  // LLM params
+  llmParams: 'LLM パラメータ',
+  llmTempHint: '0=正確, 2=創造的 (デフォルト 0.7)',
+  llmTopPHint: '累積確率サンプリング (デフォルト 0.9)',
+  llmTopKHint: '候補トークン数 (デフォルト 40)',
+  llmMaxTokensHint: '最大出力長 (デフォルト 2048)',
+  llmRepeatHint: '繰り返しペナルティ (デフォルト 1.1)',
+  llmSeedHint: '固定シードで再現可能な結果',
+  llmSeedPlaceholder: 'ランダム',
+
   // Timing
   totalElapsed: '合計時間',
   nodeElapsed: '実行時間',

@@ -457,3 +457,68 @@
   color: #e4e4f0;
   border-color: #454560;
 }
+
+/* ── Advanced LLM params ── */
+.advanced-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--text2);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+  width: 100%;
+  text-align: left;
+  transition: color 0.15s;
+}
+.advanced-toggle:hover { color: var(--text); }
+.advanced-chevron { font-size: 10px; width: 10px; }
+
+.advanced-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: var(--bg2, #13132a);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.param-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.param-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+}
+.param-input {
+  width: 100%;
+  padding: 4px 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.param-input:focus {
+  border-color: var(--accent);
+}
+.param-input::placeholder {
+  color: var(--text3);
+  opacity: 0.6;
+}
+.param-hint {
+  font-size: 9px;
+  color: var(--text3);
+  opacity: 0.7;
+}

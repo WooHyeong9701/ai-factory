@@ -224,6 +224,16 @@ Sort by priority and specify dependencies for each task.`,
   tlvFooterHint: 'Click to toggle · Esc to close',
   tlvItemCount: '{n} items',
 
+  // LLM params
+  llmParams: 'LLM Parameters',
+  llmTempHint: '0=precise, 2=creative (default 0.7)',
+  llmTopPHint: 'Nucleus sampling (default 0.9)',
+  llmTopKHint: 'Candidate token count (default 40)',
+  llmMaxTokensHint: 'Max output length (default 2048)',
+  llmRepeatHint: 'Repetition penalty (default 1.1)',
+  llmSeedHint: 'Fixed seed for reproducible output',
+  llmSeedPlaceholder: 'Random',
+
   // Timing
   totalElapsed: 'Total time',
   nodeElapsed: 'Elapsed',

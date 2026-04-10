@@ -68,11 +68,15 @@ export async function fetchModelDetails(ollamaUrl) {
 }
 
 // ── Streaming chat (NDJSON) ───────────────────────────────────────────────────
-export async function* streamChat(ollamaUrl, model, messages, signal) {
+export async function* streamChat(ollamaUrl, model, messages, signal, options) {
+  const body = { model, messages, stream: true }
+  if (options && Object.keys(options).length > 0) {
+    body.options = options
+  }
   const res = await fetch(`${ollamaUrl}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model, messages, stream: true }),
+    body: JSON.stringify(body),
     signal,
   })
   if (!res.ok) {

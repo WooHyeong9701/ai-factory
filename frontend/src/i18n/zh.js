@@ -224,6 +224,16 @@ export default {
   tlvFooterHint: '点击切换完成状态 · Esc 关闭',
   tlvItemCount: '{n} 个项目',
 
+  // LLM params
+  llmParams: 'LLM 参数',
+  llmTempHint: '0=精确, 2=创意 (默认 0.7)',
+  llmTopPHint: '累积概率采样 (默认 0.9)',
+  llmTopKHint: '候选词数量 (默认 40)',
+  llmMaxTokensHint: '最大输出长度 (默认 2048)',
+  llmRepeatHint: '重复惩罚强度 (默认 1.1)',
+  llmSeedHint: '固定种子以复现结果',
+  llmSeedPlaceholder: '随机',
+
   // Timing
   totalElapsed: '总耗时',
   nodeElapsed: '耗时',
