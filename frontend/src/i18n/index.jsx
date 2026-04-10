@@ -16,7 +16,7 @@ const messages = { ko, en, zh, ja }
 const I18nContext = createContext(null)
 
 export function I18nProvider({ children }) {
-  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'ko')
+  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'en')
 
   const switchLang = useCallback((code) => {
     setLang(code)
@@ -24,7 +24,7 @@ export function I18nProvider({ children }) {
   }, [])
 
   const t = useCallback((key, params) => {
-    let str = messages[lang]?.[key] || messages.ko[key] || key
+    let str = messages[lang]?.[key] || messages.en[key] || key
     if (params) {
       Object.entries(params).forEach(([k, v]) => {
         str = str.replace(`{${k}}`, v)
