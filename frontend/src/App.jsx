@@ -580,6 +580,7 @@ export default function App() {
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             fitView
+            minZoom={0.15}
             snapToGrid
             snapGrid={[24, 24]}
             proOptions={{ hideAttribution: true }}
