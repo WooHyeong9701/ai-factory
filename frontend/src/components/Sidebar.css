@@ -56,6 +56,9 @@
   flex: none;
   border-top: none;
 }
+.sidebar-panel:first-of-type .template-list {
+  flex: none;
+}
 .sidebar-panel.panel-footer {
   flex: none;
 }
