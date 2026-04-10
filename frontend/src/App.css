@@ -363,6 +363,30 @@
   fill: var(--text) !important;
 }
 
+.minimap-toggle {
+  position: absolute;
+  bottom: 140px;
+  right: 10px;
+  z-index: 5;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text2);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.minimap-toggle:hover {
+  background: var(--panel2);
+  color: var(--text);
+}
+
 .react-flow__edge-path {
   stroke: var(--accent) !important;
   stroke-width: 2 !important;
