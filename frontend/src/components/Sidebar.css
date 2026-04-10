@@ -59,6 +59,11 @@
   flex-direction: column;
   gap: 2px;
 }
+.template-list.node-list {
+  flex: none;
+  overflow-y: visible;
+  padding: 2px 8px;
+}
 
 .template-item {
   display: flex;
@@ -250,8 +255,6 @@
 /* ── Custom node items ── */
 .custom-template-list {
   min-height: 32px;
-  max-height: 180px;
-  overflow-y: auto;
 }
 .custom-empty {
   font-size: 10px;

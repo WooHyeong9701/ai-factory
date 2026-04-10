@@ -87,7 +87,7 @@ export default function Sidebar({ onOpenModelManager }) {
       <div className="sidebar-hint">{t('dragToCanvas')}</div>
 
       {/* ── Panel 1: 노드 (generic agent) ── */}
-      <div className="template-list">
+      <div className="template-list node-list">
         <div
           className="template-item node-item"
           draggable
