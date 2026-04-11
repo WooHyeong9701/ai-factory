@@ -101,10 +101,11 @@ export const UTILITY_KINDS = {
     accent: '#06b6d4',
     desc: 'URL에서 데이터 가져오기',
     configFields: [
-      { key: 'url',     label: 'URL',       type: 'text',   placeholder: 'https://api.github.com/repos/owner/repo/issues' },
-      { key: 'method',  label: 'Method',    type: 'select', options: ['GET', 'POST', 'PUT', 'DELETE'], default: 'GET' },
-      { key: 'headers', label: 'Headers (JSON)', type: 'text', placeholder: '{"Authorization": "Bearer ..."}' },
-      { key: 'body',    label: 'Body',      type: 'text',   placeholder: '비워두면 이전 노드 출력을 본문으로 사용' },
+      { key: 'url',       label: 'URL',            type: 'text',   placeholder: 'https://api.github.com/repos/owner/repo/issues' },
+      { key: 'method',    label: 'Method',          type: 'select', options: ['GET', 'POST', 'PUT', 'DELETE'], default: 'GET' },
+      { key: 'headers',   label: 'Headers (JSON)',  type: 'text',   placeholder: '{"Authorization": "Bearer ..."}' },
+      { key: 'body',      label: 'Body',            type: 'text',   placeholder: '비워두면 이전 노드 출력을 본문으로 사용' },
+      { key: 'json_path', label: 'JSON 추출 경로',  type: 'text',   placeholder: '[*].title  또는  data.items[*].name' },
     ],
   },
   webhook_out: {

@@ -95,6 +95,53 @@ function buildOptions(data) {
   return Object.keys(opts).length > 0 ? opts : undefined
 }
 
+// ── Simple JSON path extractor ────────────────────────────────────────────────
+// Supports: "title", "data.name", "[*].title", "data.items[*].name", "[0].id"
+function extractJsonPath(data, path) {
+  if (!path || !path.trim()) return data
+
+  const tokens = []
+  // Tokenize: split by '.' but handle [*] and [N] as separate tokens
+  for (const part of path.split('.')) {
+    const m = part.match(/^([^[]*)\[([^\]]*)\]$/)
+    if (m) {
+      if (m[1]) tokens.push({ type: 'key', val: m[1] })
+      tokens.push({ type: 'index', val: m[2] })
+    } else if (part) {
+      tokens.push({ type: 'key', val: part })
+    }
+  }
+
+  let current = data
+  for (const tok of tokens) {
+    if (current == null) return ''
+    if (tok.type === 'key') {
+      if (Array.isArray(current)) {
+        current = current.map(item => item?.[tok.val]).filter(v => v !== undefined)
+      } else {
+        current = current[tok.val]
+      }
+    } else if (tok.type === 'index') {
+      if (tok.val === '*') {
+        if (!Array.isArray(current)) return ''
+        // keep as array, will flatten later
+      } else {
+        const idx = parseInt(tok.val)
+        current = Array.isArray(current) ? current[idx] : current
+      }
+    }
+  }
+
+  // Convert result to string
+  if (Array.isArray(current)) {
+    return current.map(item =>
+      typeof item === 'object' ? JSON.stringify(item) : String(item)
+    ).join('\n')
+  }
+  if (typeof current === 'object') return JSON.stringify(current, null, 2)
+  return String(current)
+}
+
 // ── Main runner ────────────────────────────────────────────────────────────────
 // onEvent(msg) — same event shape as the old WebSocket messages so App.jsx
 // event handling stays identical:
@@ -301,11 +348,24 @@ export async function runWorkflow({ nodes, edges, initialInput, ollamaUrl, onEve
 
           const res = await fetch(url, fetchOpts)
           if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`)
-          const text = await res.text()
+          const rawText = await res.text()
 
-          outputs[nodeId] = text
-          onEvent({ type: 'token', node_id: nodeId, token: text })
-          onEvent({ type: 'node_done', node_id: nodeId, output: text })
+          // JSON path extraction
+          let result = rawText
+          const jsonPath = config.json_path?.trim()
+          if (jsonPath) {
+            try {
+              const parsed = JSON.parse(rawText)
+              result = extractJsonPath(parsed, jsonPath)
+            } catch {
+              // Not JSON or parse failed — use raw text
+              result = rawText
+            }
+          }
+
+          outputs[nodeId] = result
+          onEvent({ type: 'token', node_id: nodeId, token: result })
+          onEvent({ type: 'node_done', node_id: nodeId, output: result })
         } catch (err) {
           if (signal?.aborted || err.name === 'AbortError') {
             onEvent({ type: 'error', message: 'Aborted' })
