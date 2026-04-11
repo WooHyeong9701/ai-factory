@@ -30,6 +30,7 @@ export default {
   customNodes: '自定义节点',
   noCustomNodes: '没有保存的自定义节点',
   saveAsCustom: '保存为自定义节点',
+  saveNode: '保存节点',
   custom: '自定义',
   taskList: '任务列表',
   tts: 'TTS（语音）',

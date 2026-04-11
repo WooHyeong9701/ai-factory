@@ -30,6 +30,7 @@ export default {
   customNodes: 'カスタムノード',
   noCustomNodes: '保存済みカスタムノードなし',
   saveAsCustom: 'カスタムノードとして保存',
+  saveNode: 'ノード保存',
   custom: 'カスタム',
   taskList: 'タスクリスト',
   tts: 'TTS（音声）',

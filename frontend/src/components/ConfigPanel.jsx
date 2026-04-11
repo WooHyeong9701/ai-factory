@@ -452,29 +452,29 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
       </div>
 
       <div className="config-footer">
-        <button
-          className="config-save-template-btn"
-          onClick={() => {
-            saveCustomTemplate({
-              name: name || 'Custom Agent',
-              role,
-              model,
-              return_type,
-              temperature: node.data.temperature,
-              top_p: node.data.top_p,
-              top_k: node.data.top_k,
-              max_tokens: node.data.max_tokens,
-              repeat_penalty: node.data.repeat_penalty,
-              seed: node.data.seed,
-            })
-            window.dispatchEvent(new Event('custom-templates-changed'))
-          }}
-        >
-          ＋ {t('saveAsCustom')}
-        </button>
         <div className="config-footer-row">
           <div className="node-id-display">ID: {node.id}</div>
-          <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
+          <div className="config-footer-actions">
+            <button
+              className="config-save-template-btn"
+              onClick={() => {
+                saveCustomTemplate({
+                  name: name || 'Custom Agent',
+                  role,
+                  model,
+                  return_type,
+                  temperature: node.data.temperature,
+                  top_p: node.data.top_p,
+                  top_k: node.data.top_k,
+                  max_tokens: node.data.max_tokens,
+                  repeat_penalty: node.data.repeat_penalty,
+                  seed: node.data.seed,
+                })
+                window.dispatchEvent(new Event('custom-templates-changed'))
+              }}
+            >{t('saveNode')}</button>
+            <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
+          </div>
         </div>
       </div>
     </aside>

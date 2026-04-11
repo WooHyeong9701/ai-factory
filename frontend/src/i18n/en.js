@@ -30,6 +30,7 @@ export default {
   customNodes: 'Custom Nodes',
   noCustomNodes: 'No saved custom nodes',
   saveAsCustom: 'Save as Custom Node',
+  saveNode: 'Save Node',
   custom: 'Custom',
   taskList: 'Task List',
   tts: 'TTS (Voice)',

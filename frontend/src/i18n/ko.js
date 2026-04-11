@@ -35,6 +35,7 @@ export default {
   customNodes: '커스텀 노드',
   noCustomNodes: '저장된 커스텀 노드 없음',
   saveAsCustom: '커스텀 노드로 저장',
+  saveNode: '노드 저장',
   custom: '커스텀',
   taskList: '작업 목록',
   tts: 'TTS (음성)',
