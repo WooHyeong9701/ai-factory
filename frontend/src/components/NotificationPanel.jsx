@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useI18n } from '../i18n/index'
 import './NotificationPanel.css'
 
@@ -24,21 +24,10 @@ function timeAgo(ts, t) {
 
 export default function NotificationPanel({ notifications, onClear, onClearAll, onClose }) {
   const { t } = useI18n()
-  const panelRef = useRef(null)
-
-  // Close when clicking outside
-  useEffect(() => {
-    const handler = (e) => {
-      if (panelRef.current && !panelRef.current.contains(e.target)) {
-        onClose()
-      }
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [onClose])
-
   return (
-    <div className="notif-panel" ref={panelRef}>
+    <>
+      <div className="notif-overlay" onClick={onClose} />
+      <div className="notif-panel">
       <div className="notif-header">
         <span className="notif-title">{t('notifications')}</span>
         {notifications.length > 0 && (
@@ -68,5 +57,6 @@ export default function NotificationPanel({ notifications, onClear, onClearAll, 
         )}
       </div>
     </div>
+    </>
   )
 }
