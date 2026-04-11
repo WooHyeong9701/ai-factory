@@ -94,10 +94,36 @@ export const UTILITY_KINDS = {
       { key: 'separator', label: '결과 구분자', type: 'text', default: '\\n---\\n' },
     ],
   },
+  api_request: {
+    label: 'API 요청',
+    badge: 'API',
+    icon: '🌐',
+    accent: '#06b6d4',
+    desc: 'URL에서 데이터 가져오기',
+    configFields: [
+      { key: 'url',     label: 'URL',       type: 'text',   placeholder: 'https://api.github.com/repos/owner/repo/issues' },
+      { key: 'method',  label: 'Method',    type: 'select', options: ['GET', 'POST', 'PUT', 'DELETE'], default: 'GET' },
+      { key: 'headers', label: 'Headers (JSON)', type: 'text', placeholder: '{"Authorization": "Bearer ..."}' },
+      { key: 'body',    label: 'Body',      type: 'text',   placeholder: '비워두면 이전 노드 출력을 본문으로 사용' },
+    ],
+  },
+  webhook_out: {
+    label: '웹훅 전송',
+    badge: 'HOOK',
+    icon: '📤',
+    accent: '#8b5cf6',
+    desc: '결과를 외부 URL로 전송',
+    configFields: [
+      { key: 'url',     label: 'Webhook URL',   type: 'text',   placeholder: 'https://hooks.slack.com/services/...' },
+      { key: 'method',  label: 'Method',         type: 'select', options: ['POST', 'PUT', 'PATCH'], default: 'POST' },
+      { key: 'headers', label: 'Headers (JSON)', type: 'text',   placeholder: '{"Content-Type": "application/json"}' },
+      { key: 'body_template', label: 'Body 템플릿', type: 'text', placeholder: '{"text": "{{input}}"} — {{input}}은 입력값으로 대체' },
+    ],
+  },
 }
 
 // Preview fields shown on the node card
-const PREVIEW_KEYS = ['output_path', 'provider', 'resolution', 'privacy', 'api_url']
+const PREVIEW_KEYS = ['url', 'output_path', 'provider', 'resolution', 'privacy', 'api_url']
 
 function UtilityNode({ data, selected }) {
   const { kind, name, status = 'idle', output, config = {} } = data

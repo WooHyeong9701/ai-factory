@@ -40,6 +40,8 @@ export default {
   youtubeUpload: 'YouTube アップロード',
   branch: '分岐処理',
   loop: 'ループ',
+  apiRequest: 'APIリクエスト',
+  webhookOut: 'Webhook送信',
 
   runTitle: 'ワークフロー実行',
   inputPlaceholder: '初期入力（トピック、プロンプトなど）',

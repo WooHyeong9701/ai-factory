@@ -45,6 +45,8 @@ export default {
   youtubeUpload: 'YouTube 업로드',
   branch: '분기 처리',
   loop: '반복문',
+  apiRequest: 'API 요청',
+  webhookOut: '웹훅 전송',
 
   // Run panel
   runTitle: '워크플로우 실행',

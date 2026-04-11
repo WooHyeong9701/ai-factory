@@ -33,6 +33,8 @@ const UTILITY_ITEMS = [
   { labelKey: 'youtubeUpload', icon: '▶',   nodeType: 'utilityNode',  kind: 'youtube_upload' },
   { labelKey: 'branch',        icon: '⑃',   nodeType: 'utilityNode',  kind: 'branch' },
   { labelKey: 'loop',          icon: '🔁',  nodeType: 'utilityNode',  kind: 'loop' },
+  { labelKey: 'apiRequest',    icon: '🌐',  nodeType: 'utilityNode',  kind: 'api_request' },
+  { labelKey: 'webhookOut',    icon: '📤',  nodeType: 'utilityNode',  kind: 'webhook_out' },
 ]
 
 function getDefaultConfig(kind) {

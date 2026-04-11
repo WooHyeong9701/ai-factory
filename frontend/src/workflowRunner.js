@@ -281,6 +281,74 @@ export async function runWorkflow({ nodes, edges, initialInput, ollamaUrl, onEve
 
         const loopSummary = `Loop ${iterations}x (${mode}) completed`
         onEvent({ type: 'node_done', node_id: nodeId, output: loopSummary })
+      } else if (kind === 'api_request') {
+        // ── API Request node: fetch data from URL ──────────────────────────
+        try {
+          const config = node.data.config || {}
+          const url = config.url
+          if (!url) throw new Error('URL is required')
+
+          const method = config.method || 'GET'
+          let headers = {}
+          if (config.headers) {
+            try { headers = JSON.parse(config.headers) } catch { /* ignore parse error */ }
+          }
+
+          const fetchOpts = { method, headers, signal }
+          if (method !== 'GET' && method !== 'HEAD') {
+            fetchOpts.body = config.body || nodeInput || ''
+          }
+
+          const res = await fetch(url, fetchOpts)
+          if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`)
+          const text = await res.text()
+
+          outputs[nodeId] = text
+          onEvent({ type: 'token', node_id: nodeId, token: text })
+          onEvent({ type: 'node_done', node_id: nodeId, output: text })
+        } catch (err) {
+          if (signal?.aborted || err.name === 'AbortError') {
+            onEvent({ type: 'error', message: 'Aborted' })
+            return
+          }
+          onEvent({ type: 'node_error', node_id: nodeId, error: err.message })
+          return
+        }
+      } else if (kind === 'webhook_out') {
+        // ── Webhook output: send result to external URL ────────────────────
+        try {
+          const config = node.data.config || {}
+          const url = config.url
+          if (!url) throw new Error('Webhook URL is required')
+
+          const method = config.method || 'POST'
+          let headers = { 'Content-Type': 'application/json' }
+          if (config.headers) {
+            try { headers = { ...headers, ...JSON.parse(config.headers) } } catch { /* ignore */ }
+          }
+
+          let body
+          if (config.body_template) {
+            body = config.body_template.replace(/\{\{input\}\}/g, nodeInput)
+          } else {
+            body = JSON.stringify({ text: nodeInput })
+          }
+
+          const res = await fetch(url, { method, headers, body, signal })
+          const statusText = `${res.status} ${res.statusText}`
+          const resultMsg = res.ok ? `Sent successfully (${statusText})` : `Failed (${statusText})`
+
+          outputs[nodeId] = nodeInput // pass-through
+          onEvent({ type: 'token', node_id: nodeId, token: resultMsg })
+          onEvent({ type: 'node_done', node_id: nodeId, output: resultMsg })
+        } catch (err) {
+          if (signal?.aborted || err.name === 'AbortError') {
+            onEvent({ type: 'error', message: 'Aborted' })
+            return
+          }
+          onEvent({ type: 'node_error', node_id: nodeId, error: err.message })
+          return
+        }
       } else {
         // All other utility nodes: pass input through
         outputs[nodeId] = nodeInput

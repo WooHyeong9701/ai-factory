@@ -40,6 +40,8 @@ export default {
   youtubeUpload: 'YouTube Upload',
   branch: 'Branch',
   loop: 'Loop',
+  apiRequest: 'API Request',
+  webhookOut: 'Webhook Send',
 
   runTitle: 'Run Workflow',
   inputPlaceholder: 'Initial input (topic, prompt, etc.)',
