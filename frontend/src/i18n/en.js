@@ -246,4 +246,10 @@ Sort by priority and specify dependencies for each task.`,
   minutesAgo: '{n}m ago',
   hoursAgo: '{n}h ago',
   daysAgo: '{n}d ago',
+  // Notifications
+  notifications: 'Notifications',
+  clearAll: 'Clear all',
+  noNotifications: 'No notifications',
+  notifWorkflowDone: 'Workflow completed ({time}s)',
+  notifWorkflowError: 'Workflow failed with an error',
 }

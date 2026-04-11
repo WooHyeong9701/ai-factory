@@ -260,4 +260,10 @@ export default {
   minutesAgo: '{n}분 전',
   hoursAgo: '{n}시간 전',
   daysAgo: '{n}일 전',
+  // Notifications
+  notifications: '알림',
+  clearAll: '모두 지우기',
+  noNotifications: '알림이 없습니다',
+  notifWorkflowDone: '워크플로우 실행 완료 ({time}초)',
+  notifWorkflowError: '워크플로우 실행 중 오류가 발생했습니다',
 }

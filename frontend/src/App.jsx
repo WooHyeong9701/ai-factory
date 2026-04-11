@@ -36,6 +36,7 @@ import OllamaSetup from './components/OllamaSetup'
 import WorkflowManager from './components/WorkflowManager'
 import SaveDialog from './components/SaveDialog'
 import SystemMonitor from './components/SystemMonitor'
+import NotificationPanel from './components/NotificationPanel'
 import AdminDashboard from './components/AdminDashboard'
 import { saveWorkflow, getWorkflow, isConfigured } from './workflowApi'
 import { useI18n, LANGUAGES } from './i18n/index'
@@ -129,6 +130,10 @@ export default function App() {
   const [nodeSearch, setNodeSearch] = useState('')
   const [nodeSearchOpen, setNodeSearchOpen] = useState(false)
   const [nodeSearchIdx, setNodeSearchIdx] = useState(0)
+  const [notifications, setNotifications] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('notifications') || '[]') } catch { return [] }
+  })
+  const [showNotifPanel, setShowNotifPanel] = useState(false)
   const [showMinimap, setShowMinimap] = useState(() => {
     const stored = localStorage.getItem('show_minimap')
     return stored === null ? true : stored === 'true'
@@ -137,6 +142,31 @@ export default function App() {
   const abortRef = useRef(null)
   const searchInputRef = useRef(null)
   const clipboardRef = useRef({ nodes: [], edges: [] })
+
+  // ── Notifications ───────────────────────────────────────────────────────────
+  const addNotification = useCallback((type, message) => {
+    const notif = { id: Date.now().toString(), type, message, timestamp: Date.now(), read: false }
+    setNotifications(prev => {
+      const next = [notif, ...prev].slice(0, 50) // keep max 50
+      localStorage.setItem('notifications', JSON.stringify(next))
+      return next
+    })
+  }, [])
+
+  const markRead = useCallback((id) => {
+    setNotifications(prev => {
+      const next = prev.map(n => n.id === id ? { ...n, read: true } : n)
+      localStorage.setItem('notifications', JSON.stringify(next))
+      return next
+    })
+  }, [])
+
+  const clearAllNotifications = useCallback(() => {
+    setNotifications([])
+    localStorage.setItem('notifications', '[]')
+  }, [])
+
+  const unreadCount = notifications.filter(n => !n.read).length
 
   // ── Node search ─────────────────────────────────────────────────────────────
   const searchMatches = nodeSearch.trim()
@@ -551,11 +581,15 @@ export default function App() {
           setIsRunning(false)
         } else if (msg.type === 'done') {
           if (workflowStartRef.current) {
-            setTotalTime(performance.now() - workflowStartRef.current)
+            const elapsed = performance.now() - workflowStartRef.current
+            setTotalTime(elapsed)
+            const sec = (elapsed / 1000).toFixed(1)
+            addNotification('workflow_done', t('notifWorkflowDone', { time: sec }))
           }
           setFinalOutput(msg.final)
           setIsRunning(false)
         } else if (msg.type === 'error') {
+          addNotification('workflow_error', t('notifWorkflowError'))
           setIsRunning(false)
         }
       }
@@ -760,6 +794,24 @@ export default function App() {
               <option key={l.code} value={l.code}>{l.flag} {l.label}</option>
             ))}
           </select>
+
+          <button
+            className="notif-bell"
+            onClick={() => setShowNotifPanel(v => !v)}
+            title={t('notifications')}
+          >
+            🔔
+            {unreadCount > 0 && <span className="notif-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+          </button>
+          {showNotifPanel && (
+            <NotificationPanel
+              notifications={notifications}
+              onClear={markRead}
+              onClearAll={clearAllNotifications}
+              onClose={() => setShowNotifPanel(false)}
+            />
+          )}
+
           {isSignedIn && user?.id === import.meta.env.VITE_ADMIN_USER_ID && (
             <button
               className="admin-btn"

@@ -246,4 +246,9 @@ export default {
   minutesAgo: '{n}分前',
   hoursAgo: '{n}時間前',
   daysAgo: '{n}日前',
+  notifications: '通知',
+  clearAll: 'すべて消去',
+  noNotifications: '通知はありません',
+  notifWorkflowDone: 'ワークフロー完了 ({time}秒)',
+  notifWorkflowError: 'ワークフロー実行中にエラーが発生しました',
 }
