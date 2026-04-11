@@ -134,8 +134,10 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
           </div>
         </div>
         <div className="config-footer">
-          <div className="node-id-display">ID: {node.id}</div>
-          <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
+          <div className="config-footer-row">
+            <div className="node-id-display">ID: {node.id}</div>
+            <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
+          </div>
         </div>
       </aside>
     )
@@ -226,8 +228,10 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
           )}
         </div>
         <div className="config-footer">
-          <div className="node-id-display">ID: {node.id}</div>
-          <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
+          <div className="config-footer-row">
+            <div className="node-id-display">ID: {node.id}</div>
+            <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
+          </div>
         </div>
       </aside>
     )
@@ -468,8 +472,10 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
         >
           ＋ {t('saveAsCustom')}
         </button>
-        <div className="node-id-display">ID: {node.id}</div>
-        <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
+        <div className="config-footer-row">
+          <div className="node-id-display">ID: {node.id}</div>
+          <button className="config-delete-btn" onClick={onDelete}>{t('deleteNode')}</button>
+        </div>
       </div>
     </aside>
   )

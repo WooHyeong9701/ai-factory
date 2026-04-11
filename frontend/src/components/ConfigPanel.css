@@ -411,14 +411,8 @@
   border-top: 1px solid var(--border);
   flex-shrink: 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.node-id-display {
-  font-size: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--text3);
+  flex-direction: column;
+  gap: 8px;
 }
 
 .config-save-template-btn {
@@ -428,15 +422,26 @@
   color: #a855f7;
   font-size: 11px;
   font-weight: 600;
-  padding: 6px 10px;
+  padding: 7px 10px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s;
-  margin-bottom: 8px;
 }
 .config-save-template-btn:hover {
   background: rgba(168, 85, 247, 0.18);
   border-color: #a855f7;
+}
+
+.config-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.node-id-display {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text3);
 }
 
 .config-delete-btn {
