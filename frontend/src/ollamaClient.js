@@ -67,6 +67,40 @@ export async function fetchModelDetails(ollamaUrl) {
   })
 }
 
+// ── System stats (RAM / CPU / Swap) via Ollama ps + browser APIs ─────────────
+export async function fetchSystemStats(ollamaUrl) {
+  // Total RAM: use navigator.deviceMemory (Chrome) or fallback
+  const totalRam = navigator.deviceMemory || 8 // GB (approximate)
+
+  // Running models memory from Ollama /api/ps
+  let modelMemory = 0
+  try {
+    const res = await fetch(`${ollamaUrl}/api/ps`, { signal: AbortSignal.timeout(3000) })
+    if (res.ok) {
+      const data = await res.json()
+      for (const m of data.models || []) {
+        modelMemory += (m.size_vram || m.size || 0) / 1e9
+      }
+    }
+  } catch { /* ignore */ }
+
+  // Estimate usage: base OS ~2-3GB + loaded models
+  const baseUsage = 2.5
+  const usedEstimate = Math.min(baseUsage + modelMemory, totalRam * 0.95)
+  const available = Math.max(totalRam - usedEstimate, 0.2)
+  const ramPercent = (usedEstimate / totalRam) * 100
+
+  return {
+    ram_total_gb: totalRam,
+    ram_available_gb: available,
+    ram_percent: ramPercent,
+    cpu_percent: 0, // not available from browser
+    swap_used_gb: 0,
+    swap_total_gb: 0,
+    swap_percent: 0,
+  }
+}
+
 // ── Streaming chat (NDJSON) ───────────────────────────────────────────────────
 export async function* streamChat(ollamaUrl, model, messages, signal, options) {
   const body = { model, messages, stream: true }

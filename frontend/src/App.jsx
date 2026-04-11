@@ -7,7 +7,7 @@ const noopUser = { user: null }
 function useAuth() { return HAS_CLERK ? _useAuth() : noopAuth }
 function useUser() { return HAS_CLERK ? _useUser() : noopUser }
 
-import { testConnection, fetchModels } from './ollamaClient'
+import { testConnection, fetchModels, fetchSystemStats } from './ollamaClient'
 import { runWorkflow as executeWorkflow } from './workflowRunner'
 import {
   ReactFlow,
@@ -35,6 +35,7 @@ import ModelManager from './components/ModelManager'
 import OllamaSetup from './components/OllamaSetup'
 import WorkflowManager from './components/WorkflowManager'
 import SaveDialog from './components/SaveDialog'
+import SystemMonitor from './components/SystemMonitor'
 import AdminDashboard from './components/AdminDashboard'
 import { saveWorkflow, getWorkflow, isConfigured } from './workflowApi'
 import { useI18n, LANGUAGES } from './i18n/index'
@@ -109,6 +110,7 @@ export default function App() {
   const [models, setModels] = useState([])
   const [ramEstimates, setRamEstimates] = useState({})
   const [ollamaOk, setOllamaOk] = useState(null)
+  const [systemStats, setSystemStats] = useState(null)
   const [isRunning, setIsRunning] = useState(false)
   const [finalOutput, setFinalOutput] = useState('')
   const [nodeTimes, setNodeTimes] = useState({})    // nodeId → { start, elapsed }
@@ -321,6 +323,16 @@ export default function App() {
         setShowSetup(true)
       })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Poll system stats every 10s ────────────────────────────────────────────
+  useEffect(() => {
+    if (!ollamaOk) return
+    const url = localStorage.getItem('ollama_url') || ollamaUrl
+    const poll = () => fetchSystemStats(url).then(setSystemStats).catch(() => {})
+    poll()
+    const id = setInterval(poll, 10000)
+    return () => clearInterval(id)
+  }, [ollamaOk, ollamaUrl])
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge({ ...params, ...EDGE_DEFAULTS }, eds)),
@@ -662,6 +674,7 @@ export default function App() {
         </div>
 
         <div className="header-right">
+          <SystemMonitor stats={systemStats} compact />
           <div className="node-count-badge">
             {nodes.length} {t('nodes')} · {edges.length} {t('connections')}
           </div>
@@ -842,7 +855,7 @@ export default function App() {
             node={selectedNode}
             models={models}
             ramEstimates={ramEstimates}
-            systemStats={null}
+            systemStats={systemStats}
             onChange={(updates) => updateNode(selectedNodeId, updates)}
             onClose={() => setSelectedNodeId(null)}
             onDelete={() => deleteNode(selectedNodeId)}
