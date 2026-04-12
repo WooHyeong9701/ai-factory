@@ -7,6 +7,7 @@ export default {
   signIn: 'Sign In',
 
   newWorkflow: 'New Workflow',
+  confirmNewWorkflow: 'Unsaved changes will be lost. Save current workflow first?',
   create: 'New',
   load: 'Load',
   save: 'Save',

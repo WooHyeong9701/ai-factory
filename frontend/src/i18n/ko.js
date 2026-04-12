@@ -9,6 +9,7 @@ export default {
 
   // Workflow toolbar
   newWorkflow: '새 워크플로우',
+  confirmNewWorkflow: '현재 워크플로우를 저장하지 않으면 내용이 사라집니다. 저장하시겠습니까?',
   create: '새로 만들기',
   load: '불러오기',
   save: '저장',

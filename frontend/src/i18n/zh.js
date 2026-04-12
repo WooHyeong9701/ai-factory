@@ -7,6 +7,7 @@ export default {
   signIn: '登录',
 
   newWorkflow: '新工作流',
+  confirmNewWorkflow: '未保存的更改将丢失。是否先保存当前工作流？',
   create: '新建',
   load: '加载',
   save: '保存',

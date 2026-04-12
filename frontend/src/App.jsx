@@ -652,11 +652,17 @@ export default function App() {
       setSaveStatus('saved')
       setShowSaveDialog(false)
       setTimeout(() => setSaveStatus(null), 2000)
+      // 저장 후 새 워크플로우 대기 중이었으면 리셋
+      if (pendingNew) {
+        setPendingNew(false)
+        setTimeout(() => resetToNewWorkflow(), 300)
+      }
     } catch {
       setSaveStatus('error')
+      setPendingNew(false)
       setTimeout(() => setSaveStatus(null), 3000)
     }
-  }, [currentWorkflowId, nodes, edges, getToken])
+  }, [currentWorkflowId, nodes, edges, getToken, pendingNew, resetToNewWorkflow])
 
   const handleLoad = useCallback(async (id) => {
     try {
@@ -674,7 +680,7 @@ export default function App() {
     }
   }, [setNodes, setEdges, getToken])
 
-  const handleNewWorkflow = useCallback(() => {
+  const resetToNewWorkflow = useCallback(() => {
     setNodes([])
     setEdges([])
     setCurrentWorkflowId(null)
@@ -682,6 +688,33 @@ export default function App() {
     setSelectedNodeId(null)
     setFinalOutput('')
   }, [setNodes, setEdges])
+
+  const [pendingNew, setPendingNew] = useState(false)
+
+  const handleNewWorkflow = useCallback(() => {
+    if (nodes.length === 0) {
+      resetToNewWorkflow()
+      return
+    }
+    // 노드가 있으면 저장 여부를 물어봄
+    const answer = window.confirm(t('confirmNewWorkflow'))
+    if (answer) {
+      // "확인" = 저장하겠다 → SaveDialog 열고, 저장 완료 후 새 워크플로우
+      if (!isSignedIn) {
+        alert(t('saveRequiresLogin'))
+        return
+      }
+      if (!isConfigured()) {
+        alert(t('workerNotConfigured'))
+        return
+      }
+      setPendingNew(true)
+      setShowSaveDialog(true)
+    } else {
+      // "취소" = 저장 안 하고 바로 새 워크플로우
+      resetToNewWorkflow()
+    }
+  }, [nodes, resetToNewWorkflow, isSignedIn, t])
 
   const handleSetupComplete = useCallback((url, newModels) => {
     setOllamaUrl(url)
@@ -993,7 +1026,7 @@ export default function App() {
         <SaveDialog
           currentName={currentWorkflowName}
           onSave={handleSave}
-          onClose={() => setShowSaveDialog(false)}
+          onClose={() => { setShowSaveDialog(false); setPendingNew(false) }}
         />
       )}
 

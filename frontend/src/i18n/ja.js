@@ -7,6 +7,7 @@ export default {
   signIn: 'ログイン',
 
   newWorkflow: '新規ワークフロー',
+  confirmNewWorkflow: '保存されていない変更は失われます。現在のワークフローを保存しますか？',
   create: '新規作成',
   load: '読み込み',
   save: '保存',
