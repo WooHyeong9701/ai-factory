@@ -33,15 +33,16 @@ function timeAgo(ts, t) {
 }
 
 /* ── Workflow detail modal ─────────────────────────────────────────────── */
-function WorkflowDetail({ wf, token, onClose, onImport, isSignedIn, t }) {
+function WorkflowDetail({ wf, getToken, onClose, onImport, isSignedIn, t }) {
   const [data, setData] = useState(wf)
   const [liking, setLiking] = useState(false)
 
   const handleLike = async () => {
-    if (!isSignedIn || liking) return
+    if (!isSignedIn || !getToken || liking) return
     setLiking(true)
     try {
-      const res = await toggleLike(data.id, token)
+      const tk = await getToken()
+      const res = await toggleLike(data.id, tk)
       setData(prev => ({
         ...prev,
         liked: res.liked,
@@ -53,9 +54,10 @@ function WorkflowDetail({ wf, token, onClose, onImport, isSignedIn, t }) {
 
   const handleImport = async () => {
     try {
-      const full = await getSharedWorkflow(data.id, token)
-      if (isSignedIn) {
-        await forkWorkflow(data.id, token)
+      const tk = isSignedIn && getToken ? await getToken() : null
+      const full = await getSharedWorkflow(data.id, tk)
+      if (isSignedIn && tk) {
+        await forkWorkflow(data.id, tk)
       }
       onImport(full)
     } catch (e) {
@@ -298,14 +300,22 @@ export default function Marketplace({ onClose, onImport, isSignedIn, token, getT
     } catch (e) { alert(e.message) }
   }
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Escape') onClose()
-  }
+  const selectedWfRef = useRef(selectedWf)
+  selectedWfRef.current = selectedWf
 
   useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (selectedWfRef.current) {
+          setSelectedWf(null)
+        } else {
+          onClose()
+        }
+      }
+    }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [])
+  }, [onClose])
 
   return (
     <div className="mp-overlay">
@@ -470,7 +480,7 @@ export default function Marketplace({ onClose, onImport, isSignedIn, token, getT
         {selectedWf && (
           <WorkflowDetail
             wf={selectedWf}
-            token={token}
+            getToken={getToken}
             onClose={() => setSelectedWf(null)}
             onImport={handleImport}
             isSignedIn={isSignedIn}
