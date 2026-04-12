@@ -357,17 +357,15 @@ export default function Marketplace({ onClose, onImport, isSignedIn, token, getT
                   <button className="mp-search-clear" onClick={() => { setSearchInput(''); setSearch(''); setPage(1) }}>✕</button>
                 )}
               </div>
-              <div className="mp-sort">
+              <select
+                className="mp-sort-select"
+                value={sort}
+                onChange={e => { setSort(e.target.value); setPage(1) }}
+              >
                 {SORT_OPTIONS.map(s => (
-                  <button
-                    key={s}
-                    className={`mp-sort-btn ${sort === s ? 'active' : ''}`}
-                    onClick={() => { setSort(s); setPage(1) }}
-                  >
-                    {s === 'popular' ? '🔥' : s === 'recent' ? '🕐' : '📥'} {t(`mp_sort_${s}`)}
-                  </button>
+                  <option key={s} value={s}>{t(`mp_sort_${s}`)}</option>
                 ))}
-              </div>
+              </select>
             </div>
 
             {/* Categories */}

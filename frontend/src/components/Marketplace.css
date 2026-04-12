@@ -142,26 +142,34 @@
 }
 .mp-search-clear:hover { color: #8a8aa0; }
 
-.mp-sort {
-  display: flex;
-  gap: 4px;
+.mp-sort-select {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #c4b5fd;
+  padding: 6px 28px 6px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238a8aa0'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
 }
-.mp-sort-btn {
-  background: transparent;
-  border: none;
-  color: #8a8aa0;
-  padding: 7px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
+.mp-sort-select:hover {
+  border-color: rgba(167, 139, 250, 0.3);
+  background-color: rgba(167, 139, 250, 0.06);
 }
-.mp-sort-btn:hover { background: rgba(255, 255, 255, 0.04); color: #c4b5fd; }
-.mp-sort-btn.active {
-  background: rgba(167, 139, 250, 0.1);
-  color: #a78bfa;
+.mp-sort-select:focus {
+  border-color: rgba(167, 139, 250, 0.4);
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.1);
+}
+.mp-sort-select option {
+  background: #0a0a1a;
+  color: #f0eef6;
 }
 
 /* ── Categories ── */
@@ -695,6 +703,6 @@
 @media (max-width: 640px) {
   .mp-container { padding: 14px 16px; }
   .mp-toolbar { flex-direction: column; }
-  .mp-sort { overflow-x: auto; }
+  .mp-sort-select { width: 100%; }
   .mp-grid { grid-template-columns: 1fr; }
 }
