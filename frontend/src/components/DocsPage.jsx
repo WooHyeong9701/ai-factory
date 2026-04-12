@@ -3,16 +3,16 @@ import { useI18n } from '../i18n/index'
 import './DocsPage.css'
 
 const SECTIONS = [
-  { id: 'overview', icon: '⬡' },
-  { id: 'quickstart', icon: '🚀' },
-  { id: 'nodes', icon: '🔵' },
-  { id: 'custom', icon: '⚡' },
-  { id: 'utility', icon: '🔧' },
-  { id: 'connectors', icon: '🌐' },
-  { id: 'marketplace', icon: '🏪' },
-  { id: 'workflow', icon: '▶' },
-  { id: 'shortcuts', icon: '⌨' },
-  { id: 'settings', icon: '⚙' },
+  { id: 'overview', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/></svg> },
+  { id: 'quickstart', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> },
+  { id: 'nodes', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/></svg> },
+  { id: 'custom', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> },
+  { id: 'utility', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> },
+  { id: 'connectors', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> },
+  { id: 'marketplace', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
+  { id: 'workflow', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> },
+  { id: 'shortcuts', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="6" y1="16" x2="18" y2="16"/></svg> },
+  { id: 'settings', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> },
 ]
 
 export default function DocsPage({ onClose }) {
@@ -47,7 +47,7 @@ export default function DocsPage({ onClose }) {
         {/* Sidebar nav */}
         <nav className="docs-nav">
           <div className="docs-nav-header">
-            <span className="docs-nav-logo">⬡</span>
+            <span className="docs-nav-logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/></svg></span>
             <span className="docs-nav-title">AI Factory</span>
           </div>
           <div className="docs-nav-list">
@@ -69,7 +69,7 @@ export default function DocsPage({ onClose }) {
         <div className="docs-content" onScroll={handleScroll}>
           {/* Hero */}
           <div className="docs-hero">
-            <div className="docs-hero-glyph">⬡</div>
+            <div className="docs-hero-glyph"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/></svg></div>
             <h1 className="docs-hero-title">AI Factory</h1>
             <p className="docs-hero-sub">{t('docs_heroSub')}</p>
           </div>
@@ -180,14 +180,14 @@ export default function DocsPage({ onClose }) {
                 <span>{t('docs_utility_col_desc')}</span>
               </div>
               {[
-                ['☑ Task List', 'docs_util_tasklist'],
-                ['🔊 TTS', 'docs_util_tts'],
-                ['🎨 Image Gen', 'docs_util_imagegen'],
-                ['💾 File Save', 'docs_util_filesave'],
-                ['🎬 Video Compose', 'docs_util_video'],
-                ['▶ YouTube Upload', 'docs_util_youtube'],
-                ['⑃ Branch', 'docs_util_branch'],
-                ['🔁 Loop', 'docs_util_loop'],
+                ['Task List', 'docs_util_tasklist'],
+                ['TTS', 'docs_util_tts'],
+                ['Image Gen', 'docs_util_imagegen'],
+                ['File Save', 'docs_util_filesave'],
+                ['Video Compose', 'docs_util_video'],
+                ['YouTube Upload', 'docs_util_youtube'],
+                ['Branch', 'docs_util_branch'],
+                ['Loop', 'docs_util_loop'],
               ].map(([name, key]) => (
                 <div className="docs-table-row" key={key}>
                   <span className="docs-table-name">{name}</span>
@@ -203,13 +203,13 @@ export default function DocsPage({ onClose }) {
             <p>{t('docs_connectors_intro')}</p>
             <div className="docs-card-grid">
               <div className="docs-card docs-card--cyan">
-                <span className="docs-card-icon">🌐</span>
+                <span className="docs-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
                 <h3>{t('docs_conn_api_title')}</h3>
                 <p>{t('docs_conn_api_desc')}</p>
                 <div className="docs-code">{t('docs_conn_api_example')}</div>
               </div>
               <div className="docs-card docs-card--purple">
-                <span className="docs-card-icon">📤</span>
+                <span className="docs-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>
                 <h3>{t('docs_conn_webhook_title')}</h3>
                 <p>{t('docs_conn_webhook_desc')}</p>
                 <div className="docs-code">{t('docs_conn_webhook_example')}</div>
@@ -227,7 +227,7 @@ export default function DocsPage({ onClose }) {
             <p>{t('docs_marketplace_intro')}</p>
             <div className="docs-card-grid">
               <div className="docs-card">
-                <span className="docs-card-icon">📤</span>
+                <span className="docs-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>
                 <h3>{t('docs_mp_share_title')}</h3>
                 <p>{t('docs_mp_share_desc')}</p>
               </div>
@@ -237,7 +237,7 @@ export default function DocsPage({ onClose }) {
                 <p>{t('docs_mp_import_desc')}</p>
               </div>
               <div className="docs-card">
-                <span className="docs-card-icon">❤️</span>
+                <span className="docs-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
                 <h3>{t('docs_mp_like_title')}</h3>
                 <p>{t('docs_mp_like_desc')}</p>
               </div>

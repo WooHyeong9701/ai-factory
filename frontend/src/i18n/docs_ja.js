@@ -107,7 +107,7 @@ export default {
   // Footer
   // Marketplace
   docs_nav_marketplace: 'ワークフローマーケット',
-  docs_marketplace_intro: 'ワークフローマーケットで他のユーザーが共有したワークフローを閲覧し、自分のワークフローを共有できます。ヘッダーの 🏪 ボタンからアクセスしてください。',
+  docs_marketplace_intro: 'ワークフローマーケットで他のユーザーが共有したワークフローを閲覧し、自分のワークフローを共有できます。ヘッダーのマーケットボタンからアクセスしてください。',
   docs_mp_share_title: '共有する',
   docs_mp_share_desc: 'ワークフローをマーケットに公開します。名前、説明、カテゴリ、タグを設定できます。ログインが必要です。',
   docs_mp_import_title: 'インポート',

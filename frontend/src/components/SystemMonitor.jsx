@@ -62,7 +62,7 @@ export default function SystemMonitor({ stats, compact = false }) {
         <span className="sys-label">SWAP</span>
         <span className={`sys-value ${swapCritical ? 'sys-critical' : swapActive ? 'sys-warn' : 'sys-ok'}`}>
           {swap_used_gb.toFixed(1)}GB
-          {swapCritical && <span className="swap-alert">⚠</span>}
+          {swapCritical && <span className="swap-alert"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2L1 14h14L8 2z"/><path d="M8 6v4"/><circle cx="8" cy="12" r="0.5" fill="currentColor"/></svg></span>}
         </span>
       </div>
 

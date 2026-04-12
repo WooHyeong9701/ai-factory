@@ -1,8 +1,8 @@
 .tlv-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(5px);
+  background: rgba(3, 0, 20, 0.72);
+  backdrop-filter: blur(16px);
   z-index: 3000;
   display: flex;
   align-items: center;
@@ -13,12 +13,13 @@
 .tlv-panel {
   width: 700px;
   max-height: 78vh;
-  background: #0b1d17;
-  border: 1.5px solid #1a3d30;
+  background: rgba(11, 29, 23, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(52, 211, 153, 0.15);
   border-radius: 16px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(6, 214, 160, 0.1);
+  box-shadow: 0 32px 80px rgba(3, 0, 20, 0.7), 0 0 0 1px rgba(52, 211, 153, 0.1);
   overflow: hidden;
 }
 
@@ -28,8 +29,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 18px 22px;
-  border-bottom: 1px solid #1a3d30;
-  background: rgba(6, 214, 160, 0.03);
+  border-bottom: 1px solid rgba(52, 211, 153, 0.12);
+  background: rgba(52, 211, 153, 0.03);
   flex-shrink: 0;
 }
 
@@ -41,7 +42,7 @@
 
 .tlv-title-icon {
   font-size: 20px;
-  color: #06d6a0;
+  color: #34d399;
 }
 
 .tlv-title {
@@ -54,17 +55,17 @@
 .tlv-count-badge {
   font-size: 12px;
   font-weight: 600;
-  color: #06d6a0;
-  background: rgba(6, 214, 160, 0.1);
-  border: 1px solid rgba(6, 214, 160, 0.25);
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.25);
   border-radius: 10px;
   padding: 3px 10px;
 }
 
 .tlv-close-btn {
   background: none;
-  border: 1px solid #1a3d30;
-  border-radius: 7px;
+  border: none;
+  border-radius: 8px;
   color: #3a5e4e;
   cursor: pointer;
   font-size: 14px;
@@ -73,13 +74,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tlv-close-btn:hover {
-  color: #06d6a0;
-  background: rgba(6, 214, 160, 0.08);
-  border-color: rgba(6, 214, 160, 0.3);
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.08);
 }
 
 /* ── Progress ── */
@@ -94,7 +94,7 @@
 .tlv-progress-track {
   flex: 1;
   height: 6px;
-  background: rgba(6, 214, 160, 0.1);
+  background: rgba(52, 211, 153, 0.1);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -103,13 +103,13 @@
   height: 100%;
   background: linear-gradient(90deg, #06d6a0, #34d399);
   border-radius: 3px;
-  transition: width 0.5s ease;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tlv-progress-pct {
   font-size: 12px;
   font-weight: 700;
-  color: #06d6a0;
+  color: #34d399;
   min-width: 36px;
   text-align: right;
   font-family: 'JetBrains Mono', monospace;
@@ -124,7 +124,7 @@
 
 .tlv-body::-webkit-scrollbar { width: 5px; }
 .tlv-body::-webkit-scrollbar-track { background: transparent; }
-.tlv-body::-webkit-scrollbar-thumb { background: #1a3d30; border-radius: 3px; }
+.tlv-body::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.15); border-radius: 3px; }
 
 .tlv-tasks {
   display: flex;
@@ -140,16 +140,16 @@
   border-radius: 9px;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tlv-task:hover {
-  background: rgba(6, 214, 160, 0.05);
-  border-color: rgba(6, 214, 160, 0.12);
+  background: rgba(52, 211, 153, 0.05);
+  border-color: rgba(52, 211, 153, 0.12);
 }
 
 .tlv-task.done {
-  background: rgba(6, 214, 160, 0.03);
+  background: rgba(52, 211, 153, 0.03);
 }
 
 .tlv-task-marker {
@@ -165,7 +165,7 @@
 .tlv-checkmark {
   width: 24px;
   height: 24px;
-  background: #06d6a0;
+  background: #34d399;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -178,7 +178,7 @@
 .tlv-circle {
   width: 24px;
   height: 24px;
-  border: 2px solid #1a3d30;
+  border: 2px solid rgba(52, 211, 153, 0.2);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -213,7 +213,7 @@
 /* ── Footer ── */
 .tlv-footer {
   padding: 10px 22px;
-  border-top: 1px solid #1a3d30;
+  border-top: 1px solid rgba(52, 211, 153, 0.12);
   display: flex;
   justify-content: space-between;
   align-items: center;

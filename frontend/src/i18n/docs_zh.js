@@ -107,7 +107,7 @@ export default {
   // Footer
   // Marketplace
   docs_nav_marketplace: '工作流市场',
-  docs_marketplace_intro: '在工作流市场浏览其他用户分享的工作流，也可以分享自己的工作流。通过标题栏的 🏪 按钮进入市场。',
+  docs_marketplace_intro: '在工作流市场浏览其他用户分享的工作流，也可以分享自己的工作流。通过标题栏的市场按钮进入市场。',
   docs_mp_share_title: '分享',
   docs_mp_share_desc: '将你的工作流发布到市场，设置名称、描述、分类和标签。需要登录。',
   docs_mp_import_title: '导入',

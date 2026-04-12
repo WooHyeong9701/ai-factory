@@ -7,9 +7,9 @@ export default {
   signIn: '登录',
 
   newWorkflow: '新工作流',
-  create: '＋ 新建',
-  load: '📂 加载',
-  save: '💾 保存',
+  create: '新建',
+  load: '加载',
+  save: '保存',
   saving: '保存中...',
   saved: '✓ 已保存',
   saveFailed: '✕ 失败',

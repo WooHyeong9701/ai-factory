@@ -163,7 +163,7 @@ export default function OllamaSetup({ onComplete }) {
     <div className="setup-backdrop">
       <div className="setup-panel">
         <div className="setup-header">
-          <span className="setup-logo">⬡</span>
+          <span className="setup-logo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/></svg></span>
           <h1 className="setup-title">AI Factory에 오신 걸 환영합니다</h1>
           <p className="setup-sub">노드 기반 AI 워크플로우 빌더</p>
         </div>
@@ -184,7 +184,7 @@ export default function OllamaSetup({ onComplete }) {
               className={`method-card ${method === 'tunnel' ? 'active' : ''}`}
               onClick={() => setMethod('tunnel')}
             >
-              <span className="method-icon">🌐</span>
+              <span className="method-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
               <span className="method-label">외부 서버 / Tunnel</span>
               <span className="method-desc">Cloudflare Tunnel로 연결</span>
             </button>
@@ -236,7 +236,7 @@ export default function OllamaSetup({ onComplete }) {
     <div className="setup-backdrop">
       <div className="setup-panel">
         <div className="setup-header">
-          <span className="setup-logo">🌐</span>
+          <span className="setup-logo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
           <h1 className="setup-title">Cloudflare Tunnel 설정</h1>
           <p className="setup-sub">3단계로 5분 안에 완료됩니다</p>
         </div>

@@ -130,7 +130,7 @@ export default function AdminDashboard({ onClose }) {
 
           {error && (
             <div className="admin-error">
-              <span>⚠️ {error}</span>
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> {error}</span>
               <button onClick={fetchStats}>다시 시도</button>
             </div>
           )}
@@ -139,12 +139,12 @@ export default function AdminDashboard({ onClose }) {
             <>
               {/* Summary cards */}
               <div className="admin-stats-grid">
-                <StatCard label="오늘 방문자" value={stats.today_visitors} accent="#5b8df8" />
-                <StatCard label="이번 주" value={stats.week_visitors} accent="#a855f7" />
-                <StatCard label="이번 달" value={stats.month_visitors} accent="#06d6a0" />
+                <StatCard label="오늘 방문자" value={stats.today_visitors} accent="#a78bfa" />
+                <StatCard label="이번 주" value={stats.week_visitors} accent="#c4b5fd" />
+                <StatCard label="이번 달" value={stats.month_visitors} accent="#34d399" />
                 <StatCard label="총 방문" value={stats.total_visits} accent="#f59e0b" />
-                <StatCard label="총 사용자" value={stats.total_users} accent="#ec4899" />
-                <StatCard label="총 워크플로우" value={stats.total_workflows} accent="#10b981" />
+                <StatCard label="총 사용자" value={stats.total_users} accent="#f472b6" />
+                <StatCard label="총 워크플로우" value={stats.total_workflows} accent="#34d399" />
               </div>
 
               {/* Recent visits */}

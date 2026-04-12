@@ -9,9 +9,9 @@ export default {
 
   // Workflow toolbar
   newWorkflow: '새 워크플로우',
-  create: '＋ 새로만들기',
-  load: '📂 불러오기',
-  save: '💾 저장',
+  create: '새로 만들기',
+  load: '불러오기',
+  save: '저장',
   saving: '저장 중...',
   saved: '✓ 저장됨',
   saveFailed: '✕ 실패',

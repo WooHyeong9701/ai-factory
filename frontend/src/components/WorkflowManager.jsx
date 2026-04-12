@@ -68,7 +68,7 @@ export default function WorkflowManager({ onLoad, onClose }) {
         <div className="wm-body">
           {!configured && (
             <div className="wm-unconfigured">
-              <div className="wm-unconf-icon">☁️</div>
+              <div className="wm-unconf-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>
               <p className="wm-unconf-title">클라우드 저장소가 연결되지 않았습니다</p>
               <p className="wm-unconf-desc">
                 Cloudflare Worker를 배포한 후<br />
@@ -86,14 +86,14 @@ export default function WorkflowManager({ onLoad, onClose }) {
 
           {configured && error && (
             <div className="wm-error">
-              <span>⚠️ {error}</span>
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> {error}</span>
               <button onClick={fetchList}>다시 시도</button>
             </div>
           )}
 
           {configured && !loading && !error && workflows.length === 0 && (
             <div className="wm-empty">
-              <div className="wm-empty-icon">📂</div>
+              <div className="wm-empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
               <p>저장된 워크플로우가 없습니다</p>
               <p className="wm-empty-sub">현재 워크플로우를 저장하면 여기에 표시됩니다</p>
             </div>

@@ -164,7 +164,7 @@ export default function ModelManager({ onClose, onModelsChange }) {
       <div className="mm-panel">
         <div className="mm-header">
           <div className="mm-title">
-            <span className="mm-title-icon">◈</span>
+            <span className="mm-title-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
             {t('mmTitle')}
           </div>
           <button className="mm-close" onClick={onClose}>✕</button>
@@ -193,7 +193,7 @@ export default function ModelManager({ onClose, onModelsChange }) {
                         <button className="btn-confirm-no" onClick={() => setDeleteConfirm(null)}>{t('mmCancel')}</button>
                       </div>
                     ) : (
-                      <button className="btn-delete" onClick={() => setDeleteConfirm(m.name)}>🗑</button>
+                      <button className="btn-delete" onClick={() => setDeleteConfirm(m.name)}><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4h12"/><path d="M5 4V2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5V4"/><path d="M6.5 7v4M9.5 7v4"/><path d="M3 4l1 9.5a1 1 0 0 0 1 .5h6a1 1 0 0 0 1-.5L13 4"/></svg></button>
                     )}
                   </div>
                 ))}

@@ -37,7 +37,7 @@
 .ram-bar-track {
   width: 60px;
   height: 4px;
-  background: var(--border2);
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -45,7 +45,7 @@
 .ram-bar-fill {
   height: 100%;
   border-radius: 2px;
-  transition: width 0.5s ease, background 0.3s;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ram-bar-track.ok .ram-bar-fill    { background: var(--done); }
@@ -79,20 +79,18 @@
   padding: 2px 6px;
   border-radius: 4px;
   background: rgba(251, 146, 60, 0.08);
-  border: 1px solid rgba(251, 146, 60, 0.2);
 }
 
 .sys-block--swap-critical {
   padding: 2px 6px;
   border-radius: 4px;
   background: rgba(244, 63, 94, 0.1);
-  border: 1px solid rgba(244, 63, 94, 0.3);
   animation: swap-border-pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes swap-border-pulse {
-  0%, 100% { border-color: rgba(244, 63, 94, 0.3); }
-  50%       { border-color: rgba(244, 63, 94, 0.8); }
+  0%, 100% { background: rgba(244, 63, 94, 0.1); }
+  50%       { background: rgba(244, 63, 94, 0.2); }
 }
 
 .swap-alert {
@@ -106,7 +104,6 @@
   font-weight: 700;
   color: var(--error);
   background: rgba(244, 63, 94, 0.12);
-  border: 1px solid rgba(244, 63, 94, 0.4);
   border-radius: 5px;
   padding: 2px 7px;
   animation: badge-flash 0.8s ease-in-out infinite alternate;

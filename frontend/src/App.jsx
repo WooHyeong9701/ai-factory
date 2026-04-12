@@ -93,12 +93,12 @@ const defaultData = {
 const EDGE_DEFAULTS = {
   type: 'customEdge',
   animated: true,
-  style: { stroke: '#5b8df8', strokeWidth: 3 },
+  style: { stroke: '#a78bfa', strokeWidth: 2 },
   markerEnd: {
     type: MarkerType.ArrowClosed,
-    width: 20,
-    height: 20,
-    color: '#5b8df8',
+    width: 18,
+    height: 18,
+    color: '#a78bfa',
   },
 }
 
@@ -705,7 +705,12 @@ export default function App() {
       <header className="header">
         <div className="header-left">
           <div className="logo">
-            <span className="logo-glyph">⬡</span>
+            <span className="logo-glyph">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 1L18.66 6V14L10 19L1.34 14V6L10 1Z" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                <circle cx="10" cy="10" r="3" fill="currentColor" opacity="0.5"/>
+              </svg>
+            </span>
             <span className="logo-text">AI Factory</span>
           </div>
           <div className="header-divider" />
@@ -727,7 +732,10 @@ export default function App() {
             <span className="ollama-label">
               {ollamaOk === true ? t('ollamaConnected') : ollamaOk === false ? t('ollamaOffline') : '...'}
             </span>
-            <span style={{ fontSize: 10, marginLeft: 4, opacity: 0.6 }}>⚙</span>
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ marginLeft: 4, opacity: 0.5 }}>
+              <circle cx="8" cy="8" r="3"/>
+              <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/>
+            </svg>
           </button>
 
           <div className="header-workflow">
@@ -776,7 +784,9 @@ export default function App() {
 
           {nodeSearchOpen ? (
             <div className="node-search">
-              <span className="node-search-icon">⌕</span>
+              <span className="node-search-icon">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l4 4"/></svg>
+              </span>
               <input
                 ref={searchInputRef}
                 className="node-search-input"
@@ -802,7 +812,7 @@ export default function App() {
             </div>
           ) : (
             <button className="node-search-btn" onClick={() => { setNodeSearchOpen(true); setTimeout(() => searchInputRef.current?.focus(), 50) }} title="Search nodes (⌘F)">
-              ⌕
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l4 4"/></svg>
             </button>
           )}
 
@@ -821,7 +831,10 @@ export default function App() {
             onClick={() => setShowNotifPanel(v => !v)}
             title={t('notifications')}
           >
-            🔔
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10 13a2 2 0 0 1-4 0"/>
+              <path d="M3.5 6.5a4.5 4.5 0 0 1 9 0c0 2.5 1 4 1.5 4.5H2c.5-.5 1.5-2 1.5-4.5z"/>
+            </svg>
             {unreadCount > 0 && <span className="notif-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
           </button>
           {showNotifPanel && (
@@ -838,7 +851,11 @@ export default function App() {
             onClick={() => setShowDocs(true)}
             title="Docs"
           >
-            📖
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 2h4.5c1.1 0 2 .67 2 1.5S7.6 5 6.5 5H2V2z"/>
+              <path d="M2 5h5c1.1 0 2 .67 2 1.5S8.1 8 7 8H2V5z"/>
+              <path d="M2 1v14"/>
+            </svg>
           </button>
 
           {isSignedIn && user?.id === import.meta.env.VITE_ADMIN_USER_ID && (
@@ -847,7 +864,12 @@ export default function App() {
               onClick={() => setShowAdmin(true)}
               title="Admin Dashboard"
             >
-              ◆
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <rect x="1" y="1" width="6" height="6" rx="1"/>
+                <rect x="9" y="1" width="6" height="6" rx="1"/>
+                <rect x="1" y="9" width="6" height="6" rx="1"/>
+                <rect x="9" y="9" width="6" height="6" rx="1"/>
+              </svg>
             </button>
           )}
           <div className="auth-area">
@@ -896,7 +918,7 @@ export default function App() {
             panOnDrag={!qKeyHeld}
             selectionMode={SelectionMode.Partial}
           >
-            <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="#1e1e30" />
+            <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="rgba(167,139,250,0.06)" />
             <Controls className="rf-controls" />
             <div className={`minimap-wrapper ${showMinimap ? 'open' : 'closed'}`}>
               <button
@@ -909,21 +931,26 @@ export default function App() {
                 <MiniMap
                   nodeColor={(n) => {
                     if (n.type === 'taskListNode') return '#1a3d30'
-                    if (n.type === 'utilityNode')  return '#78350f'
+                    if (n.type === 'utilityNode')  return '#4a3520'
                     const s = n.data?.status
-                    if (s === 'running') return '#fb923c'
-                    if (s === 'done') return '#06d6a0'
+                    if (s === 'running') return '#f59e0b'
+                    if (s === 'done') return '#34d399'
                     if (s === 'error') return '#f43f5e'
-                    return '#5b8df8'
+                    return '#a78bfa'
                   }}
-                  maskColor="rgba(8,8,16,0.85)"
-                  style={{ background: '#0f0f1a', border: '1px solid #252535', borderTop: 'none' }}
+                  maskColor="rgba(3,0,20,0.88)"
+                  style={{ background: '#0a0a1a', border: '1px solid rgba(255,255,255,0.06)', borderTop: 'none' }}
                 />
               )}
             </div>
             {nodes.length === 0 && (
               <div className="canvas-empty">
-                <div className="empty-icon">⬡</div>
+                <div className="empty-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                  <path d="M24 4L44 15V33L24 44L4 33V15L24 4Z" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                  <circle cx="24" cy="24" r="6" fill="currentColor" opacity="0.15"/>
+                </svg>
+              </div>
                 <p className="empty-title">{t('emptyTitle')}</p>
                 <p className="empty-sub">{t('emptySub')}</p>
               </div>

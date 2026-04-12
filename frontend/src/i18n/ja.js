@@ -7,9 +7,9 @@ export default {
   signIn: 'ログイン',
 
   newWorkflow: '新規ワークフロー',
-  create: '＋ 新規作成',
-  load: '📂 読み込み',
-  save: '💾 保存',
+  create: '新規作成',
+  load: '読み込み',
+  save: '保存',
   saving: '保存中...',
   saved: '✓ 保存済み',
   saveFailed: '✕ 失敗',

@@ -7,9 +7,9 @@ export default {
   signIn: 'Sign In',
 
   newWorkflow: 'New Workflow',
-  create: '＋ New',
-  load: '📂 Load',
-  save: '💾 Save',
+  create: 'New',
+  load: 'Load',
+  save: 'Save',
   saving: 'Saving...',
   saved: '✓ Saved',
   saveFailed: '✕ Failed',

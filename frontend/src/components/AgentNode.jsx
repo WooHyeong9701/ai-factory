@@ -32,7 +32,7 @@ function AgentNode({ data, selected }) {
 
         <div className="node-body">
           <div className="node-model">
-            <span className="model-icon">◈</span>
+            <span className="model-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>
             <span className="model-name">{model || '모델 없음'}</span>
           </div>
         </div>

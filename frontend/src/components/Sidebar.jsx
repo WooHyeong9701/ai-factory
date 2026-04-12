@@ -24,17 +24,130 @@ export function deleteCustomTemplate(id) {
   return list
 }
 
+/* ── SVG Icons ── */
+const IconCheck = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="3" />
+    <path d="M9 12l2 2 4-4" />
+  </svg>
+)
+
+const IconSpeaker = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <path d="M15.54 8.46a5 5 0 010 7.07" />
+    <path d="M19.07 4.93a10 10 0 010 14.14" />
+  </svg>
+)
+
+const IconBrush = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18.37 2.63L14 7l-1.59-1.59a2 2 0 00-2.82 0L8 7l9 9 1.59-1.59a2 2 0 000-2.82L17 10l4.37-4.37a2.12 2.12 0 10-3-3z" />
+    <path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7" />
+  </svg>
+)
+
+const IconSave = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+    <polyline points="17 21 17 13 7 13 7 21" />
+    <polyline points="7 3 7 8 15 8" />
+  </svg>
+)
+
+const IconFilm = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="2.18" />
+    <line x1="7" y1="2" x2="7" y2="22" />
+    <line x1="17" y1="2" x2="17" y2="22" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <line x1="2" y1="7" x2="7" y2="7" />
+    <line x1="2" y1="17" x2="7" y2="17" />
+    <line x1="17" y1="7" x2="22" y2="7" />
+    <line x1="17" y1="17" x2="22" y2="17" />
+  </svg>
+)
+
+const IconUpload = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+    <polyline points="17 8 12 3 7 8" />
+    <line x1="12" y1="3" x2="12" y2="15" />
+  </svg>
+)
+
+const IconBranch = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="6" y1="3" x2="6" y2="15" />
+    <circle cx="18" cy="6" r="3" />
+    <circle cx="6" cy="18" r="3" />
+    <path d="M18 9a9 9 0 01-9 9" />
+  </svg>
+)
+
+const IconRefresh = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 4 23 10 17 10" />
+    <polyline points="1 20 1 14 7 14" />
+    <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+  </svg>
+)
+
+const IconGlobe = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+  </svg>
+)
+
+const IconSend = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="22" y1="2" x2="11" y2="13" />
+    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+  </svg>
+)
+
+const IconHexagon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 16.05V7.95a2 2 0 00-1-1.73l-7-4.03a2 2 0 00-2 0l-7 4.03a2 2 0 00-1 1.73v8.1a2 2 0 001 1.73l7 4.03a2 2 0 002 0l7-4.03a2 2 0 001-1.73z" />
+  </svg>
+)
+
+const IconZap = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+  </svg>
+)
+
+const IconGrid = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="7" height="7" rx="1" />
+    <rect x="14" y="3" width="7" height="7" rx="1" />
+    <rect x="3" y="14" width="7" height="7" rx="1" />
+    <rect x="14" y="14" width="7" height="7" rx="1" />
+  </svg>
+)
+
+const IconCube = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+    <line x1="12" y1="22.08" x2="12" y2="12" />
+  </svg>
+)
+
 const UTILITY_ITEMS = [
-  { labelKey: 'taskList',      icon: '☑',   nodeType: 'taskListNode', kind: null },
-  { labelKey: 'tts',           icon: '🔊',  nodeType: 'utilityNode',  kind: 'tts' },
-  { labelKey: 'imageGen',      icon: '🎨',  nodeType: 'utilityNode',  kind: 'image_gen' },
-  { labelKey: 'fileSave',      icon: '💾',  nodeType: 'utilityNode',  kind: 'file_save' },
-  { labelKey: 'videoCompose',  icon: '🎬',  nodeType: 'utilityNode',  kind: 'video_compose' },
-  { labelKey: 'youtubeUpload', icon: '▶',   nodeType: 'utilityNode',  kind: 'youtube_upload' },
-  { labelKey: 'branch',        icon: '⑃',   nodeType: 'utilityNode',  kind: 'branch' },
-  { labelKey: 'loop',          icon: '🔁',  nodeType: 'utilityNode',  kind: 'loop' },
-  { labelKey: 'apiRequest',    icon: '🌐',  nodeType: 'utilityNode',  kind: 'api_request' },
-  { labelKey: 'webhookOut',    icon: '📤',  nodeType: 'utilityNode',  kind: 'webhook_out' },
+  { labelKey: 'taskList',      icon: <IconCheck />,   nodeType: 'taskListNode', kind: null },
+  { labelKey: 'tts',           icon: <IconSpeaker />, nodeType: 'utilityNode',  kind: 'tts' },
+  { labelKey: 'imageGen',      icon: <IconBrush />,   nodeType: 'utilityNode',  kind: 'image_gen' },
+  { labelKey: 'fileSave',      icon: <IconSave />,    nodeType: 'utilityNode',  kind: 'file_save' },
+  { labelKey: 'videoCompose',  icon: <IconFilm />,    nodeType: 'utilityNode',  kind: 'video_compose' },
+  { labelKey: 'youtubeUpload', icon: <IconUpload />,  nodeType: 'utilityNode',  kind: 'youtube_upload' },
+  { labelKey: 'branch',        icon: <IconBranch />,  nodeType: 'utilityNode',  kind: 'branch' },
+  { labelKey: 'loop',          icon: <IconRefresh />, nodeType: 'utilityNode',  kind: 'loop' },
+  { labelKey: 'apiRequest',    icon: <IconGlobe />,   nodeType: 'utilityNode',  kind: 'api_request' },
+  { labelKey: 'webhookOut',    icon: <IconSend />,    nodeType: 'utilityNode',  kind: 'webhook_out' },
 ]
 
 function getDefaultConfig(kind) {
@@ -99,7 +212,7 @@ export default function Sidebar({ onOpenModelManager, onOpenMarketplace }) {
               return_type: 'text',
             })}
           >
-            <span className="sb-node-icon">⬡</span>
+            <span className="sb-node-icon"><IconHexagon /></span>
             <span className="sb-node-label">{t('nodeLabel')}</span>
           </div>
         </div>
@@ -132,7 +245,7 @@ export default function Sidebar({ onOpenModelManager, onOpenMarketplace }) {
                   seed: tpl.seed,
                 })}
               >
-                <span className="sb-item-icon">⚡</span>
+                <span className="sb-item-icon"><IconZap /></span>
                 <span className="sb-item-label">{tpl.name || 'Custom'}</span>
                 {confirmDeleteId === tpl.id ? (
                   <span className="sb-del-confirm">
@@ -164,7 +277,6 @@ export default function Sidebar({ onOpenModelManager, onOpenMarketplace }) {
                   key={item.labelKey}
                   className={`sb-item ${isTask ? 'sb-item--task' : ''} ${isUtil ? 'sb-item--util' : ''}`}
                   draggable
-                  style={item.kind ? { '--ut-accent': UTILITY_KINDS[item.kind]?.accent } : {}}
                   onDragStart={(e) => onDragStart(e, {
                     nodeType: item.nodeType,
                     name: label,
@@ -185,10 +297,10 @@ export default function Sidebar({ onOpenModelManager, onOpenMarketplace }) {
       <div className="sb-bottom">
         <div className="sb-bottom-row">
           <button className="sb-model-btn" onClick={onOpenModelManager}>
-            <span>◈</span> {t('modelManagerBtn')}
+            <IconCube /> {t('modelManagerBtn')}
           </button>
           <button className="sb-market-btn" onClick={onOpenMarketplace} title={t('mp_title')}>
-            🏪
+            <IconGrid />
           </button>
         </div>
       </div>

@@ -28,7 +28,7 @@ export default function SaveDialog({ currentName, onSave, onClose }) {
     <div className="sd-backdrop" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="sd-panel">
         <div className="sd-header">
-          <h2 className="sd-title">💾 워크플로우 저장</h2>
+          <h2 className="sd-title">워크플로우 저장</h2>
         </div>
         <div className="sd-body">
           <label className="sd-label">워크플로우 이름</label>

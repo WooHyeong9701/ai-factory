@@ -106,7 +106,7 @@ export default {
 
   // Marketplace
   docs_nav_marketplace: '워크플로우 마켓',
-  docs_marketplace_intro: '워크플로우 마켓에서 다른 사용자들이 만든 워크플로우를 탐색하고, 내 워크플로우를 공유할 수 있습니다. 헤더의 🏪 버튼으로 마켓에 접속하세요.',
+  docs_marketplace_intro: '워크플로우 마켓에서 다른 사용자들이 만든 워크플로우를 탐색하고, 내 워크플로우를 공유할 수 있습니다. 헤더의 마켓 버튼으로 마켓에 접속하세요.',
   docs_mp_share_title: '공유하기',
   docs_mp_share_desc: '내 워크플로우를 마켓에 공유하세요. 이름, 설명, 카테고리, 태그를 설정할 수 있습니다. 로그인이 필요합니다.',
   docs_mp_import_title: '가져오기',

@@ -3,7 +3,7 @@
   pointer-events: all;
   /* hidden by default, shown on hover */
   opacity: 0;
-  transition: opacity 0.15s;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* show when the parent .react-flow__edge is hovered or selected */
@@ -16,7 +16,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #1a1a2e;
+  background: #0a0a1a;
   border: 1px solid #f43f5e;
   color: #f43f5e;
   font-size: 10px;
@@ -25,8 +25,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, transform 0.15s;
+  transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
+  box-shadow: 0 2px 8px rgba(3, 0, 20, 0.5);
 }
 
 .edge-delete-btn:hover {

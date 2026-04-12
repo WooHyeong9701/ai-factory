@@ -107,7 +107,7 @@ export default {
   // Footer
   // Marketplace
   docs_nav_marketplace: 'Workflow Market',
-  docs_marketplace_intro: 'Browse workflows shared by other users and share your own in the Workflow Market. Access it via the 🏪 button in the header.',
+  docs_marketplace_intro: 'Browse workflows shared by other users and share your own in the Workflow Market. Access it via the Market button in the header.',
   docs_mp_share_title: 'Share',
   docs_mp_share_desc: 'Publish your workflow to the market with a name, description, category, and tags. Sign-in required.',
   docs_mp_import_title: 'Import',

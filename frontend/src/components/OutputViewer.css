@@ -1,13 +1,13 @@
 .ov-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(3, 0, 20, 0.72);
   z-index: 200;
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px);
-  animation: ov-in 0.15s ease;
+  backdrop-filter: blur(16px);
+  animation: ov-in 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes ov-in {
@@ -20,14 +20,15 @@
   max-width: calc(100vw - 32px);
   height: 580px;
   max-height: calc(100vh - 64px);
-  background: var(--panel2);
-  border: 1px solid var(--border2);
-  border-radius: 14px;
+  background: rgba(10, 10, 26, 0.72);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
-  animation: ov-panel-in 0.15s ease;
+  box-shadow: 0 24px 80px rgba(3, 0, 20, 0.7), 0 0 0 1px rgba(167, 139, 250, 0.08);
+  animation: ov-panel-in 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes ov-panel-in {
@@ -41,7 +42,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   flex-shrink: 0;
   gap: 12px;
 }
@@ -73,7 +74,7 @@
   border-radius: 5px;
 }
 .ov-status-label.status-running { background: rgba(251,146,60,0.15); color: var(--running); }
-.ov-status-label.status-done    { background: rgba(6,214,160,0.12); color: var(--done); }
+.ov-status-label.status-done    { background: rgba(52,211,153,0.12); color: var(--done); }
 .ov-status-label.status-error   { background: rgba(244,63,94,0.12); color: var(--error); }
 
 .ov-header-right {
@@ -86,18 +87,17 @@
 .ov-btn-copy {
   padding: 4px 10px;
   background: transparent;
-  border: 1px solid var(--border2);
+  border: none;
   border-radius: 6px;
   color: var(--text2);
   font-size: 11px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .ov-btn-copy:hover {
-  border-color: var(--accent);
   color: var(--accent);
-  background: rgba(91,141,248,0.08);
+  background: rgba(167, 139, 250, 0.08);
 }
 
 .ov-shortcut {
@@ -110,20 +110,19 @@
   width: 26px;
   height: 26px;
   background: transparent;
-  border: 1px solid var(--border2);
-  border-radius: 7px;
+  border: none;
+  border-radius: 8px;
   color: var(--text3);
   cursor: pointer;
   font-size: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .ov-close:hover {
-  background: var(--panel);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text);
-  border-color: var(--text3);
 }
 
 /* Body */
@@ -155,7 +154,7 @@
 /* Footer */
 .ov-footer {
   padding: 10px 20px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   flex-shrink: 0;
 }
 
