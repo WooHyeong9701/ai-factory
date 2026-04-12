@@ -39,6 +39,7 @@ import SystemMonitor from './components/SystemMonitor'
 import NotificationPanel from './components/NotificationPanel'
 import AdminDashboard from './components/AdminDashboard'
 import DocsPage from './components/DocsPage'
+import Marketplace, { ShareDialog } from './components/Marketplace'
 import { saveWorkflow, getWorkflow, isConfigured } from './workflowApi'
 import { useI18n, LANGUAGES } from './i18n/index'
 
@@ -129,6 +130,8 @@ export default function App() {
   const [saveStatus, setSaveStatus] = useState(null) // null | 'saving' | 'saved' | 'error'
   const [showAdmin, setShowAdmin] = useState(false)
   const [showDocs, setShowDocs] = useState(false)
+  const [showMarketplace, setShowMarketplace] = useState(false)
+  const [showShareDialog, setShowShareDialog] = useState(false)
   const [nodeSearch, setNodeSearch] = useState('')
   const [nodeSearchOpen, setNodeSearchOpen] = useState(false)
   const [nodeSearchIdx, setNodeSearchIdx] = useState(0)
@@ -755,6 +758,24 @@ export default function App() {
             </div>
           </div>
 
+          <button
+            className="market-btn"
+            onClick={() => setShowMarketplace(true)}
+            title={t('mp_title')}
+          >
+            🏪
+          </button>
+
+          {isSignedIn && nodes.length > 0 && (
+            <button
+              className="share-btn"
+              onClick={() => setShowShareDialog(true)}
+              title={t('mp_shareBtn')}
+            >
+              📤 {t('mp_shareBtn')}
+            </button>
+          )}
+
           {nodeSearchOpen ? (
             <div className="node-search">
               <span className="node-search-icon">⌕</span>
@@ -957,6 +978,39 @@ export default function App() {
 
       {showDocs && (
         <DocsPage onClose={() => setShowDocs(false)} />
+      )}
+
+      {showMarketplace && (
+        <Marketplace
+          onClose={() => setShowMarketplace(false)}
+          onImport={(wf) => {
+            setNodes(wf.nodes || [])
+            setEdges(wf.edges || [])
+            setCurrentWorkflowId(null)
+            setCurrentWorkflowName(wf.name || '가져온 워크플로우')
+            setSelectedNodeId(null)
+            setFinalOutput('')
+          }}
+          isSignedIn={isSignedIn}
+          getToken={async () => await getToken()}
+        />
+      )}
+
+      {showShareDialog && (
+        <ShareDialog
+          nodes={nodes}
+          edges={edges}
+          workflowId={currentWorkflowId}
+          workflowName={currentWorkflowName}
+          userName={user?.fullName || user?.firstName || ''}
+          userAvatar={user?.imageUrl || ''}
+          getToken={async () => await getToken()}
+          onClose={() => setShowShareDialog(false)}
+          onPublished={() => {
+            addNotification('system', '워크플로우가 마켓에 공유되었습니다!')
+          }}
+          t={t}
+        />
       )}
 
       <RunPanel

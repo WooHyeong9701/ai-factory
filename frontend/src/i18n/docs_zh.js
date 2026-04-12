@@ -105,5 +105,16 @@ export default {
   docs_set_save_desc: '登录后可跨设备保存和加载工作流。',
 
   // Footer
+  // Marketplace
+  docs_nav_marketplace: '工作流市场',
+  docs_marketplace_intro: '在工作流市场浏览其他用户分享的工作流，也可以分享自己的工作流。通过标题栏的 🏪 按钮进入市场。',
+  docs_mp_share_title: '分享',
+  docs_mp_share_desc: '将你的工作流发布到市场，设置名称、描述、分类和标签。需要登录。',
+  docs_mp_import_title: '导入',
+  docs_mp_import_desc: '点击任意工作流，然后点击"导入"即可直接加载到你的画布上。',
+  docs_mp_like_title: '点赞',
+  docs_mp_like_desc: '为喜欢的工作流点赞。点赞数会影响热门排序。',
+  docs_mp_tip: '导入的工作流会复制到你的画布上。原始工作流不受影响，请放心修改。',
+
   docs_footer: '构建一切，连接万物。',
 }

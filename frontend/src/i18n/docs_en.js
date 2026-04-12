@@ -105,5 +105,16 @@ export default {
   docs_set_save_desc: 'Sign in to save and load workflows across devices.',
 
   // Footer
+  // Marketplace
+  docs_nav_marketplace: 'Workflow Market',
+  docs_marketplace_intro: 'Browse workflows shared by other users and share your own in the Workflow Market. Access it via the 🏪 button in the header.',
+  docs_mp_share_title: 'Share',
+  docs_mp_share_desc: 'Publish your workflow to the market with a name, description, category, and tags. Sign-in required.',
+  docs_mp_import_title: 'Import',
+  docs_mp_import_desc: 'Click any workflow and hit "Import" to load it directly onto your canvas.',
+  docs_mp_like_title: 'Like',
+  docs_mp_like_desc: 'Like workflows you enjoy. Likes affect the popularity ranking.',
+  docs_mp_tip: 'Imported workflows are copied to your canvas. The original is not affected, so feel free to modify.',
+
   docs_footer: 'Build anything. Connect everything.',
 }

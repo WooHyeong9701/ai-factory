@@ -105,5 +105,16 @@ export default {
   docs_set_save_desc: 'ログインしてデバイス間でワークフローを保存・読み込み。',
 
   // Footer
+  // Marketplace
+  docs_nav_marketplace: 'ワークフローマーケット',
+  docs_marketplace_intro: 'ワークフローマーケットで他のユーザーが共有したワークフローを閲覧し、自分のワークフローを共有できます。ヘッダーの 🏪 ボタンからアクセスしてください。',
+  docs_mp_share_title: '共有する',
+  docs_mp_share_desc: 'ワークフローをマーケットに公開します。名前、説明、カテゴリ、タグを設定できます。ログインが必要です。',
+  docs_mp_import_title: 'インポート',
+  docs_mp_import_desc: '気に入ったワークフローをクリックして「インポート」を押すと、キャンバスに直接読み込まれます。',
+  docs_mp_like_title: 'いいね',
+  docs_mp_like_desc: '気に入ったワークフローにいいねを押してください。人気順ランキングに反映されます。',
+  docs_mp_tip: 'インポートしたワークフローはキャンバスにコピーされます。元のワークフローには影響がないので、自由に編集してください。',
+
   docs_footer: '何でも作り、すべてをつなげよう。',
 }

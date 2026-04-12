@@ -9,6 +9,7 @@ const SECTIONS = [
   { id: 'custom', icon: '⚡' },
   { id: 'utility', icon: '🔧' },
   { id: 'connectors', icon: '🌐' },
+  { id: 'marketplace', icon: '🏪' },
   { id: 'workflow', icon: '▶' },
   { id: 'shortcuts', icon: '⌨' },
   { id: 'settings', icon: '⚙' },
@@ -217,6 +218,33 @@ export default function DocsPage({ onClose }) {
             <div className="docs-tip-box">
               <span className="docs-tip-icon">🔑</span>
               <p>{t('docs_connectors_jsonpath')}</p>
+            </div>
+          </section>
+
+          {/* Marketplace */}
+          <section id="docs-marketplace" className="docs-section">
+            <h2>{t('docs_nav_marketplace')}</h2>
+            <p>{t('docs_marketplace_intro')}</p>
+            <div className="docs-card-grid">
+              <div className="docs-card">
+                <span className="docs-card-icon">📤</span>
+                <h3>{t('docs_mp_share_title')}</h3>
+                <p>{t('docs_mp_share_desc')}</p>
+              </div>
+              <div className="docs-card">
+                <span className="docs-card-icon">📥</span>
+                <h3>{t('docs_mp_import_title')}</h3>
+                <p>{t('docs_mp_import_desc')}</p>
+              </div>
+              <div className="docs-card">
+                <span className="docs-card-icon">❤️</span>
+                <h3>{t('docs_mp_like_title')}</h3>
+                <p>{t('docs_mp_like_desc')}</p>
+              </div>
+            </div>
+            <div className="docs-tip-box">
+              <span className="docs-tip-icon">💡</span>
+              <p>{t('docs_mp_tip')}</p>
             </div>
           </section>
 

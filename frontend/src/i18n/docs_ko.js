@@ -104,6 +104,17 @@ export default {
   docs_set_save: '클라우드 저장',
   docs_set_save_desc: '로그인하여 여러 기기에서 워크플로우를 저장하고 불러올 수 있습니다.',
 
+  // Marketplace
+  docs_nav_marketplace: '워크플로우 마켓',
+  docs_marketplace_intro: '워크플로우 마켓에서 다른 사용자들이 만든 워크플로우를 탐색하고, 내 워크플로우를 공유할 수 있습니다. 헤더의 🏪 버튼으로 마켓에 접속하세요.',
+  docs_mp_share_title: '공유하기',
+  docs_mp_share_desc: '내 워크플로우를 마켓에 공유하세요. 이름, 설명, 카테고리, 태그를 설정할 수 있습니다. 로그인이 필요합니다.',
+  docs_mp_import_title: '가져오기',
+  docs_mp_import_desc: '마음에 드는 워크플로우를 클릭하고 "가져오기"를 누르면 내 캔버스에 즉시 적용됩니다.',
+  docs_mp_like_title: '좋아요',
+  docs_mp_like_desc: '마음에 드는 워크플로우에 좋아요를 눌러주세요. 인기순 정렬에 반영됩니다.',
+  docs_mp_tip: '마켓에서 가져온 워크플로우는 내 캔버스에 복사됩니다. 원본에는 영향이 없으니 자유롭게 수정하세요.',
+
   // Footer
   docs_footer: '무엇이든 만들고, 모든 것을 연결하세요.',
 }

@@ -278,6 +278,42 @@
   color: #e0e0f4;
 }
 
+.market-btn {
+  background: none;
+  border: 1px solid #252540;
+  color: #888;
+  width: 32px;
+  height: 28px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.market-btn:hover {
+  background: rgba(91, 141, 248, 0.1);
+  border-color: #5b8df8;
+  transform: scale(1.05);
+}
+
+.share-btn {
+  background: rgba(91, 141, 248, 0.08);
+  border: 1px solid #5b8df8;
+  color: #5b8df8;
+  padding: 4px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.share-btn:hover {
+  background: rgba(91, 141, 248, 0.18);
+}
+
 .docs-btn {
   background: none;
   border: 1px solid #252540;
