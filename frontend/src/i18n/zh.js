@@ -105,12 +105,15 @@ export default {
 
   savedWorkflows: '已保存的工作流',
   cloudNotConnected: '云存储未连接',
+  cloudNotConnectedDesc: '部署 Cloudflare Worker 后，设置 VITE_CF_WORKER_URL 环境变量',
   loading: '加载中...',
   noSavedWorkflows: '没有已保存的工作流',
   noSavedSub: '保存当前工作流后将显示在此处',
+  confirmDeleteWf: '删除工作流"{name}"？',
   deleteFailed: '删除失败',
   loadFailed: '无法加载工作流',
   retry: '重试',
+  deleteTitle: '删除',
 
   saveWorkflow: '保存工作流',
   workflowName: '工作流名称',

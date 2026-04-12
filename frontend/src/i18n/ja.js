@@ -105,12 +105,15 @@ export default {
 
   savedWorkflows: '保存済みワークフロー',
   cloudNotConnected: 'クラウドストレージが接続されていません',
+  cloudNotConnectedDesc: 'Cloudflare Worker をデプロイし、VITE_CF_WORKER_URL 環境変数を設定してください',
   loading: '読み込み中...',
   noSavedWorkflows: '保存されたワークフローはありません',
   noSavedSub: '現在のワークフローを保存するとここに表示されます',
+  confirmDeleteWf: 'ワークフロー「{name}」を削除しますか？',
   deleteFailed: '削除に失敗しました',
   loadFailed: 'ワークフローの読み込みに失敗しました',
   retry: '再試行',
+  deleteTitle: '削除',
 
   saveWorkflow: 'ワークフロー保存',
   workflowName: 'ワークフロー名',

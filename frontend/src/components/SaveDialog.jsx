@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
+import { useI18n } from '../i18n/index'
 import './SaveDialog.css'
 
 export default function SaveDialog({ currentName, onSave, onClose }) {
+  const { t } = useI18n()
   const [name, setName] = useState(currentName || '')
   const [saving, setSaving] = useState(false)
   const inputRef = useRef(null)
@@ -28,10 +30,10 @@ export default function SaveDialog({ currentName, onSave, onClose }) {
     <div className="sd-backdrop" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="sd-panel">
         <div className="sd-header">
-          <h2 className="sd-title">워크플로우 저장</h2>
+          <h2 className="sd-title">{t('saveWorkflow')}</h2>
         </div>
         <div className="sd-body">
-          <label className="sd-label">워크플로우 이름</label>
+          <label className="sd-label">{t('workflowName')}</label>
           <input
             ref={inputRef}
             className="sd-input"
@@ -39,18 +41,18 @@ export default function SaveDialog({ currentName, onSave, onClose }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-            placeholder="예: YouTube Shorts 자동화"
+            placeholder={t('saveNamePlaceholder')}
             maxLength={60}
           />
         </div>
         <div className="sd-footer">
-          <button className="sd-btn-cancel" onClick={onClose}>취소</button>
+          <button className="sd-btn-cancel" onClick={onClose}>{t('cancel')}</button>
           <button
             className="sd-btn-save"
             onClick={handleSave}
             disabled={!name.trim() || saving}
           >
-            {saving ? '저장 중...' : '저장'}
+            {saving ? t('saving') : t('save')}
           </button>
         </div>
       </div>

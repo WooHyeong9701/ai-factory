@@ -1,19 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import { listWorkflows, deleteWorkflow, isConfigured } from '../workflowApi'
+import { useI18n } from '../i18n/index'
 import './WorkflowManager.css'
 
-function timeAgo(ts) {
-  const diff = Date.now() - ts
-  const m = Math.floor(diff / 60000)
-  if (m < 1)  return '방금 전'
-  if (m < 60) return `${m}분 전`
-  const h = Math.floor(m / 60)
-  if (h < 24) return `${h}시간 전`
-  return `${Math.floor(h / 24)}일 전`
-}
-
 export default function WorkflowManager({ onLoad, onClose }) {
+  const { t } = useI18n()
   const { getToken } = useAuth()
   const [workflows, setWorkflows] = useState([])
   const [loading, setLoading]     = useState(true)
@@ -21,6 +13,16 @@ export default function WorkflowManager({ onLoad, onClose }) {
   const [error, setError]         = useState(null)
 
   const configured = isConfigured()
+
+  const timeAgo = useCallback((ts) => {
+    const diff = Date.now() - ts
+    const m = Math.floor(diff / 60000)
+    if (m < 1) return t('justNow')
+    if (m < 60) return t('minutesAgo').replace('{n}', m)
+    const h = Math.floor(m / 60)
+    if (h < 24) return t('hoursAgo').replace('{n}', h)
+    return t('daysAgo').replace('{n}', Math.floor(h / 24))
+  }, [t])
 
   const fetchList = useCallback(async () => {
     if (!configured) { setLoading(false); return }
@@ -44,14 +46,14 @@ export default function WorkflowManager({ onLoad, onClose }) {
   }, [fetchList, onClose])
 
   const handleDelete = async (id, name) => {
-    if (!window.confirm(`"${name}" 워크플로우를 삭제할까요?`)) return
+    if (!window.confirm(t('confirmDeleteWf').replace('{name}', name))) return
     setDeleting(id)
     try {
       const token = await getToken()
       await deleteWorkflow(id, token)
       setWorkflows((wfs) => wfs.filter((w) => w.id !== id))
     } catch {
-      alert('삭제 실패')
+      alert(t('deleteFailed'))
     } finally {
       setDeleting(null)
     }
@@ -61,41 +63,40 @@ export default function WorkflowManager({ onLoad, onClose }) {
     <div className="wm-backdrop" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="wm-panel">
         <div className="wm-header">
-          <h2 className="wm-title">저장된 워크플로우</h2>
-          <button className="wm-close" onClick={onClose}>✕</button>
+          <h2 className="wm-title">{t('savedWorkflows')}</h2>
+          <button className="wm-close" onClick={onClose}>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+          </button>
         </div>
 
         <div className="wm-body">
           {!configured && (
             <div className="wm-unconfigured">
               <div className="wm-unconf-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>
-              <p className="wm-unconf-title">클라우드 저장소가 연결되지 않았습니다</p>
-              <p className="wm-unconf-desc">
-                Cloudflare Worker를 배포한 후<br />
-                <code>VITE_CF_WORKER_URL</code> 환경변수를 설정하세요
-              </p>
+              <p className="wm-unconf-title">{t('cloudNotConnected')}</p>
+              <p className="wm-unconf-desc">{t('cloudNotConnectedDesc')}</p>
             </div>
           )}
 
           {configured && loading && (
             <div className="wm-loading">
               <span className="wm-spinner" />
-              <span>불러오는 중...</span>
+              <span>{t('loading')}</span>
             </div>
           )}
 
           {configured && error && (
             <div className="wm-error">
               <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> {error}</span>
-              <button onClick={fetchList}>다시 시도</button>
+              <button onClick={fetchList}>{t('retry')}</button>
             </div>
           )}
 
           {configured && !loading && !error && workflows.length === 0 && (
             <div className="wm-empty">
               <div className="wm-empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
-              <p>저장된 워크플로우가 없습니다</p>
-              <p className="wm-empty-sub">현재 워크플로우를 저장하면 여기에 표시됩니다</p>
+              <p>{t('noSavedWorkflows')}</p>
+              <p className="wm-empty-sub">{t('noSavedSub')}</p>
             </div>
           )}
 
@@ -111,9 +112,9 @@ export default function WorkflowManager({ onLoad, onClose }) {
                     className="wm-item-delete"
                     onClick={() => handleDelete(wf.id, wf.name)}
                     disabled={deleting === wf.id}
-                    title="삭제"
+                    title={t('deleteTitle')}
                   >
-                    {deleting === wf.id ? '…' : '✕'}
+                    {deleting === wf.id ? '…' : <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>}
                   </button>
                 </div>
               ))}

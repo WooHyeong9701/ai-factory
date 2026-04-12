@@ -113,12 +113,15 @@ export default {
   // Workflow manager
   savedWorkflows: '저장된 워크플로우',
   cloudNotConnected: '클라우드 저장소가 연결되지 않았습니다',
+  cloudNotConnectedDesc: 'Cloudflare Worker를 배포한 후 VITE_CF_WORKER_URL 환경변수를 설정하세요',
   loading: '불러오는 중...',
   noSavedWorkflows: '저장된 워크플로우가 없습니다',
   noSavedSub: '현재 워크플로우를 저장하면 여기에 표시됩니다',
+  confirmDeleteWf: '"{name}" 워크플로우를 삭제할까요?',
   deleteFailed: '삭제 실패',
   loadFailed: '워크플로우를 불러오지 못했습니다',
   retry: '다시 시도',
+  deleteTitle: '삭제',
 
   // Save dialog
   saveWorkflow: '워크플로우 저장',
