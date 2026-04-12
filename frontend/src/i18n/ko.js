@@ -149,7 +149,7 @@ export default {
   dragToCanvas: '드래그하여 캔버스에 배치',
   aiAgent: 'AI 에이전트',
   utilityNodes: '유틸리티 노드',
-  modelManagerBtn: '모델 관리 / 추가',
+  modelManagerBtn: '모델 관리',
   handleDragTip: '노드 핸들에서 드래그하여 연결하세요',
 
   // Run panel

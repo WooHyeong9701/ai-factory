@@ -758,21 +758,17 @@ export default function App() {
             </div>
           </div>
 
-          <button
-            className="market-btn"
-            onClick={() => setShowMarketplace(true)}
-            title={t('mp_title')}
-          >
-            🏪
-          </button>
-
           {isSignedIn && nodes.length > 0 && (
             <button
               className="share-btn"
               onClick={() => setShowShareDialog(true)}
               title={t('mp_shareBtn')}
             >
-              📤 {t('mp_shareBtn')}
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8 12V3" />
+                <path d="M4 6l4-4 4 4" />
+                <path d="M2 14h12" />
+              </svg>
             </button>
           )}
 
@@ -872,7 +868,7 @@ export default function App() {
       </header>
 
       <div className="workspace">
-        <Sidebar onOpenModelManager={() => setShowModelManager(true)} />
+        <Sidebar onOpenModelManager={() => setShowModelManager(true)} onOpenMarketplace={() => setShowMarketplace(true)} />
 
         <div className={`canvas-wrap${qKeyHeld ? ' select-mode' : ''}`}>
           <ReactFlow

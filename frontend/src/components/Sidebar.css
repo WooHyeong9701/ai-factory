@@ -277,40 +277,43 @@
   gap: 6px;
 }
 
-.sb-model-btn {
+.sb-bottom-row {
+  display: flex;
+  gap: 6px;
+}
+
+.sb-model-btn,
+.sb-market-btn {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 7px;
-  width: 100%;
-  padding: 7px 10px;
-  background: rgba(91, 141, 248, 0.08);
-  border: 1px solid rgba(91, 141, 248, 0.2);
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 6px;
   border-radius: 8px;
-  color: var(--accent);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s;
+  white-space: nowrap;
+}
+.sb-model-btn {
+  background: rgba(91, 141, 248, 0.08);
+  border: 1px solid rgba(91, 141, 248, 0.2);
+  color: var(--accent);
 }
 .sb-model-btn:hover {
   background: rgba(91, 141, 248, 0.15);
   border-color: var(--accent);
 }
-
-.sb-tip {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  background: rgba(91, 141, 248, 0.05);
-  border: 1px solid rgba(91, 141, 248, 0.12);
-  border-radius: 8px;
-  padding: 7px 8px;
+.sb-market-btn {
+  background: rgba(255, 165, 0, 0.08);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  color: #f0a030;
 }
-.sb-tip-icon { font-size: 12px; flex-shrink: 0; }
-.sb-tip span:last-child {
-  font-size: 10px;
-  color: var(--text3);
-  line-height: 1.4;
+.sb-market-btn:hover {
+  background: rgba(255, 165, 0, 0.15);
+  border-color: #f0a030;
 }
 
 /* ═══════════════════════════════════════════════════

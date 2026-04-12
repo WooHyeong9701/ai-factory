@@ -53,7 +53,7 @@ function onDragStart(event, template) {
   event.dataTransfer.effectAllowed = 'move'
 }
 
-export default function Sidebar({ onOpenModelManager }) {
+export default function Sidebar({ onOpenModelManager, onOpenMarketplace }) {
   const { t } = useI18n()
   const [expanded, setExpanded] = useState(false)
   const [customTemplates, setCustomTemplates] = useState(loadCustomTemplates)
@@ -183,12 +183,13 @@ export default function Sidebar({ onOpenModelManager }) {
 
       {/* ── 하단 고정 ── */}
       <div className="sb-bottom">
-        <button className="sb-model-btn" onClick={onOpenModelManager}>
-          <span>◈</span> {t('modelManagerBtn')}
-        </button>
-        <div className="sb-tip">
-          <span className="sb-tip-icon">💡</span>
-          <span>{t('handleDragTip')}</span>
+        <div className="sb-bottom-row">
+          <button className="sb-model-btn" onClick={onOpenModelManager}>
+            <span>◈</span> {t('modelManagerBtn')}
+          </button>
+          <button className="sb-market-btn" onClick={onOpenMarketplace}>
+            <span>🏪</span> {t('mp_title')}
+          </button>
         </div>
       </div>
     </aside>
