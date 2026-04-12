@@ -637,6 +637,17 @@ export default function App() {
   const closeModelManager = useCallback(() => setShowModelManager(false), [])
 
   // ── Workflow save / load ──────────────────────────────────────────────────
+  const [pendingNew, setPendingNew] = useState(false)
+
+  const resetToNewWorkflow = useCallback(() => {
+    setNodes([])
+    setEdges([])
+    setCurrentWorkflowId(null)
+    setCurrentWorkflowName('새 워크플로우')
+    setSelectedNodeId(null)
+    setFinalOutput('')
+  }, [setNodes, setEdges])
+
   const handleSave = useCallback(async (name) => {
     setSaveStatus('saving')
     try {
@@ -676,30 +687,17 @@ export default function App() {
       setFinalOutput('')
       setShowWorkflowManager(false)
     } catch {
-      alert('워크플로우를 불러오지 못했습니다')
+      alert(t('loadFailed'))
     }
-  }, [setNodes, setEdges, getToken])
-
-  const resetToNewWorkflow = useCallback(() => {
-    setNodes([])
-    setEdges([])
-    setCurrentWorkflowId(null)
-    setCurrentWorkflowName('새 워크플로우')
-    setSelectedNodeId(null)
-    setFinalOutput('')
-  }, [setNodes, setEdges])
-
-  const [pendingNew, setPendingNew] = useState(false)
+  }, [setNodes, setEdges, getToken, t])
 
   const handleNewWorkflow = useCallback(() => {
     if (nodes.length === 0) {
       resetToNewWorkflow()
       return
     }
-    // 노드가 있으면 저장 여부를 물어봄
     const answer = window.confirm(t('confirmNewWorkflow'))
     if (answer) {
-      // "확인" = 저장하겠다 → SaveDialog 열고, 저장 완료 후 새 워크플로우
       if (!isSignedIn) {
         alert(t('saveRequiresLogin'))
         return
@@ -711,7 +709,6 @@ export default function App() {
       setPendingNew(true)
       setShowSaveDialog(true)
     } else {
-      // "취소" = 저장 안 하고 바로 새 워크플로우
       resetToNewWorkflow()
     }
   }, [nodes, resetToNewWorkflow, isSignedIn, t])
