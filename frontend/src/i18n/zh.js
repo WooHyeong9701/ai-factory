@@ -294,4 +294,5 @@ export default {
   mp_noSharedSub: '创建工作流并分享到社区吧！',
   mp_confirmDelete: '删除这个分享的工作流？',
   mp_shareBtn: '分享到市场',
+  mp_noNodesToShare: '没有可分享的节点。请先创建工作流。',
 }

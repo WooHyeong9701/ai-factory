@@ -282,8 +282,7 @@
   gap: 6px;
 }
 
-.sb-model-btn,
-.sb-market-btn {
+.sb-model-btn {
   flex: 1;
   display: flex;
   align-items: center;
@@ -296,8 +295,6 @@
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
-}
-.sb-model-btn {
   background: rgba(91, 141, 248, 0.08);
   border: 1px solid rgba(91, 141, 248, 0.2);
   color: var(--accent);
@@ -307,6 +304,16 @@
   border-color: var(--accent);
 }
 .sb-market-btn {
+  flex-shrink: 0;
+  width: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 0;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
   background: rgba(255, 165, 0, 0.08);
   border: 1px solid rgba(255, 165, 0, 0.2);
   color: #f0a030;

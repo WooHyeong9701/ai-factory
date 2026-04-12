@@ -294,4 +294,5 @@ export default {
   mp_noSharedSub: 'ワークフローを作成してコミュニティに共有しましょう！',
   mp_confirmDelete: 'この共有ワークフローを削除しますか？',
   mp_shareBtn: 'マーケットに共有',
+  mp_noNodesToShare: '共有するノードがありません。まずワークフローを作成してください。',
 }

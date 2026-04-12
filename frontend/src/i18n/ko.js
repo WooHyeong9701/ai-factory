@@ -309,4 +309,5 @@ export default {
   mp_noSharedSub: '워크플로우를 만들고 마켓에 공유해보세요!',
   mp_confirmDelete: '이 공유 워크플로우를 삭제할까요?',
   mp_shareBtn: '마켓에 공유',
+  mp_noNodesToShare: '공유할 노드가 없습니다. 먼저 워크플로우를 만들어주세요.',
 }

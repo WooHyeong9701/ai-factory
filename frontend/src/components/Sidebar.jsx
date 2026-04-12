@@ -187,8 +187,8 @@ export default function Sidebar({ onOpenModelManager, onOpenMarketplace }) {
           <button className="sb-model-btn" onClick={onOpenModelManager}>
             <span>◈</span> {t('modelManagerBtn')}
           </button>
-          <button className="sb-market-btn" onClick={onOpenMarketplace}>
-            <span>🏪</span> {t('mp_title')}
+          <button className="sb-market-btn" onClick={onOpenMarketplace} title={t('mp_title')}>
+            🏪
           </button>
         </div>
       </div>

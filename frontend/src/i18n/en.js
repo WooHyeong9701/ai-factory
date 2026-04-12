@@ -295,4 +295,5 @@ Sort by priority and specify dependencies for each task.`,
   mp_noSharedSub: 'Create a workflow and share it with the community!',
   mp_confirmDelete: 'Delete this shared workflow?',
   mp_shareBtn: 'Share to Market',
+  mp_noNodesToShare: 'No nodes to share. Create a workflow first.',
 }

@@ -758,19 +758,21 @@ export default function App() {
             </div>
           </div>
 
-          {isSignedIn && nodes.length > 0 && (
-            <button
-              className="share-btn"
-              onClick={() => setShowShareDialog(true)}
-              title={t('mp_shareBtn')}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M8 12V3" />
-                <path d="M4 6l4-4 4 4" />
-                <path d="M2 14h12" />
-              </svg>
-            </button>
-          )}
+          <button
+            className="share-btn"
+            onClick={() => {
+              if (!isSignedIn) return alert(t('saveRequiresLogin'))
+              if (nodes.length === 0) return alert(t('mp_noNodesToShare'))
+              setShowShareDialog(true)
+            }}
+            title={t('mp_shareBtn')}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 12V3" />
+              <path d="M4 6l4-4 4 4" />
+              <path d="M2 14h12" />
+            </svg>
+          </button>
 
           {nodeSearchOpen ? (
             <div className="node-search">
