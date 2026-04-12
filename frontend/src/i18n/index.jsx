@@ -3,6 +3,10 @@ import ko from './ko'
 import en from './en'
 import zh from './zh'
 import ja from './ja'
+import docs_ko from './docs_ko'
+import docs_en from './docs_en'
+import docs_zh from './docs_zh'
+import docs_ja from './docs_ja'
 
 export const LANGUAGES = [
   { code: 'ko', label: '한국어', flag: '🇰🇷' },
@@ -11,7 +15,12 @@ export const LANGUAGES = [
   { code: 'ja', label: '日本語', flag: '🇯🇵' },
 ]
 
-const messages = { ko, en, zh, ja }
+const messages = {
+  ko: { ...ko, ...docs_ko },
+  en: { ...en, ...docs_en },
+  zh: { ...zh, ...docs_zh },
+  ja: { ...ja, ...docs_ja },
+}
 
 const I18nContext = createContext(null)
 

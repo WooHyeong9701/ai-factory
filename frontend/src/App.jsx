@@ -38,6 +38,7 @@ import SaveDialog from './components/SaveDialog'
 import SystemMonitor from './components/SystemMonitor'
 import NotificationPanel from './components/NotificationPanel'
 import AdminDashboard from './components/AdminDashboard'
+import DocsPage from './components/DocsPage'
 import { saveWorkflow, getWorkflow, isConfigured } from './workflowApi'
 import { useI18n, LANGUAGES } from './i18n/index'
 
@@ -127,6 +128,7 @@ export default function App() {
   const [currentWorkflowName, setCurrentWorkflowName] = useState('새 워크플로우')
   const [saveStatus, setSaveStatus] = useState(null) // null | 'saving' | 'saved' | 'error'
   const [showAdmin, setShowAdmin] = useState(false)
+  const [showDocs, setShowDocs] = useState(false)
   const [nodeSearch, setNodeSearch] = useState('')
   const [nodeSearchOpen, setNodeSearchOpen] = useState(false)
   const [nodeSearchIdx, setNodeSearchIdx] = useState(0)
@@ -812,6 +814,14 @@ export default function App() {
             />
           )}
 
+          <button
+            className="docs-btn"
+            onClick={() => setShowDocs(true)}
+            title="Docs"
+          >
+            📖
+          </button>
+
           {isSignedIn && user?.id === import.meta.env.VITE_ADMIN_USER_ID && (
             <button
               className="admin-btn"
@@ -943,6 +953,10 @@ export default function App() {
 
       {showAdmin && (
         <AdminDashboard onClose={() => setShowAdmin(false)} />
+      )}
+
+      {showDocs && (
+        <DocsPage onClose={() => setShowDocs(false)} />
       )}
 
       <RunPanel

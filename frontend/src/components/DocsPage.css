@@ -1,0 +1,422 @@
+/* ═══════════════════════════════════════════
+   DocsPage — Full-screen overlay documentation
+   ═══════════════════════════════════════════ */
+
+.docs-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(4, 4, 10, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: docs-fade 0.2s ease;
+}
+
+@keyframes docs-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.docs-page {
+  width: 92vw;
+  height: 90vh;
+  max-width: 1100px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+}
+
+/* ── Sidebar Nav ── */
+.docs-nav {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+}
+
+.docs-nav-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.docs-nav-logo {
+  font-size: 22px;
+  color: var(--accent);
+}
+
+.docs-nav-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.docs-nav-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 0 8px;
+}
+
+.docs-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text3);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  width: 100%;
+}
+.docs-nav-item:hover {
+  background: var(--panel2);
+  color: var(--text);
+}
+.docs-nav-item.active {
+  background: rgba(91, 141, 248, 0.1);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.docs-nav-icon {
+  font-size: 14px;
+  width: 20px;
+  text-align: center;
+}
+
+.docs-close-btn {
+  margin: 12px 16px 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text3);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.docs-close-btn:hover {
+  background: var(--panel2);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* ── Content Area ── */
+.docs-content {
+  flex: 1;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* Hero */
+.docs-hero {
+  text-align: center;
+  padding: 60px 40px 48px;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(91, 141, 248, 0.06), transparent 60%),
+    radial-gradient(ellipse at 70% 80%, rgba(139, 92, 246, 0.04), transparent 60%);
+}
+
+.docs-hero-glyph {
+  font-size: 56px;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 20px rgba(91, 141, 248, 0.3));
+}
+
+.docs-hero-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.docs-hero-sub {
+  font-size: 15px;
+  color: var(--text3);
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+/* Section */
+.docs-section {
+  padding: 40px 40px 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.docs-section:last-of-type { border-bottom: none; }
+
+.docs-section h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 16px;
+  letter-spacing: -0.02em;
+}
+
+.docs-section p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text2);
+  margin: 0 0 20px;
+}
+
+/* Card grid */
+.docs-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.docs-card {
+  padding: 20px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color 0.2s;
+}
+.docs-card:hover { border-color: var(--border2); }
+.docs-card--cyan { border-color: rgba(6, 182, 212, 0.25); }
+.docs-card--cyan:hover { border-color: rgba(6, 182, 212, 0.5); }
+.docs-card--purple { border-color: rgba(139, 92, 246, 0.25); }
+.docs-card--purple:hover { border-color: rgba(139, 92, 246, 0.5); }
+
+.docs-card-icon {
+  font-size: 24px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.docs-card h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 6px;
+}
+
+.docs-card p {
+  font-size: 12px;
+  color: var(--text3);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.docs-code {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+/* Steps */
+.docs-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.docs-step {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.docs-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(91, 141, 248, 0.12);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.docs-step h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+
+.docs-step p {
+  font-size: 13px;
+  color: var(--text3);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Feature list */
+.docs-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.docs-feature {
+  display: flex;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--panel2);
+  border-radius: 8px;
+  align-items: baseline;
+}
+
+.docs-feature-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+  min-width: 100px;
+}
+
+.docs-feature-desc {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+/* Table */
+.docs-table {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.docs-table-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 12px;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--text2);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.docs-table-row:last-child { border-bottom: none; }
+
+.docs-table-header {
+  background: rgba(91, 141, 248, 0.06);
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.docs-table-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Tip box */
+.docs-tip-box {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  background: rgba(91, 141, 248, 0.05);
+  border: 1px solid rgba(91, 141, 248, 0.15);
+  border-radius: 10px;
+  margin-top: 16px;
+}
+
+.docs-tip-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.docs-tip-box p {
+  font-size: 13px;
+  color: var(--text2);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Keyboard shortcuts */
+.docs-kbd-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.docs-kbd-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+.docs-kbd-row:nth-child(odd) { background: var(--panel2); }
+
+.docs-kbd {
+  display: inline-block;
+  min-width: 140px;
+  padding: 4px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text);
+  text-align: center;
+}
+
+.docs-kbd-row span:last-child {
+  font-size: 12px;
+  color: var(--text2);
+}
+
+/* Footer */
+.docs-footer {
+  text-align: center;
+  padding: 32px 40px 40px;
+  opacity: 0.4;
+}
+
+.docs-footer p {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .docs-page { flex-direction: column; width: 96vw; height: 95vh; }
+  .docs-nav { width: 100%; height: auto; max-height: 50px; flex-direction: row; padding: 0 8px; overflow-x: auto; }
+  .docs-nav-header { display: none; }
+  .docs-nav-list { flex-direction: row; padding: 8px 0; gap: 4px; }
+  .docs-nav-item { white-space: nowrap; padding: 6px 10px; font-size: 11px; }
+  .docs-close-btn { margin: 0; padding: 6px 12px; }
+  .docs-hero { padding: 32px 20px 24px; }
+  .docs-hero-glyph { font-size: 36px; }
+  .docs-hero-title { font-size: 24px; }
+  .docs-section { padding: 24px 20px; }
+}
