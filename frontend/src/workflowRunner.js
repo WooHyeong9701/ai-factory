@@ -1,6 +1,12 @@
 // Pure-JS workflow execution engine.
 // Calls Ollama directly — no backend server required.
 import { streamChat } from './providers/index'
+import {
+  extractJsonPath,
+  applyTextTransform,
+  splitText,
+  renderTemplate,
+} from './utils/textTools'
 
 // ── Topological sort ──────────────────────────────────────────────────────────
 function topoSort(nodes, edges) {
@@ -93,53 +99,6 @@ function buildOptions(data) {
     if (Number.isNaN(opts[k])) delete opts[k]
   }
   return Object.keys(opts).length > 0 ? opts : undefined
-}
-
-// ── Simple JSON path extractor ────────────────────────────────────────────────
-// Supports: "title", "data.name", "[*].title", "data.items[*].name", "[0].id"
-function extractJsonPath(data, path) {
-  if (!path || !path.trim()) return data
-
-  const tokens = []
-  // Tokenize: split by '.' but handle [*] and [N] as separate tokens
-  for (const part of path.split('.')) {
-    const m = part.match(/^([^[]*)\[([^\]]*)\]$/)
-    if (m) {
-      if (m[1]) tokens.push({ type: 'key', val: m[1] })
-      tokens.push({ type: 'index', val: m[2] })
-    } else if (part) {
-      tokens.push({ type: 'key', val: part })
-    }
-  }
-
-  let current = data
-  for (const tok of tokens) {
-    if (current == null) return ''
-    if (tok.type === 'key') {
-      if (Array.isArray(current)) {
-        current = current.map(item => item?.[tok.val]).filter(v => v !== undefined)
-      } else {
-        current = current[tok.val]
-      }
-    } else if (tok.type === 'index') {
-      if (tok.val === '*') {
-        if (!Array.isArray(current)) return ''
-        // keep as array, will flatten later
-      } else {
-        const idx = parseInt(tok.val)
-        current = Array.isArray(current) ? current[idx] : current
-      }
-    }
-  }
-
-  // Convert result to string
-  if (Array.isArray(current)) {
-    return current.map(item =>
-      typeof item === 'object' ? JSON.stringify(item) : String(item)
-    ).join('\n')
-  }
-  if (typeof current === 'object') return JSON.stringify(current, null, 2)
-  return String(current)
 }
 
 // ── Main runner ────────────────────────────────────────────────────────────────
@@ -420,6 +379,219 @@ export async function runWorkflow({ nodes, edges, initialInput, ollamaUrl, onEve
             onEvent({ type: 'error', message: 'Aborted' })
             return
           }
+          onEvent({ type: 'node_error', node_id: nodeId, error: err.message })
+          return
+        }
+      } else if (kind === 'text_transform') {
+        // ── Text Transform: pure text ops + optional LLM modes ──────────────
+        try {
+          const cfg = node.data.config || {}
+          const mode = cfg.mode || 'trim'
+
+          let result
+          if (mode === 'summarize' || mode === 'translate') {
+            const providerId = cfg.provider || 'ollama'
+            const model = cfg.model
+            if (!model) throw new Error('LLM transform requires model (and provider if non-Ollama)')
+
+            const systemPrompt = mode === 'summarize'
+              ? `You are a concise summarizer. Produce a ${cfg.length || 'medium'}-length summary of the user's text. Output only the summary, no preamble.`
+              : `You are a translator. Translate the user's text to ${cfg.target_language || 'English'}. Output only the translation, no explanations.`
+
+            const messages = [
+              { role: 'system', content: systemPrompt },
+              { role: 'user',   content: nodeInput },
+            ]
+
+            let acc = ''
+            for await (const token of streamChat({
+              providerId, model, messages, signal, ollamaUrl,
+            })) {
+              acc += token
+              onEvent({ type: 'token', node_id: nodeId, token })
+            }
+            result = acc
+          } else {
+            result = applyTextTransform(nodeInput, mode)
+            onEvent({ type: 'token', node_id: nodeId, token: result })
+          }
+
+          outputs[nodeId] = result
+          onEvent({ type: 'node_done', node_id: nodeId, output: result })
+        } catch (err) {
+          if (signal?.aborted || err.name === 'AbortError') {
+            onEvent({ type: 'error', message: 'Aborted' })
+            return
+          }
+          onEvent({ type: 'node_error', node_id: nodeId, error: err.message })
+          return
+        }
+      } else if (kind === 'text_split') {
+        // ── Text Split: split input and optionally fan out to downstream ───
+        try {
+          const cfg = node.data.config || {}
+          const splitMode = cfg.split_mode || 'paragraphs'
+          const splitVal  = cfg.split_value
+          const maxChunks = parseInt(cfg.max_chunks) || 20
+          const separator = (cfg.separator || '\\n---\\n').replace(/\\n/g, '\n')
+          const fanout    = (cfg.fanout || 'on') !== 'off'
+
+          const chunks = splitText(nodeInput, splitMode, splitVal, maxChunks)
+
+          if (!fanout || chunks.length === 0) {
+            const joined = chunks.join(separator)
+            outputs[nodeId] = joined
+            onEvent({ type: 'token', node_id: nodeId, token: joined })
+            onEvent({ type: 'node_done', node_id: nodeId, output: joined })
+          } else {
+            // Fan-out: run each direct downstream node once per chunk.
+            const downEdges = execEdges.filter((e) => e.source === nodeId)
+            const downIds = downEdges.map((e) => e.target)
+            outputs[nodeId] = chunks.join(separator)
+
+            for (const downId of downIds) {
+              const downNode = nodeMap[downId]
+              if (!downNode) continue
+
+              const iterResults = []
+              onEvent({ type: 'node_start', node_id: downId })
+
+              for (let ci = 0; ci < chunks.length; ci++) {
+                if (signal?.aborted) {
+                  onEvent({ type: 'error', message: 'Aborted' })
+                  return
+                }
+                const chunk = chunks[ci]
+
+                if (downNode.type === 'agentNode') {
+                  try {
+                    const sys = (downNode.data.role || '') + returnTypeInstruction(downNode.data.return_type)
+                    const msgs = []
+                    if (sys.trim()) msgs.push({ role: 'system', content: sys })
+                    msgs.push({ role: 'user', content: chunk })
+                    const downOpts = buildOptions(downNode.data)
+
+                    let fullOutput = ''
+                    for await (const token of streamChat({
+                      providerId: downNode.data.provider || 'ollama',
+                      model: downNode.data.model,
+                      messages: msgs,
+                      signal,
+                      options: downOpts,
+                      ollamaUrl,
+                    })) {
+                      fullOutput += token
+                      onEvent({ type: 'token', node_id: downId, token })
+                    }
+                    iterResults.push(fullOutput)
+                    if (ci < chunks.length - 1) {
+                      onEvent({ type: 'token', node_id: downId, token: separator })
+                    }
+                  } catch (err) {
+                    if (signal?.aborted || err.name === 'AbortError') {
+                      onEvent({ type: 'error', message: 'Aborted' })
+                      return
+                    }
+                    onEvent({ type: 'node_error', node_id: downId, error: err.message })
+                    return
+                  }
+                } else {
+                  // Non-agent downstream: pass chunk through
+                  iterResults.push(chunk)
+                }
+              }
+
+              const finalOutput = iterResults.join(separator)
+              outputs[downId] = finalOutput
+              loopHandled.add(downId)
+              onEvent({ type: 'node_done', node_id: downId, output: finalOutput })
+            }
+
+            const summary = `Split into ${chunks.length} chunk(s)`
+            onEvent({ type: 'node_done', node_id: nodeId, output: summary })
+          }
+        } catch (err) {
+          onEvent({ type: 'node_error', node_id: nodeId, error: err.message })
+          return
+        }
+      } else if (kind === 'text_merge') {
+        // ── Text Merge: combine incoming edges' outputs with config ────────
+        try {
+          const cfg = node.data.config || {}
+          const separator = (cfg.separator || '\\n\\n').replace(/\\n/g, '\n').replace(/\\t/g, '\t')
+          const wrapEach  = (cfg.wrap_each || '').replace(/\\n/g, '\n')
+          const prefix    = (cfg.prefix || '').replace(/\\n/g, '\n')
+          const suffix    = (cfg.suffix || '').replace(/\\n/g, '\n')
+
+          // Gather each incoming node's output individually (not pre-joined)
+          const parts = incoming
+            .map((e) => outputs[e.source])
+            .filter((v) => v != null && v !== '')
+
+          const wrapped = wrapEach
+            ? parts.map((p) => renderTemplate(wrapEach, { input: p }))
+            : parts
+
+          const merged = (prefix ? prefix : '') + wrapped.join(separator) + (suffix ? suffix : '')
+          outputs[nodeId] = merged
+          onEvent({ type: 'token', node_id: nodeId, token: merged })
+          onEvent({ type: 'node_done', node_id: nodeId, output: merged })
+        } catch (err) {
+          onEvent({ type: 'node_error', node_id: nodeId, error: err.message })
+          return
+        }
+      } else if (kind === 'json_parse') {
+        // ── JSON Parser: extract fields from JSON input ────────────────────
+        try {
+          const cfg = node.data.config || {}
+          const path = cfg.json_path || ''
+          const fallback = cfg.fallback_raw || 'return_raw'
+
+          let result
+          try {
+            const parsed = JSON.parse(nodeInput)
+            result = extractJsonPath(parsed, path)
+          } catch (parseErr) {
+            if (fallback === 'error') throw new Error(`JSON parse failed: ${parseErr.message}`)
+            if (fallback === 'return_empty') result = ''
+            else result = nodeInput // return_raw
+          }
+
+          outputs[nodeId] = result
+          onEvent({ type: 'token', node_id: nodeId, token: result })
+          onEvent({ type: 'node_done', node_id: nodeId, output: result })
+        } catch (err) {
+          onEvent({ type: 'node_error', node_id: nodeId, error: err.message })
+          return
+        }
+      } else if (kind === 'template') {
+        // ── Template: substitute {var} placeholders ─────────────────────────
+        try {
+          const cfg = node.data.config || {}
+          const tpl = cfg.template || ''
+
+          const vars = { input: nodeInput }
+          // Add per-source-node values keyed by source node name or id
+          for (const e of incoming) {
+            const src = nodeMap[e.source]
+            const val = outputs[e.source]
+            if (val == null) continue
+            if (src?.data?.name) vars[src.data.name] = val
+            vars[e.source] = val
+          }
+          // Parse user variables JSON
+          if (cfg.variables) {
+            try {
+              const userVars = JSON.parse(cfg.variables)
+              Object.assign(vars, userVars)
+            } catch { /* ignore parse error */ }
+          }
+
+          const result = renderTemplate(tpl, vars)
+          outputs[nodeId] = result
+          onEvent({ type: 'token', node_id: nodeId, token: result })
+          onEvent({ type: 'node_done', node_id: nodeId, output: result })
+        } catch (err) {
           onEvent({ type: 'node_error', node_id: nodeId, error: err.message })
           return
         }
