@@ -4,6 +4,7 @@ import RoleEditor from './RoleEditor'
 import { UTILITY_KINDS } from './UtilityNode'
 import { useI18n } from '../i18n/index'
 import { saveCustomTemplate } from './Sidebar'
+import { PROVIDERS, getProvider, isProviderConfigured } from '../providers/index'
 
 function ModelRamInfo({ model, ramEstimates, systemStats }) {
   const { t } = useI18n()
@@ -58,7 +59,7 @@ function SafeModels({ models, ramEstimates, available }) {
   )
 }
 
-export default function ConfigPanel({ node, models, ramEstimates = {}, systemStats, onChange, onClose, onDelete }) {
+export default function ConfigPanel({ node, models, ramEstimates = {}, systemStats, onChange, onClose, onDelete, onOpenProviderSettings }) {
   const { t } = useI18n()
   const [showRoleEditor, setShowRoleEditor] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -242,9 +243,13 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
 
   // ── Agent Node config ────────────────────────────────────────────────────────
   const { name, role, model, return_type, status, output } = node.data
+  const providerId = node.data.provider || 'ollama'
+  const provider = getProvider(providerId)
+  const providerConfigured = isProviderConfigured(provider)
+  const isOllama = provider.kind === 'ollama'
   const available = systemStats?.ram_available_gb
-  // Only flag as "unsafe" if model exceeds available RAM + ~2GB swap headroom
-  const currentModelUnsafe =
+  // Only flag as "unsafe" if model exceeds available RAM + ~2GB swap headroom (Ollama only)
+  const currentModelUnsafe = isOllama &&
     model && ramEstimates[model] != null && available != null && available + 2.0 < ramEstimates[model]
 
   return (
@@ -292,44 +297,103 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
         )}
 
         <div className="config-section">
+          <label className="field-label">{t('provider')}</label>
+          <select
+            className="field-select"
+            value={providerId}
+            onChange={(e) => onChange({ provider: e.target.value, model: '' })}
+          >
+            {PROVIDERS.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}{p.id === 'ollama' ? '' : isProviderConfigured(p) ? ' ✓' : ' — ' + t('ps_notConfigured')}
+              </option>
+            ))}
+          </select>
+          {!isOllama && !providerConfigured && (
+            <button
+              type="button"
+              className="field-inline-btn"
+              onClick={() => onOpenProviderSettings?.()}
+            >
+              {t('ps_configureBtn')}
+            </button>
+          )}
+        </div>
+
+        <div className="config-section">
           <label className="field-label">
             {t('model')}
             {currentModelUnsafe && (
               <span className="field-label-badge unsafe">{t('ramInsufficient')}</span>
             )}
           </label>
-          {models.length > 0 ? (
-            <select
-              className={`field-select ${currentModelUnsafe ? 'field-select--unsafe' : ''}`}
-              value={model}
-              onChange={(e) => onChange({ model: e.target.value })}
-            >
-              <option value="">{t('selectModel')}</option>
-              {models.map((m) => {
-                const ram = ramEstimates[m]
-                const isUnsafe = ram != null && available != null && available + 2.0 < ram
-                const isTight = ram != null && available != null && !isUnsafe && available < ram + 0.5
-                return (
-                  <option key={m} value={m}>
-                    {isUnsafe ? '🔴 ' : isTight ? '🟡 ' : '🟢 '}
-                    {m}{ram ? ` (~${ram.toFixed(1)}GB)` : ''}
-                  </option>
-                )
-              })}
-            </select>
+          {isOllama ? (
+            models.length > 0 ? (
+              <select
+                className={`field-select ${currentModelUnsafe ? 'field-select--unsafe' : ''}`}
+                value={model}
+                onChange={(e) => onChange({ model: e.target.value })}
+              >
+                <option value="">{t('selectModel')}</option>
+                {models.map((m) => {
+                  const ram = ramEstimates[m]
+                  const isUnsafe = ram != null && available != null && available + 2.0 < ram
+                  const isTight = ram != null && available != null && !isUnsafe && available < ram + 0.5
+                  return (
+                    <option key={m} value={m}>
+                      {isUnsafe ? '🔴 ' : isTight ? '🟡 ' : '🟢 '}
+                      {m}{ram ? ` (~${ram.toFixed(1)}GB)` : ''}
+                    </option>
+                  )
+                })}
+              </select>
+            ) : (
+              <input
+                className="field-input"
+                type="text"
+                value={model}
+                onChange={(e) => onChange({ model: e.target.value })}
+                placeholder={t('modelPlaceholder')}
+              />
+            )
           ) : (
-            <input
-              className="field-input"
-              type="text"
-              value={model}
-              onChange={(e) => onChange({ model: e.target.value })}
-              placeholder={t('modelPlaceholder')}
-            />
+            <>
+              {provider.presetModels.length > 0 && (
+                <select
+                  className="field-select"
+                  value={provider.presetModels.includes(model) ? model : '__custom__'}
+                  onChange={(e) => {
+                    const v = e.target.value
+                    if (v === '__custom__') onChange({ model: '' })
+                    else onChange({ model: v })
+                  }}
+                >
+                  <option value="">{t('selectModel')}</option>
+                  {provider.presetModels.map((m) => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                  {provider.allowCustomModel && <option value="__custom__">{t('ps_customModel')}</option>}
+                </select>
+              )}
+              {(provider.presetModels.length === 0 ||
+                (!provider.presetModels.includes(model) && model !== '')) && (
+                <input
+                  className="field-input"
+                  type="text"
+                  value={model}
+                  onChange={(e) => onChange({ model: e.target.value })}
+                  placeholder={provider.id === 'custom' ? 'model-name' : t('modelPlaceholder')}
+                  style={{ marginTop: provider.presetModels.length > 0 ? 6 : 0 }}
+                />
+              )}
+            </>
           )}
 
-          <ModelRamInfo model={model} ramEstimates={ramEstimates} systemStats={systemStats} />
+          {isOllama && (
+            <ModelRamInfo model={model} ramEstimates={ramEstimates} systemStats={systemStats} />
+          )}
 
-          {currentModelUnsafe && (
+          {isOllama && currentModelUnsafe && (
             <SafeModels models={models} ramEstimates={ramEstimates} available={available} />
           )}
         </div>
