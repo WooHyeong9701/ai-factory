@@ -205,6 +205,14 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
                   onChange={(e) => setConfig(field.key, e.target.value)}
                   placeholder={field.default || ''}
                 />
+              ) : field.type === 'textarea' ? (
+                <textarea
+                  className="field-textarea"
+                  rows={5}
+                  value={config[field.key] || ''}
+                  onChange={(e) => setConfig(field.key, e.target.value)}
+                  placeholder={field.placeholder || field.default || ''}
+                />
               ) : (
                 <input
                   className="field-input"

@@ -137,17 +137,54 @@ const IconCube = () => (
   </svg>
 )
 
+const IconText = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 7V5h16v2" /><path d="M9 5v14" /><path d="M15 5v14" />
+  </svg>
+)
+const IconSplit = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="7" height="7" rx="1" />
+    <rect x="14" y="3" width="7" height="7" rx="1" />
+    <rect x="3" y="14" width="7" height="7" rx="1" />
+    <rect x="14" y="14" width="7" height="7" rx="1" />
+  </svg>
+)
+const IconMerge = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 3v7a5 5 0 005 5h2a5 5 0 015 5v2" />
+    <polyline points="3 6 6 3 9 6" />
+    <polyline points="15 18 18 21 21 18" />
+  </svg>
+)
+const IconJson = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M8 3H5a2 2 0 00-2 2v3M8 21H5a2 2 0 01-2-2v-3M16 3h3a2 2 0 012 2v3M16 21h3a2 2 0 002-2v-3" />
+  </svg>
+)
+const IconTemplate = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h10" />
+    <circle cx="19" cy="17" r="2" />
+  </svg>
+)
+
 const UTILITY_ITEMS = [
-  { labelKey: 'taskList',      icon: <IconCheck />,   nodeType: 'taskListNode', kind: null },
-  { labelKey: 'tts',           icon: <IconSpeaker />, nodeType: 'utilityNode',  kind: 'tts' },
-  { labelKey: 'imageGen',      icon: <IconBrush />,   nodeType: 'utilityNode',  kind: 'image_gen' },
-  { labelKey: 'fileSave',      icon: <IconSave />,    nodeType: 'utilityNode',  kind: 'file_save' },
-  { labelKey: 'videoCompose',  icon: <IconFilm />,    nodeType: 'utilityNode',  kind: 'video_compose' },
-  { labelKey: 'youtubeUpload', icon: <IconUpload />,  nodeType: 'utilityNode',  kind: 'youtube_upload' },
-  { labelKey: 'branch',        icon: <IconBranch />,  nodeType: 'utilityNode',  kind: 'branch' },
-  { labelKey: 'loop',          icon: <IconRefresh />, nodeType: 'utilityNode',  kind: 'loop' },
-  { labelKey: 'apiRequest',    icon: <IconGlobe />,   nodeType: 'utilityNode',  kind: 'api_request' },
-  { labelKey: 'webhookOut',    icon: <IconSend />,    nodeType: 'utilityNode',  kind: 'webhook_out' },
+  { labelKey: 'taskList',      icon: <IconCheck />,    nodeType: 'taskListNode', kind: null },
+  { labelKey: 'textTransform', icon: <IconText />,     nodeType: 'utilityNode',  kind: 'text_transform' },
+  { labelKey: 'textSplit',     icon: <IconSplit />,    nodeType: 'utilityNode',  kind: 'text_split' },
+  { labelKey: 'textMerge',     icon: <IconMerge />,    nodeType: 'utilityNode',  kind: 'text_merge' },
+  { labelKey: 'jsonParse',     icon: <IconJson />,     nodeType: 'utilityNode',  kind: 'json_parse' },
+  { labelKey: 'templateNode',  icon: <IconTemplate />, nodeType: 'utilityNode',  kind: 'template' },
+  { labelKey: 'tts',           icon: <IconSpeaker />,  nodeType: 'utilityNode',  kind: 'tts' },
+  { labelKey: 'imageGen',      icon: <IconBrush />,    nodeType: 'utilityNode',  kind: 'image_gen' },
+  { labelKey: 'fileSave',      icon: <IconSave />,     nodeType: 'utilityNode',  kind: 'file_save' },
+  { labelKey: 'videoCompose',  icon: <IconFilm />,     nodeType: 'utilityNode',  kind: 'video_compose' },
+  { labelKey: 'youtubeUpload', icon: <IconUpload />,   nodeType: 'utilityNode',  kind: 'youtube_upload' },
+  { labelKey: 'branch',        icon: <IconBranch />,   nodeType: 'utilityNode',  kind: 'branch' },
+  { labelKey: 'loop',          icon: <IconRefresh />,  nodeType: 'utilityNode',  kind: 'loop' },
+  { labelKey: 'apiRequest',    icon: <IconGlobe />,    nodeType: 'utilityNode',  kind: 'api_request' },
+  { labelKey: 'webhookOut',    icon: <IconSend />,     nodeType: 'utilityNode',  kind: 'webhook_out' },
 ]
 
 function getDefaultConfig(kind) {
