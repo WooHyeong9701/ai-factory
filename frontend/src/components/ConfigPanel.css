@@ -129,6 +129,19 @@
   color: var(--text);
 }
 
+.field-inline-btn {
+  margin-top: 6px;
+  background: rgba(167,139,250,0.10);
+  border: 1px solid rgba(167,139,250,0.28);
+  border-radius: 6px;
+  padding: 5px 10px;
+  color: #c4b5fd;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.field-inline-btn:hover { background: rgba(167,139,250,0.18); }
+
 .field-textarea {
   line-height: 1.6;
   font-size: 12px;

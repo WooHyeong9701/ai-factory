@@ -40,6 +40,7 @@ import NotificationPanel from './components/NotificationPanel'
 import AdminDashboard from './components/AdminDashboard'
 import DocsPage from './components/DocsPage'
 import Marketplace, { ShareDialog } from './components/Marketplace'
+import ProviderSettings from './components/ProviderSettings'
 import { saveWorkflow, getWorkflow, isConfigured } from './workflowApi'
 import { useI18n, LANGUAGES } from './i18n/index'
 
@@ -131,6 +132,7 @@ export default function App() {
   const [showAdmin, setShowAdmin] = useState(false)
   const [showDocs, setShowDocs] = useState(false)
   const [showMarketplace, setShowMarketplace] = useState(false)
+  const [showProviderSettings, setShowProviderSettings] = useState(false)
   const [showShareDialog, setShowShareDialog] = useState(false)
   const [nodeSearch, setNodeSearch] = useState('')
   const [nodeSearchOpen, setNodeSearchOpen] = useState(false)
@@ -878,6 +880,17 @@ export default function App() {
 
           <button
             className="docs-btn"
+            onClick={() => setShowProviderSettings(true)}
+            title={t('ps_title')}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="8" cy="8" r="2.2"/>
+              <path d="M12.5 8a4.5 4.5 0 00-.1-1l1.4-1.1-1.4-2.4-1.7.6a4.5 4.5 0 00-1.7-1L8.7 1h-2.8l-.3 1.7a4.5 4.5 0 00-1.7 1l-1.7-.6-1.4 2.4 1.4 1.1a4.5 4.5 0 000 2l-1.4 1.1 1.4 2.4 1.7-.6a4.5 4.5 0 001.7 1L5.9 15h2.8l.3-1.7a4.5 4.5 0 001.7-1l1.7.6 1.4-2.4-1.4-1.1a4.5 4.5 0 00.1-1z"/>
+            </svg>
+          </button>
+
+          <button
+            className="docs-btn"
             onClick={() => setShowDocs(true)}
             title="Docs"
           >
@@ -997,6 +1010,7 @@ export default function App() {
             onChange={(updates) => updateNode(selectedNodeId, updates)}
             onClose={() => setSelectedNodeId(null)}
             onDelete={() => deleteNode(selectedNodeId)}
+            onOpenProviderSettings={() => setShowProviderSettings(true)}
           />
         )}
       </div>
@@ -1029,6 +1043,10 @@ export default function App() {
 
       {showAdmin && (
         <AdminDashboard onClose={() => setShowAdmin(false)} />
+      )}
+
+      {showProviderSettings && (
+        <ProviderSettings onClose={() => setShowProviderSettings(false)} />
       )}
 
       {showDocs && (

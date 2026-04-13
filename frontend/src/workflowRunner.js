@@ -1,6 +1,6 @@
 // Pure-JS workflow execution engine.
 // Calls Ollama directly — no backend server required.
-import { streamChat } from './ollamaClient'
+import { streamChat } from './providers/index'
 
 // ── Topological sort ──────────────────────────────────────────────────────────
 function topoSort(nodes, edges) {
@@ -198,7 +198,14 @@ export async function runWorkflow({ nodes, edges, initialInput, ollamaUrl, onEve
         const opts = buildOptions(node.data)
 
         let fullOutput = ''
-        for await (const token of streamChat(ollamaUrl, node.data.model, messages, signal, opts)) {
+        for await (const token of streamChat({
+          providerId: node.data.provider || 'ollama',
+          model: node.data.model,
+          messages,
+          signal,
+          options: opts,
+          ollamaUrl,
+        })) {
           fullOutput += token
           onEvent({ type: 'token', node_id: nodeId, token })
         }
@@ -284,7 +291,14 @@ export async function runWorkflow({ nodes, edges, initialInput, ollamaUrl, onEve
                 const downOpts = buildOptions(downNode.data)
 
                 let fullOutput = ''
-                for await (const token of streamChat(ollamaUrl, downNode.data.model, msgs, signal, downOpts)) {
+                for await (const token of streamChat({
+                  providerId: downNode.data.provider || 'ollama',
+                  model: downNode.data.model,
+                  messages: msgs,
+                  signal,
+                  options: downOpts,
+                  ollamaUrl,
+                })) {
                   fullOutput += token
                   onEvent({ type: 'token', node_id: downId, token })
                 }
