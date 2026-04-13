@@ -12,9 +12,11 @@ function ModelRamInfo({ model, ramEstimates, systemStats }) {
   const available = systemStats?.ram_available_gb
   if (!needed) return null
 
+  // Allow ~2GB of swap headroom before marking unsafe, since light swap usage is fine
+  const swapHeadroom = 2.0
   const safe = available == null || available >= needed + 0.5
-  const tight = available != null && available >= needed && available < needed + 1.5
-  const unsafe = available != null && available < needed
+  const tight = available != null && available < needed + 0.5 && available + swapHeadroom >= needed
+  const unsafe = available != null && available + swapHeadroom < needed
 
   return (
     <div className={`model-ram-info ${unsafe ? 'unsafe' : tight ? 'tight' : 'safe'}`}>
@@ -36,8 +38,9 @@ function ModelRamInfo({ model, ramEstimates, systemStats }) {
 function SafeModels({ models, ramEstimates, available }) {
   const { t } = useI18n()
   if (!available || !models.length) return null
+  // Treat models as safe if they fit within available RAM plus ~2GB of swap tolerance
   const safe = models.filter(
-    (m) => ramEstimates[m] != null && ramEstimates[m] <= available * 0.8
+    (m) => ramEstimates[m] != null && ramEstimates[m] <= available + 2.0
   )
   if (!safe.length) return null
 
@@ -240,8 +243,9 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
   // ── Agent Node config ────────────────────────────────────────────────────────
   const { name, role, model, return_type, status, output } = node.data
   const available = systemStats?.ram_available_gb
+  // Only flag as "unsafe" if model exceeds available RAM + ~2GB swap headroom
   const currentModelUnsafe =
-    model && ramEstimates[model] != null && available != null && available < ramEstimates[model]
+    model && ramEstimates[model] != null && available != null && available + 2.0 < ramEstimates[model]
 
   return (
     <aside className="config-panel">
@@ -303,8 +307,8 @@ export default function ConfigPanel({ node, models, ramEstimates = {}, systemSta
               <option value="">{t('selectModel')}</option>
               {models.map((m) => {
                 const ram = ramEstimates[m]
-                const isUnsafe = ram != null && available != null && available < ram
-                const isTight = ram != null && available != null && available >= ram && available < ram + 1.5
+                const isUnsafe = ram != null && available != null && available + 2.0 < ram
+                const isTight = ram != null && available != null && !isUnsafe && available < ram + 0.5
                 return (
                   <option key={m} value={m}>
                     {isUnsafe ? '🔴 ' : isTight ? '🟡 ' : '🟢 '}
