@@ -91,9 +91,9 @@ function WorkflowDetail({ wf, getToken, onClose, onImport, isSignedIn, t }) {
 
         <div className="mp-detail-stats">
           <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> {data.like_count || 0}</span>
-          <span>📥 {data.fork_count || 0}</span>
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> {data.fork_count || 0}</span>
           <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> {data.view_count || 0}</span>
-          <span>🧩 {data.node_count || 0} {t('nodes')}</span>
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> {data.node_count || 0} {t('nodes')}</span>
         </div>
 
         <div className="mp-detail-actions">
@@ -106,7 +106,7 @@ function WorkflowDetail({ wf, getToken, onClose, onImport, isSignedIn, t }) {
             {data.liked ? <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>} {data.liked ? t('mp_liked') : t('mp_like')}
           </button>
           <button className="mp-import-btn" onClick={handleImport}>
-            📥 {t('mp_import')}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> {t('mp_import')}
           </button>
         </div>
       </div>
@@ -195,7 +195,7 @@ export function ShareDialog({ nodes, edges, workflowId, workflowName, userName, 
         />
 
         <div className="mp-share-info">
-          🧩 {nodes.length} {t('nodes')} · {edges.length} {t('connections')}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> {nodes.length} {t('nodes')} · {edges.length} {t('connections')}
         </div>
 
         <div className="mp-share-actions">
@@ -205,7 +205,7 @@ export function ShareDialog({ nodes, edges, workflowId, workflowName, userName, 
             onClick={handlePublish}
             disabled={!name.trim() || publishing}
           >
-            {publishing ? t('mp_publishing') : `🚀 ${t('mp_publish')}`}
+            {publishing ? t('mp_publishing') : t('mp_publish')}
           </button>
         </div>
       </div>
@@ -346,7 +346,7 @@ export default function Marketplace({ onClose, onImport, isSignedIn, token, getT
             {/* Search + Sort */}
             <div className="mp-toolbar">
               <div className="mp-search-wrap">
-                <span className="mp-search-icon">🔍</span>
+                <span className="mp-search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
                 <input
                   className="mp-search"
                   value={searchInput}
@@ -390,7 +390,7 @@ export default function Marketplace({ onClose, onImport, isSignedIn, token, getT
                 </div>
               ) : workflows.length === 0 ? (
                 <div className="mp-empty">
-                  <span className="mp-empty-icon">📭</span>
+                  <span className="mp-empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span>
                   <p>{t('mp_noResults')}</p>
                 </div>
               ) : (
@@ -398,8 +398,8 @@ export default function Marketplace({ onClose, onImport, isSignedIn, token, getT
                   {workflows.map(wf => (
                     <div key={wf.id} className="mp-card" onClick={() => setSelectedWf(wf)}>
                       <div className="mp-card-top">
-                        <span className="mp-card-cat">{CATEGORIES.find(c => c.key === wf.category)?.icon || '📦'}</span>
-                        <span className="mp-card-nodes">🧩 {wf.node_count}</span>
+                        <span className="mp-card-cat">{CATEGORIES.find(c => c.key === wf.category)?.icon || <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>}</span>
+                        <span className="mp-card-nodes"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> {wf.node_count}</span>
                       </div>
                       <h3 className="mp-card-name">{wf.name}</h3>
                       <p className="mp-card-desc">{wf.description || t('mp_noDescription')}</p>
@@ -421,7 +421,7 @@ export default function Marketplace({ onClose, onImport, isSignedIn, token, getT
                           >
                             {wf.liked ? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>} {wf.like_count || 0}
                           </button>
-                          <span className="mp-fork-count">📥 {wf.fork_count || 0}</span>
+                          <span className="mp-fork-count"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> {wf.fork_count || 0}</span>
                         </div>
                       </div>
                     </div>
@@ -459,7 +459,7 @@ export default function Marketplace({ onClose, onImport, isSignedIn, token, getT
                       <p>{wf.description}</p>
                       <div className="mp-mine-stats">
                         <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> {wf.like_count}</span>
-                        <span>📥 {wf.fork_count}</span>
+                        <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> {wf.fork_count}</span>
                         <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> {wf.view_count}</span>
                         <span>{timeAgo(wf.updated_at, t)}</span>
                       </div>
