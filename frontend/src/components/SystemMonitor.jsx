@@ -34,8 +34,8 @@ export default function SystemMonitor({ stats, compact = false }) {
   } = stats
 
   const ramLevel = ram_percent >= 90 ? 'critical' : ram_percent >= 75 ? 'warn' : 'ok'
-  const swapActive = swap_used_gb > 0.1
-  const swapCritical = swap_used_gb > 0.5
+  const swapActive = swap_used_gb > 1.0
+  const swapCritical = swap_used_gb > 3.0
   const ramFree = ram_available_gb.toFixed(1)
 
   return (
